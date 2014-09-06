@@ -3,7 +3,7 @@
 "endif
 "let g:loaded_cppenv = 1
 
-let s:indent_space = '    '
+let s:indent_space = repeat(' ', 4)
 
 func! cppenv#warn(msg)
     echohl WarningMsg
@@ -96,10 +96,14 @@ func! cppenv#enter()
     let line_info = getline('.')
     let pos = getpos('.')
     if strpart(line_info, pos[2] - 1, 2) =~ '{}' && line_info =~ '^\s*{}\s*$'
-        echo 'ok'
         let spaces = strpart(line_info, 0, pos[2] - 1)
         call setline('.', spaces . '{')
-        call append(pos[1], spaces . '}')
+
+        if pos[1] > 1 && getline(pos[1] - 1) =~ '^\s*\(class\|struct\|union\)\s\+.*$'
+            call append(pos[1], spaces . '};')
+        else
+            call append(pos[1], spaces . '}')
+        endif
         let pos[2] = len(spaces) + len(s:indent_space)
         call setpos('.', pos)
     endif
@@ -120,10 +124,12 @@ func! cppenv#infect()
     imap ( <Esc>:call cppenv#auto_brackets('()')<CR>a
     imap [ <Esc>:call cppenv#auto_brackets('[]')<CR>a
     imap { <Esc>:call cppenv#auto_brackets('{}')<CR>a
+    "imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
 
     imap ) <Esc>:call cppenv#end_brackets('()')<CR>a
     imap ] <Esc>:call cppenv#end_brackets('[]')<CR>a
     imap } <Esc>:call cppenv#end_brackets('{}')<CR>a
+    "imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
 
     nmap <C-i> :call cppenv#indent('.')<CR>
     imap <C-p> <ESC>:call cppenv#enter()<CR>a<CR>
@@ -141,10 +147,12 @@ func! cppenv#uninfect()
     iunmap (
     iunmap [
     iunmap {
+    "iunmap <
 
     iunmap )
     iunmap ]
     iunmap }
+    "iunmap >
 
     unmap <C-i>
     iunmap <C-p>
