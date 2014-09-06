@@ -131,8 +131,9 @@ func! cppenv#infect()
     imap } <Esc>:call cppenv#end_brackets('{}')<CR>a
     "imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
 
-    nmap <C-i> :call cppenv#indent('.')<CR>
+    map <C-i> :call cppenv#indent('.')<CR>
     imap <C-p> <ESC>:call cppenv#enter()<CR>a<CR>
+    imap <CR> <C-p>
 endfunc
 
 func! cppenv#uninfect()
@@ -156,6 +157,7 @@ func! cppenv#uninfect()
 
     unmap <C-i>
     iunmap <C-p>
+    iunmap <CR>
 
     call cppenv#warn("Close cppenv.")
 endfunc

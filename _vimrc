@@ -67,6 +67,9 @@ autocmd BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR><CR>
 
 """"""""""""""""""""""""""Style"""""""""""""""""""""""
 color evening
+filetype on
+filetype indent on
+filetype plugin on
 syntax on
 syntax enable
 set incsearch
@@ -79,6 +82,7 @@ set nowrap
 set nofoldenable
 set nobackup
 set noswapfile
+set autochdir
 
 set expandtab "Tab转换成空格
 set tabstop=4
@@ -93,12 +97,7 @@ set foldmethod=syntax
 set guifont=Courier\ New:h12
 set fileencodings=utf-8,gbk,utf-16 "可识别文件编码
 
-set autochdir
-
 """"""""""""""""""""""""""Plugin Config"""""""""""""""""""""""
-filetype on
-filetype indent on
-filetype plugin on
 
 " pathogen
 execute pathogen#infect()
@@ -109,7 +108,6 @@ let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 
 " nerdtree
-map <F3> :NERDTreeMirror<CR>
 map <F3> :NERDTreeToggle<CR>
 
 " pydiction python补全插件
