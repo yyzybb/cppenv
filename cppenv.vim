@@ -124,16 +124,19 @@ func! cppenv#infect()
     imap ( <Esc>:call cppenv#auto_brackets('()')<CR>a
     imap [ <Esc>:call cppenv#auto_brackets('[]')<CR>a
     imap { <Esc>:call cppenv#auto_brackets('{}')<CR>a
-    "imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
 
     imap ) <Esc>:call cppenv#end_brackets('()')<CR>a
     imap ] <Esc>:call cppenv#end_brackets('[]')<CR>a
     imap } <Esc>:call cppenv#end_brackets('{}')<CR>a
-    "imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
 
     map <C-i> :call cppenv#indent('.')<CR>
-    imap <C-p> <ESC>:call cppenv#enter()<CR>a<CR>
-    imap <CR> <C-p>
+    imap <C-l> <ESC>:call cppenv#enter()<CR>a<CR>
+
+    if has("unix")
+        imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
+        imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
+        imap <CR> <ESC>:call cppenv#enter()<CR>a<CR>
+    endif
 endfunc
 
 func! cppenv#uninfect()
@@ -148,16 +151,19 @@ func! cppenv#uninfect()
     iunmap (
     iunmap [
     iunmap {
-    "iunmap <
 
     iunmap )
     iunmap ]
     iunmap }
-    "iunmap >
 
     unmap <C-i>
-    iunmap <C-p>
-    iunmap <CR>
+    iunmap <C-l>
+
+    if has("unix")
+        iunmap <
+        iunmap >
+        iunmap <CR>
+    endif
 
     call cppenv#warn("Close cppenv.")
 endfunc
