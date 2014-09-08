@@ -43,7 +43,7 @@ else
 fi
 
 # install vim-plugins
-sudo vim +BundleInstall
+sudo vim +BundleInstall -c quitall
 
 # compile YouCompleteMe
 cd ${vim_path}/vimfiles/bundle/YouCompleteMe
