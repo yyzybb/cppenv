@@ -133,8 +133,8 @@ func! cppenv#infect()
     imap <C-l> <ESC>:call cppenv#enter()<CR>a<CR>
 
     if has("unix")
-        imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
-        imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
+        "imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
+        "imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
         inoremap <CR> <ESC>:call cppenv#enter()<CR>a<CR>
     endif
 endfunc
@@ -160,8 +160,8 @@ func! cppenv#uninfect()
     iunmap <C-l>
 
     if has("unix")
-        iunmap <
-        iunmap >
+        "iunmap <
+        "iunmap >
         iunmap <CR>
     endif
 
