@@ -1,8 +1,13 @@
 # Install the vim and cppenviron.
 # * It's contains software:
+#       dos2unix
 #       git
 #       vim
 #       g++
+#       ctags
+#       cmake
+#       python-dev
+#       vim-YouCompleteMe
 #       vim-vundle
 #       vim-airline
 #       vim-nerdtree
@@ -57,12 +62,20 @@ else
     sudo git clone https://github.com/gmarik/Vundle.vim.git ${vundle_path} || exit 2
 fi
 
-# install vim-plugins
-sudo vim +BundleInstall -c quitall
-
-# compile YouCompleteMe
-cd ${vim_path}/vimfiles/bundle/YouCompleteMe
+# gitclone and compile YouCompleteMe
+ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
+if test -d ${ycm_path}; then
+    cd ${ycm_path}
+    sudo git pull || exit 2
+else
+    sudo git clone https://github.com/Valloric/YouCompleteMe.git ${ycm_path} || exit 2
+    cd ${ycm_path}
+fi
 sudo git submodule update --init --recursive
 sudo ./install.sh --clang-completer || exit 3
 
+# install vim-plugins
+sudo vim +BundleInstall -c quitall
+
+echo 'vim-env is ok, good luck!'
 
