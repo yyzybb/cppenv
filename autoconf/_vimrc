@@ -62,6 +62,8 @@ autocmd BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
 "set makeprg=make.exe
 "set shellpipe=
 
+""""""""""""""""""""""""""VimEnv"""""""""""""""""""""""
+set path+=/usr/include,/usr/include/linux,/usr/include/i386-linux-gnu,/usr/include/c++/4.8,/usr/include/i386-linux-gnu/c++/4.8,/usr/local/include
 
 """"""""""""""""""""""""""Style"""""""""""""""""""""""
 color evening
@@ -115,9 +117,7 @@ filetype plugin indent on
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>*'
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
-nnoremap gl :YcmCompleter GoToDeclaration<CR>
-nnoremap gf :YcmCompleter GoToDefinition<CR>
-nnoremap gt :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap gy :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nmap <F4> :YcmDiags<CR>
 
 " airline
