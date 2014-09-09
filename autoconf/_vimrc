@@ -114,6 +114,7 @@ filetype plugin indent on
 " YouCompleteMe
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>*'
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 nnoremap gl :YcmCompleter GoToDeclaration<CR>
 nnoremap gf :YcmCompleter GoToDefinition<CR>
 nnoremap gt :YcmCompleter GoToDefinitionElseDeclaration<CR>
