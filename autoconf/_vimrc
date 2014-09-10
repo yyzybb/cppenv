@@ -138,6 +138,6 @@ map TU :TlistUpdate<CR>
 au BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c execute cppenv#infect()
 
 " tags
-set tags=tags,./tags,/usr/include/c++/tags
+set tags=tags,./tags,/usr/include/tags
 "set tags+=/home/yyz/C/Bex/Bex/tags,/home/yyz/C/Bex/boost/include/tags
 
