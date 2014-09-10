@@ -119,6 +119,7 @@ let g:ycm_warning_symbol = '>*'
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 nnoremap gy :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nmap <F4> :YcmDiags<CR>
+set completeopt=menuone
 
 " airline
 let g:airline#extensions#tabline#enabled = 1
