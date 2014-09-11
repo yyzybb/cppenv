@@ -20,6 +20,8 @@
 #
 
 # install dos2unix, git, vim, g++, ctags, cmake, python-dev
+./change_source_list.sh
+
 sudo apt-get update -y || exit 1
 
 dos2unix --version || sudo apt-get install dos2unix -y
