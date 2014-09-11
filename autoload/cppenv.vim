@@ -95,16 +95,20 @@ endfunc
 func! cppenv#enter()
     let line_info = getline('.')
     let pos = getpos('.')
-    if strpart(line_info, pos[2] - 1, 2) =~ '{}' && line_info =~ '^\s*{}\s*$'
-        let spaces = strpart(line_info, 0, pos[2] - 1)
-        call setline('.', spaces . '{')
+    if strpart(line_info, pos[2] - 1, 2) =~ '{}' && line_info =~ '{}\s*$'
+        let before = strpart(line_info, 0, pos[2] - 1)
+        call setline('.', before . '{')
 
-        if pos[1] > 1 && getline(pos[1] - 1) =~ '^\s*\(class\|struct\|union\)\s\+.*$'
-            call append(pos[1], spaces . '};')
-        else
-            call append(pos[1], spaces . '}')
+        let s:end_bracket = '}'
+        if line_info =~ '^\s*{}\s*$' && pos[1] > 1
+            let prev_line_info = getline(pos[1] - 1)
+            if prev_line_info =~ '^\s*\(class\|struct\|union\)\s\+[^{}]*$' || prev_line_info =~ '^.*=\s*$'
+                let s:end_bracket = '};'
+            endif
+        elseif line_info =~ '^\(\s*\|.*\s\+\)\(class\|struct\|union\)\s\+\(\w\|\d\|_\)\+\s*{}\s*$' || line_info =~ '^.*=\s*{}\s*$'
+            let s:end_bracket = '};'
         endif
-        let pos[2] = len(spaces) + len(s:indent_space)
+        call append(pos[1], repeat(' ', cindent('.')) . s:end_bracket)
         call setpos('.', pos)
     endif
 endfunc
