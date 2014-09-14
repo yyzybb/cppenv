@@ -73,7 +73,8 @@ filetype plugin on
 syntax on
 syntax enable
 set incsearch
-set ignorecase
+"set ignorecase
+set smartcase
 set nocompatible
 set wildmenu
 set number
