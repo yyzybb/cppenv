@@ -98,6 +98,9 @@ set foldmethod=syntax
 set guifont=Courier\ New:h12
 set fileencodings=utf-8,gbk,utf-16 "可识别文件编码
 
+set cc=80
+hi colorcolumn ctermbg=9 guibg=blue
+
 """"""""""""""""""""""""""Plugin Config"""""""""""""""""""""""
 
 " Vundle
