@@ -64,7 +64,7 @@ autocmd BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
 "set shellpipe=
 
 """"""""""""""""""""""""""VimEnv"""""""""""""""""""""""
-set path+=/usr/include,/usr/include/linux,/usr/include/i386-linux-gnu,/usr/include/c++/4.8,/usr/include/i386-linux-gnu/c++/4.8,/usr/local/include
+set path+=/usr/include,/usr/include/linux,/usr/include/c++/4.8,/usr/include/x86_64-linux-gnu,/usr/include/x86_64-linux-gnu/c++/4.8,/usr/include/i386-linux-gnu,/usr/include/i386-linux-gnu/c++/4.8,/usr/local/include
 
 """"""""""""""""""""""""""Style"""""""""""""""""""""""
 color evening
