@@ -26,6 +26,7 @@ map ;jw <C-W>j
 
 map ;/ :nohls<CR>
 map ; "
+noremap ' ;
 
 let s:relative_nu = 0
 func! Toggle_relative_nu()
