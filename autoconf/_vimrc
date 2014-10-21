@@ -23,6 +23,7 @@ map ;lw <C-W>l
 map ;hw <C-W>h
 map ;kw <C-W>k
 map ;jw <C-W>j
+map gl :b#<CR>
 
 map ;/ :nohls<CR>
 map ; "
