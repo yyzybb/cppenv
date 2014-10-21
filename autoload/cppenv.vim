@@ -125,7 +125,7 @@ func! cppenv#switch_dd()
         let s:extension_expr = s:extension_expr . ext . '\|'
     endfor
     let s:extension_expr = s:extension_expr[:-3] . '\)$'
-    echo(s:extension_expr)
+    "echo(s:extension_expr)
 
     if s:extension =~ s:extension_expr
         let s:extension_list = s:extension_list + s:extension_list
@@ -137,11 +137,13 @@ func! cppenv#switch_dd()
                 let s:next_file_name = s:directory . '/' . s:filename . '.' . ext
                 if filereadable(s:next_file_name)
                     exec(':e ' . s:next_file_name)
-                    break
+                    return 
                 endif
             endif
         endfor
     endif
+
+    echo('Not find switch files.')
 endfunc
 
 """"""""""""""""""""maps"""""""""""""""""""""
