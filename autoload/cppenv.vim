@@ -113,6 +113,37 @@ func! cppenv#enter()
     endif
 endfunc
 
+" switch in .h/.hpp/.inl/.cpp/.c/.cc files
+func! cppenv#switch_dd()
+    let s:directory = expand('%:p:h')
+    let s:extension = expand('%:e')
+    let s:filename = expand('%:r')
+    let s:extension_list = ['h', 'hpp', 'ipp', 'inl', 'c', 'cc', 'cpp']
+
+    let s:extension_expr = '^\('
+    for ext in s:extension_list
+        let s:extension_expr = s:extension_expr . ext . '\|'
+    endfor
+    let s:extension_expr = s:extension_expr[:-3] . '\)$'
+    echo(s:extension_expr)
+
+    if s:extension =~ s:extension_expr
+        let s:extension_list = s:extension_list + s:extension_list
+        let s:sentry = 0
+        for ext in s:extension_list
+            if s:extension == ext
+                let s:sentry = 1
+            elseif s:sentry == 1
+                let s:next_file_name = s:directory . '/' . s:filename . '.' . ext
+                if filereadable(s:next_file_name)
+                    exec(':e ' . s:next_file_name)
+                    break
+                endif
+            endif
+        endfor
+    endif
+endfunc
+
 """"""""""""""""""""maps"""""""""""""""""""""
 let s:is_infect = 0
 
@@ -140,6 +171,8 @@ func! cppenv#infect()
         "imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
         inoremap <CR> <ESC>:call cppenv#enter()<CR>a<CR>
     endif
+
+    map gs :call cppenv#switch_dd()<CR>
 endfunc
 
 func! cppenv#uninfect()
@@ -168,6 +201,7 @@ func! cppenv#uninfect()
     endif
 
     call cppenv#warn("Close cppenv.")
+    unmap gs
 endfunc
 
 func! cppenv#toggle()
