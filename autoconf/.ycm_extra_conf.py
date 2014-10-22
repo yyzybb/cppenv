@@ -30,6 +30,9 @@
 
 import os
 import ycm_core
+import re
+
+_debug = 0
 
 # These are the compilation flags that will be used in case there's no
 # compilation database set (by default, one is not set).
@@ -103,6 +106,13 @@ flags = [
 '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
 ]
 
+def Log(msg):
+    if not _debug:
+        return 
+
+    f = open("/tmp/ycm_temp/conf.log", 'a+')
+    f.write(msg + '\n')
+    f.close()
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
 # compile_commands.json file to use that instead of 'flags'. See here for
@@ -153,6 +163,7 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
 
     if new_flag:
       new_flags.append( new_flag )
+  
   return new_flags
 
 
@@ -179,6 +190,40 @@ def GetCompilationInfoForFile( filename ):
   return database.GetCompilationInfoForFile( filename )
 
 
+## Add includes flags from the Makefile.
+#
+makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile']
+
+def ExtractIncludesFromMakefile(path):
+    Log('ExtractIncludesFromMakefile')
+    include_flags = set()
+    make_commands = os.popen('cd %s && make -n 2>/dev/null' % path, 'r').read()
+    matchs = re.findall(r'-I\s*[^\s$]+', make_commands)
+    for m in matchs:
+        include_flags.add(m[2:].strip())
+
+    return include_flags
+
+def MakefileIncludesFlags(filename):
+    Log('MakefileIncludesFlags')
+    mk_flags = []
+    path = os.path.split(filename)[0]
+    for mk in makefile_list:
+        abs_mk = os.path.join(path, mk) 
+        if not os.path.isfile(abs_mk):
+            continue
+
+        include_flags = ExtractIncludesFromMakefile(os.path.split(abs_mk)[0])
+        for flag in include_flags:
+            mk_flags.append('-I')
+            mk_flags.append(flag)
+
+        break
+
+    Log(str(mk_flags))
+    return mk_flags
+
+
 def FlagsForFile( filename, **kwargs ):
   if database:
     # Bear in mind that compilation_info.compiler_flags_ does NOT return a
@@ -202,7 +247,14 @@ def FlagsForFile( filename, **kwargs ):
     relative_to = DirectoryOfThisScript()
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
 
+  final_flags.extend(MakefileIncludesFlags(filename))
+
   return {
     'flags': final_flags,
     'do_cache': True
   }
+
+
+if __name__ == '__main__':
+    # test mk_flags
+    print MakefileIncludesFlags('/home/yyz/cloud/sip/mpush/main.cpp')
