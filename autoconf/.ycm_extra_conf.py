@@ -200,7 +200,10 @@ def ExtractIncludesFromMakefile(path):
     make_commands = os.popen('cd %s && make -n 2>/dev/null' % path, 'r').read()
     matchs = re.findall(r'-I\s*[^\s$]+', make_commands)
     for m in matchs:
-        include_flags.add(m[2:].strip())
+        include_path = m[2:].strip()
+        if not os.path.isabs(include_path):
+            include_path = os.path.join(path, include_path)
+        include_flags.add(include_path)
 
     return include_flags
 
