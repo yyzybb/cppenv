@@ -114,7 +114,8 @@ func! cppenv#enter()
 endfunc
 
 " switch in .h/.hpp/.inl/.cpp/.c/.cc files
-func! cppenv#switch_dd()
+func! cppenv#switch_dd(locate)
+    let s:abs_filename = expand('%:p')
     let s:directory = expand('%:p:h')
     let s:extension = expand('%:e')
     let s:filename = expand('%:r')
@@ -127,8 +128,8 @@ func! cppenv#switch_dd()
     let s:extension_expr = s:extension_expr[:-3] . '\)$'
     "echo(s:extension_expr)
 
-    if s:extension =~ s:extension_expr
-        let s:extension_list = s:extension_list + s:extension_list
+    if !a:locate && s:extension =~ s:extension_expr
+        call insert(s:extension_list, s:extension_list[0])
         let s:sentry = 0
         for ext in s:extension_list
             if s:extension == ext
@@ -139,6 +140,38 @@ func! cppenv#switch_dd()
                     exec(':e ' . s:next_file_name)
                     return 
                 endif
+            endif
+        endfor
+    elseif a:locate
+        let s:grep_pattern = ''
+        for ext in s:extension_list
+            let s:grep_pattern = s:grep_pattern . '\(\/' . s:filename . '\\.' . ext . '\)' . '\|'
+        endfor
+        let s:grep_pattern = s:grep_pattern[:-3]
+
+        let s:command = 'locate ' . s:filename . ' | grep -E ' . s:grep_pattern
+        let s:locate_result = system(s:command)
+        let s:abs_path_list = split(s:locate_result)
+
+        if len(s:abs_path_list) > 1
+            echo s:locate_result
+        endif
+
+        call insert(s:abs_path_list, s:abs_path_list[0])
+        let s:sentry = 0
+        for abs_path in s:abs_path_list
+            if s:abs_filename == abs_path
+                let s:sentry = 1
+            elseif s:sentry && filereadable(abs_path)
+                exec(':e ' . abs_path)
+                return 
+            endif
+        endfor
+
+        for abs_path in s:abs_path_list
+            if filereadable(abs_path)
+                exec(':e ' . abs_path)
+                return 
             endif
         endfor
     endif
@@ -174,7 +207,8 @@ func! cppenv#infect()
         inoremap <CR> <ESC>:call cppenv#enter()<CR>a<CR>
     endif
 
-    map gs :call cppenv#switch_dd()<CR>
+    map gs :call cppenv#switch_dd(0)<CR>
+    map gS :call cppenv#switch_dd(1)<CR>
 endfunc
 
 func! cppenv#uninfect()
@@ -204,6 +238,7 @@ func! cppenv#uninfect()
 
     call cppenv#warn("Close cppenv.")
     unmap gs
+    unmap gS
 endfunc
 
 func! cppenv#toggle()
