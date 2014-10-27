@@ -129,7 +129,7 @@ func! cppenv#switch_dd(locate)
     "echo(s:extension_expr)
 
     if !a:locate && s:extension =~ s:extension_expr
-        call insert(s:extension_list, s:extension_list[0])
+        let s:extension_list = s:extension_list + s:extension_list
         let s:sentry = 0
         for ext in s:extension_list
             if s:extension == ext
