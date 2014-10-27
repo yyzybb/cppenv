@@ -134,10 +134,14 @@ else:
 SOURCE_EXTENSIONS = [ '.cpp', '.cxx', '.cc', '.c', '.m', '.mm' ]
 
 def DirectoryOfThisScript():
+  Log("__file__ is %s" % __file__)
+  Log("__file__ abspath is %s" % os.path.abspath( __file__ ))
   return os.path.dirname( os.path.abspath( __file__ ) )
 
 
 def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
+  Log(working_directory)
+
   if not working_directory:
     return list( flags )
   new_flags = []
@@ -228,7 +232,10 @@ def MakefileIncludesFlags(filename):
 
 
 def FlagsForFile( filename, **kwargs ):
+  Log("Process file: %s" % filename)
+  Log("WorkDirectory is: %s" % os.getcwd())
   if database:
+    Log('database case:')
     # Bear in mind that compilation_info.compiler_flags_ does NOT return a
     # python list, but a "list-like" StringVec object
     compilation_info = GetCompilationInfoForFile( filename )
@@ -247,10 +254,15 @@ def FlagsForFile( filename, **kwargs ):
     except ValueError:
       pass
   else:
-    relative_to = DirectoryOfThisScript()
+    Log('no database case:')
+    #relative_to = DirectoryOfThisScript()
+    relative_to = '/etc/vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm'
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
 
   final_flags.extend(MakefileIncludesFlags(filename))
+  final_flags.extend(['-I', os.path.dirname(filename)])
+
+  Log(str(final_flags))
 
   return {
     'flags': final_flags,
