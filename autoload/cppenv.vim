@@ -154,26 +154,16 @@ func! cppenv#switch_dd(locate)
         let s:abs_path_list = split(s:locate_result)
 
         if len(s:abs_path_list) > 1
-            echo s:locate_result
+            exec(':cexpr ""')
+            for abs_path in s:abs_path_list
+                let s:ccmd = ':caddexpr "' . abs_path . ':1:-"'
+                if s:abs_filename == abs_path
+                    let s:ccmd = s:ccmd[:-2] . ' <<<<"'
+                endif
+                exec(s:ccmd)
+            endfor
+            exec(':cw')
         endif
-
-        call insert(s:abs_path_list, s:abs_path_list[0])
-        let s:sentry = 0
-        for abs_path in s:abs_path_list
-            if s:abs_filename == abs_path
-                let s:sentry = 1
-            elseif s:sentry && filereadable(abs_path)
-                exec(':e ' . abs_path)
-                return 
-            endif
-        endfor
-
-        for abs_path in s:abs_path_list
-            if filereadable(abs_path)
-                exec(':e ' . abs_path)
-                return 
-            endif
-        endfor
     endif
 
     echo('Not find switch files.')
