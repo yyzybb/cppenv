@@ -29,14 +29,11 @@ map ;/ :nohls<CR>
 map ; "
 noremap ' ;
 
-let s:relative_nu = 0
 func! Toggle_relative_nu()
-    if s:relative_nu == 0
+    if getbufvar(0, "&rnu") == 0
         set relativenumber
-        let s:relative_nu = 1
     else
         set norelativenumber
-        let s:relative_nu = 0
     endif
 endfunc
 map <F2> :call Toggle_relative_nu()<CR>
@@ -125,6 +122,7 @@ let g:ycm_warning_symbol = '>*'
 let g:ycm_show_diagnostics_ui = 0
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 nnoremap gy :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap gu :YcmCompleter GoToImprecise<CR>
 nmap <F4> :YcmDiags<CR>
 set completeopt=menuone
 
