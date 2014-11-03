@@ -108,11 +108,12 @@ filetype off
 set rtp+=$VIM/vimfiles/bundle/Vundle.vim
 call vundle#begin("$VIM/vimfiles/bundle")
 Plugin 'gmarik/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'bling/vim-airline'
 Plugin 'scrooloose/nerdtree'
 Plugin 'vim-scripts/taglist.vim'
 Plugin 'yyzybb/cppenv'
+Plugin 'yyzybb/quickfixer'
+Plugin 'Valloric/YouCompleteMe'
 call vundle#end()
 filetype plugin indent on
 
