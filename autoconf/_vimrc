@@ -141,7 +141,7 @@ map TL :Tlist<CR>
 map TU :TlistUpdate<CR>
 
 " cppenv
-au BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c execute cppenv#infect()
+au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c execute cppenv#infect()
 
 " tags
 set tags=tags,./tags,/usr/include/tags
