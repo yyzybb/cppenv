@@ -137,7 +137,13 @@ func! cppenv#switch_dd(locate)
             elseif s:sentry == 1
                 let s:next_file_name = s:directory . '/' . s:filename . '.' . ext
                 if filereadable(s:next_file_name)
-                    exec(':e ' . s:next_file_name)
+                    let s:bufindex = bufnr(s:next_file_name)
+                    if s:bufindex == -1
+                        exec(':e ' . s:next_file_name)
+                    else
+                        exec(':buf ' . s:bufindex)
+                    endif
+
                     return 
                 endif
             endif
