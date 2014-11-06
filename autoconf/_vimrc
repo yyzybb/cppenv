@@ -30,7 +30,7 @@ map ; "
 noremap ' ;
 
 func! Toggle_relative_nu()
-    if getbufvar('.', "&rnu") == 0
+    if getbufvar('', "&rnu") == 0
         set relativenumber
     else
         set norelativenumber
