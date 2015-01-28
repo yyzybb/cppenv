@@ -32,7 +32,7 @@ import os
 import ycm_core
 import re
 
-_debug = 0
+_debug = 1
 
 # These are the compilation flags that will be used in case there's no
 # compilation database set (by default, one is not set).
@@ -201,7 +201,8 @@ makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile']
 def ExtractIncludesFromMakefile(path):
     Log('ExtractIncludesFromMakefile')
     include_flags = set()
-    make_commands = os.popen('cd %s && make -n 2>/dev/null' % path, 'r').read()
+    make_commands = os.popen('cd %s && make -Bn 2>/dev/null' % path, 'r').read()
+    #Log('Make commands:\n%s' % make_commands);
     matchs = re.findall(r'-I\s*[^\s$]+', make_commands)
     for m in matchs:
         include_path = m[2:].strip()
