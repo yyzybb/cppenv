@@ -52,11 +52,11 @@ map <F11> :e $VIM/vimfiles/bundle/cppenv/autoload/cppenv.vim<CR>
 autocmd BufRead *.py map <F5> :! python %:p<CR><CR>
 
 " C
-autocmd BufRead *.c map <F7> :! gcc %:p -o out.exe -g<CR>
+autocmd BufRead *.c map <F7> :! gcc %:p -o out.exe -g -lpthread<CR>
 autocmd BufRead *.c map <F5> <F7>:! %:p:h/out.exe<CR>
 
 " C++
-autocmd BufRead *.cpp map <F7> :! g++ -std=c++11 %:p -o out.exe -g<CR>
+autocmd BufRead *.cpp map <F7> :! g++ -std=c++11 %:p -o out.exe -g -lpthread<CR>
 autocmd BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
 
 "set makeef=compile_error.log
@@ -97,7 +97,9 @@ set guioptions-=T
 set laststatus=2
 set foldmethod=syntax
 set guifont=Courier\ New:h12
-set fileencodings=utf-8,gbk,utf-16 "可识别文件编码
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8,gbk ",utf-16,gb2312 "可识别文件编码
 
 set cc=80
 hi colorcolumn ctermbg=9 guibg=blue
