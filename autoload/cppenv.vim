@@ -181,11 +181,11 @@ let s:is_infect = 0
 func! cppenv#infect()
     let s:is_infect = 1
 
-    map <C-k><C-c> :call cppenv#comment()<CR>
-    imap <C-k><C-c> <Esc>:call cppenv#comment()<CR>
+    map <C-k> :call cppenv#comment()<CR>
+    imap <C-k> <Esc>:call cppenv#comment()<CR>
 
-    map <C-k><C-u> :call cppenv#uncomment()<CR>
-    imap <C-k><C-u> <Esc>:call cppenv#uncomment()<CR>
+    map <C-u> :call cppenv#uncomment()<CR>
+    imap <C-u> <Esc>:call cppenv#uncomment()<CR>
 
     imap ( <Esc>:call cppenv#auto_brackets('()')<CR>a
     imap [ <Esc>:call cppenv#auto_brackets('[]')<CR>a
@@ -210,11 +210,11 @@ endfunc
 func! cppenv#uninfect()
     let s:is_infect = 0
 
-    unmap <C-k><C-c>
-    iunmap <C-k><C-c>
+    unmap <C-k>
+    iunmap <C-k>
 
-    unmap <C-k><C-u>
-    iunmap <C-k><C-u>
+    unmap <C-u>
+    iunmap <C-u>
 
     iunmap (
     iunmap [
