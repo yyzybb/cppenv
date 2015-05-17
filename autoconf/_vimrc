@@ -59,6 +59,10 @@ autocmd BufRead *.c map <F5> <F7>:! %:p:h/out.exe<CR>
 autocmd BufRead *.cpp map <F7> :! g++ -std=c++11 %:p -o out.exe -g -lpthread<CR>
 autocmd BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
 
+" go
+autocmd BufRead *.go map <F7> :! gccgo -g %:p -o out.exe<CR>
+autocmd BufRead *.go map <F5> <F7>:! %:p:h/out.exe<CR>
+
 "set makeef=compile_error.log
 "set makeprg=make.exe
 "set shellpipe=
@@ -146,7 +150,7 @@ map TL :Tlist<CR>
 map TU :TlistUpdate<CR>
 
 " cppenv
-au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c execute cppenv#infect()
+au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.go execute cppenv#infect()
 
 " tags
 set tags=tags,./tags,/usr/include/tags
