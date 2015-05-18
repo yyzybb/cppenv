@@ -49,19 +49,19 @@ map <F11> :e $VIM/vimfiles/bundle/cppenv/autoload/cppenv.vim<CR>
 """"""""""""""""""""""""""Make"""""""""""""""""""""""
 
 " python
-autocmd BufRead *.py map <F5> :! python %:p<CR><CR>
+autocmd BufNewFile,BufRead *.py map <F5> :! python %:p<CR><CR>
 
 " C
-autocmd BufRead *.c map <F7> :! gcc %:p -o out.exe -g -lpthread<CR>
-autocmd BufRead *.c map <F5> <F7>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.c map <F7> :! gcc %:p -o out.exe -g -lpthread<CR>
+autocmd BufNewFile,BufRead *.c map <F5> <F7>:! %:p:h/out.exe<CR>
 
 " C++
-autocmd BufRead *.cpp map <F7> :! g++ -std=c++11 %:p -o out.exe -g -lpthread<CR>
-autocmd BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.cpp map <F7> :! g++ -std=c++11 %:p -o out.exe -g -lpthread<CR>
+autocmd BufNewFile,BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
 
 " go
-autocmd BufRead *.go map <F7> :! gccgo -g %:p -o out.exe<CR>
-autocmd BufRead *.go map <F5> <F7>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.go map <F7> :! gccgo -g %:p -o out.exe<CR>
+autocmd BufNewFile,BufRead *.go map <F5> <F7>:! %:p:h/out.exe<CR>
 
 "set makeef=compile_error.log
 "set makeprg=make.exe
