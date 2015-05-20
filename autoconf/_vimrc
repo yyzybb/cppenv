@@ -122,6 +122,7 @@ Plugin 'vim-scripts/taglist.vim'
 Plugin 'yyzybb/cppenv'
 Plugin 'yyzybb/quickfixer'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'fatih/vim-go'
 call vundle#end()
 filetype plugin indent on
 
@@ -151,6 +152,13 @@ map TU :TlistUpdate<CR>
 
 " cppenv
 au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.go execute cppenv#infect()
+
+" vim-go
+let g:go_fmt_autosave = 0
+let g:go_def_mapping_enabled = 0
+let g:go_bin_path = '/tmp/bin'
+"let g:go_highlight_space_tab_error = 0
+let g:go_highlight_trailing_whitespace_error = 0
 
 " tags
 set tags=tags,./tags,/usr/include/tags
