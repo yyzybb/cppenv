@@ -159,6 +159,8 @@ let g:go_def_mapping_enabled = 0
 let g:go_bin_path = '/tmp/bin'
 "let g:go_highlight_space_tab_error = 0
 let g:go_highlight_trailing_whitespace_error = 0
+au BufNewFile,BufRead *.go nnoremap gy :GoDef<CR>
+au BufNewFile,BufRead *.go nnoremap <F4> :GoErrCheck<CR>
 
 " tags
 set tags=tags,./tags,/usr/include/tags
