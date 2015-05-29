@@ -1,5 +1,8 @@
 #!/bin/sh -x
 
+sudo cat ./go_env >> /etc/profile
+source /etc/profile
+
 DIR=$GOPATH/src/golang.org/x
 mkdir -p $DIR
 cd $DIR
