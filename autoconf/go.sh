@@ -1,9 +1,17 @@
 #!/bin/sh -x
 
-sudo cat ./go_env >> /etc/profile
+cat ./go_env >> /etc/profile
 source /etc/profile
 
-DIR=/usr/local/go/src/golang.org/x
+cd /usr/local
+if test ! -d go
+then 
+    git clone https://github.com/golang/go.git go
+    git checkout release-branch.go1.4
+    cd go/src && ./all.bash
+fi
+
+DIR=/usr/lib/go/src/golang.org/x
 mkdir -p $DIR
 cd $DIR
 test ! -d tools && git clone https://github.com/golang/tools.git

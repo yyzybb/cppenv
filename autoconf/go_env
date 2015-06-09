@@ -1,9 +1,8 @@
-#export GOROOT=/usr/lib/go
+export GOROOT=/usr/local/go
 export GOOS=linux
 export GOARCH=386
 export GOBIN=$GOROOT/bin
-export GOPATH=/usr/local/go:/home/yyz/goto:/home/yyz/protorpc/gopath
-export GOTOOLDIR=/usr/local/go/src/cmd
+export GOPATH=/usr/lib/go:/home/yyz/goto:/home/yyz/protorpc/gopath
 export PATH=$PATH:$GOBIN
 
 #clang
