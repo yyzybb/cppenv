@@ -3,7 +3,7 @@
 sudo cat ./go_env >> /etc/profile
 source /etc/profile
 
-DIR=$GOPATH/src/golang.org/x
+DIR=/usr/local/go/src/golang.org/x
 mkdir -p $DIR
 cd $DIR
 test ! -d tools && git clone https://github.com/golang/tools.git

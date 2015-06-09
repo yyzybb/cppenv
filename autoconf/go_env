@@ -1,6 +1,11 @@
-export GOROOT=/usr/lib/go
-export GOPATH=/usr/local/go:/home/yyz/go/goto:/home/yyz/go/protorpc/gopath
+#export GOROOT=/usr/lib/go
+export GOOS=linux
+export GOARCH=386
 export GOBIN=$GOROOT/bin
-export PATH+=:$GOBIN
+export GOPATH=/usr/local/go:/home/yyz/goto:/home/yyz/protorpc/gopath
+export GOTOOLDIR=/usr/local/go/src/cmd
+export PATH=$PATH:$GOBIN
+
+#clang
 export CPATH=$CPATH:/usr/include/x86_64-linux-gnu/c++/4.8:/usr/include/c++/4.8/
 export LIBRARY_PATH=$LIBRARY_PATH:/usr/lib/gcc/x86_64-linux-gnu/4.8
