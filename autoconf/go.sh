@@ -1,14 +1,22 @@
-#!/bin/sh -x
+#!/bin/bash -x
 
-cat ./go_env >> /etc/profile
-source /etc/profile
+if [ `grep export /etc/profile | wc -l` -eq 0 ]
+then
+    cat ./go_env >> /etc/profile
+    source /etc/profile
+fi
 
 cd /usr/local
 if test ! -d go
 then 
     git clone https://github.com/golang/go.git go
+fi
+
+if [ `which go | wc -l` -eq 0 ]
+then
+    cd go
     git checkout release-branch.go1.4
-    cd go/src && ./all.bash
+    cd src && ./all.bash
 fi
 
 DIR=/usr/lib/go/src/golang.org/x
