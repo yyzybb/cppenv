@@ -24,8 +24,7 @@ map ;hw <C-W>h
 map ;kw <C-W>k
 map ;jw <C-W>j
 map gl :b#<CR>
-map gL :new<CR>:2bp<CR><C-W>L
-map gH :new<CR>:2bp<CR><C-W>H
+map gL <C-W>vgl
 
 map ;/ :nohls<CR>
 map ; "
