@@ -114,7 +114,7 @@ func! cppenv#enter()
 endfunc
 
 " switch in .h/.hpp/.inl/.cpp/.c/.cc files
-func! cppenv#switch_dd(locate)
+func! cppenv#switch_dd(locate, vsplit)
     let s:abs_filename = expand('%:p')
     let s:directory = expand('%:p:h')
     let s:extension = expand('%:e')
@@ -139,9 +139,17 @@ func! cppenv#switch_dd(locate)
                 if filereadable(s:next_file_name)
                     let s:bufindex = bufnr(s:next_file_name)
                     if s:bufindex == -1
-                        exec(':e ' . s:next_file_name)
+                        if !a:vsplit
+                            exec(':e ' . s:next_file_name)
+                        else
+                            exec(':vnew ' . s:next_file_name)
+                        endif
                     else
-                        exec(':buf ' . s:bufindex)
+                        if !a:vsplit
+                            exec(':buf ' . s:bufindex)
+                        else
+                            exec(':sbuf ' . s:bufindex)
+                        endif
                     endif
 
                     return 
@@ -203,8 +211,9 @@ func! cppenv#infect()
         inoremap <CR> <ESC>:call cppenv#enter()<CR>a<CR>
     endif
 
-    map gs :call cppenv#switch_dd(0)<CR>
-    map gS :call cppenv#switch_dd(1)<CR>
+    map gs :call cppenv#switch_dd(0, 0)<CR>
+    map gvs :call cppenv#switch_dd(0, 1)<CR><C-W>L<C-W>h
+    map gS :call cppenv#switch_dd(1, 0)<CR>
 endfunc
 
 func! cppenv#uninfect()
@@ -234,6 +243,7 @@ func! cppenv#uninfect()
 
     call cppenv#warn("Close cppenv.")
     unmap gs
+    unmap gvs
     unmap gS
 endfunc
 
