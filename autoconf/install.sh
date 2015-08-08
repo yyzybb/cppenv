@@ -22,7 +22,7 @@
 # install dos2unix, git, vim, g++, ctags, cmake, python-dev
 ./change_source_list.sh
 
-sudo apt-get update -y || exit 1
+sudo apt-get update -y
 
 dos2unix --version || sudo apt-get install dos2unix -y
 dos2unix --version || exit 1
@@ -48,9 +48,13 @@ sudo apt-get install python-dev -y
 
 # copy _vimrc file to $HOME
 dos2unix _vimrc
-cp _vimrc ~/
+rm ~/_vimrc -f
+ln _vimrc ~/_vimrc
+chmod 0666 ~/_vimrc
 dos2unix .ycm_extra_conf.py
+rm ~/.ycm_extra_conf.py -f
 cp .ycm_extra_conf.py ~/
+chmod 0666 ~/.ycm_extra_conf.py
 
 # git clone vim-vundle.git
 vim_path=`vim --version | grep '$VIM:' | cut -d'"' -f2`
