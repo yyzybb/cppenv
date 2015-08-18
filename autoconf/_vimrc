@@ -5,13 +5,6 @@ elseif has("windows")
     map ;c :e $VIM/_vimrc<CR>
 endif
 
-" gvim on windows
-if !has("unix")
-    source $VIMRUNTIME/vimrc_example.vim
-    source $VIMRUNTIME/mswin.vim
-    behave mswin
-endif
-
 map <F12> :source %:p<CR>
 map ;b ^
 map ;e $
@@ -39,8 +32,6 @@ func! Toggle_relative_nu()
     endif
 endfunc
 map <F2> :call Toggle_relative_nu()<CR>
-
-map <F8> :! ctags.exe -R<CR><CR>
 
 """"""""""""""""""""""""""MyPlugin"""""""""""""""""""""""
 map <F11> :e $VIM/vimfiles/bundle/cppenv/autoload/cppenv.vim<CR>
@@ -167,4 +158,10 @@ au BufNewFile,BufRead *.go nnoremap <F4> :GoErrCheck<CR>
 set tags=tags,./tags,/usr/include/tags
 "set tags+=/home/yyz/C/Bex/Bex/tags,/home/yyz/C/Bex/boost/include/tags
 
-autocmd BufNewFile,BufRead *.cpp map <F8> :! g++ -std=c++11 %:p -o out.exe -g -lpthread -lboost_system -lboost_thread<CR>:! %:p:h/out.exe<CR>
+" gvim on windows
+if has("windows")
+    source $VIMRUNTIME/vimrc_example.vim
+    source $VIMRUNTIME/mswin.vim
+    behave mswin
+endif
+
