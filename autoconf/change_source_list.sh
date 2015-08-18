@@ -23,5 +23,6 @@ if test -f '/etc/apt/sources.list'; then
 fi
 
 cp /etc/apt/sources.list /etc/apt/sources.list.bak/sources.list.bak_`date +%Y-%m-%d_%H-%M-%S`
-cat sources/Ubuntu14.04 > /etc/apt/sources.list
+cat sources/${os_name}${os_ver} > /etc/apt/sources.list
 echo 'Change sources.list OK!'
+
