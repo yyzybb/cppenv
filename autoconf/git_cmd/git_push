@@ -1,0 +1,4 @@
+#!/bin/sh
+
+br=`git branch | grep \* | cut -d\  -f2`
+git push origin HEAD:refs/for/$br
