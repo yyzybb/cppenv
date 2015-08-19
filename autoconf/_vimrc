@@ -105,7 +105,7 @@ hi colorcolumn ctermbg=9 guibg=blue
 " Vundle
 set nocompatible
 filetype off
-set rtp+=$VIM/vimfiles/bundle/Vundle.vim
+set rtp+=$VIM/vimfiles/bundle/Vundle.vim,$VIM/vimfiles/bundle
 call vundle#begin("$VIM/vimfiles/bundle")
 Plugin 'gmarik/Vundle.vim'
 Plugin 'bling/vim-airline'
@@ -114,6 +114,8 @@ Plugin 'vim-scripts/taglist.vim'
 Plugin 'yyzybb/cppenv'
 Plugin 'yyzybb/quickfixer'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
 Plugin 'fatih/vim-go'
 call vundle#end()
 filetype plugin indent on
@@ -127,6 +129,14 @@ nnoremap gy :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nnoremap gu :YcmCompleter GoToImprecise<CR>
 nmap <F4> :YcmDiags<CR>
 set completeopt=menuone
+
+" UltiSnips
+let g:UltiSnipsUsePythonVersion = 2
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-i>"
+let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsSnippetDirectories=["UltiSnips","cppenv/snippets"]
 
 " airline
 let g:airline#extensions#tabline#enabled = 1
