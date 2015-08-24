@@ -173,9 +173,11 @@ makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile']
 def ExtractIncludesFromMakefile(path):
     Log('ExtractIncludesFromMakefile')
     include_flags = set()
-    make_commands = os.popen('cd %s && make -Bn 2>/dev/null' % path, 'r').read()
-    #Log('Make commands:\n%s' % make_commands);
-    matchs = re.findall(r'-I\s*[^\s$]+', make_commands)
+    cmd = 'cd %s && make -Bn' % path
+    Log('Make command:\n%s' % cmd);
+    make_result = os.popen(cmd, 'r').read()
+    Log('Make result:\n%s' % make_result);
+    matchs = re.findall(r'-I\s*[^\s$]+', make_result)
     for m in matchs:
         include_path = m[2:].strip()
         if not os.path.isabs(include_path):
