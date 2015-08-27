@@ -78,8 +78,6 @@ set number
 set hlsearch
 set nowrap
 set nofoldenable
-set nobackup
-set noswapfile
 set autochdir
 
 set expandtab "Tab转换成空格
@@ -174,4 +172,10 @@ if has("windows")
     source $VIMRUNTIME/mswin.vim
     behave mswin
 endif
+
+set nobackup
+set noswapfile
+set undofile
+set undodir=$VIM/vimfiles/undodir
+set undolevels=100
 
