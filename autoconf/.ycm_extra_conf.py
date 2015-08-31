@@ -108,6 +108,8 @@ flags = [
 '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
 '-include',
 'cstddef',
+'-include',
+'stdint.h',
 ]
 
 def Log(msg):
