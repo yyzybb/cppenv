@@ -114,7 +114,10 @@ func! cppenv#enter()
 endfunc
 
 " switch in .h/.hpp/.inl/.cpp/.c/.cc files
-func! cppenv#switch_dd(locate, vsplit)
+" @up_deep: 向上搜索的深度(等于-1时, 用locate命令全局搜索)
+" @down_deep：向下搜索的深度
+" @vsplit: 是否拆分出新的窗口
+func! cppenv#switch_dd(up_deep, down_deep, vsplit)
     let s:abs_filename = expand('%:p')
     let s:directory = expand('%:p:h')
     let s:extension = expand('%:e')
@@ -128,35 +131,10 @@ func! cppenv#switch_dd(locate, vsplit)
     let s:extension_expr = s:extension_expr[:-3] . '\)$'
     "echo(s:extension_expr)
 
-    if !a:locate && s:extension =~ s:extension_expr
-        let s:extension_list = s:extension_list + s:extension_list
-        let s:sentry = 0
-        for ext in s:extension_list
-            if s:extension == ext
-                let s:sentry = 1
-            elseif s:sentry == 1
-                let s:next_file_name = s:directory . '/' . s:filename . '.' . ext
-                if filereadable(s:next_file_name)
-                    let s:bufindex = bufnr(s:next_file_name)
-                    if s:bufindex == -1
-                        if !a:vsplit
-                            exec(':e ' . s:next_file_name)
-                        else
-                            exec(':vnew ' . s:next_file_name)
-                        endif
-                    else
-                        if !a:vsplit
-                            exec(':buf ' . s:bufindex)
-                        else
-                            exec(':sbuf ' . s:bufindex)
-                        endif
-                    endif
-
-                    return 
-                endif
-            endif
-        endfor
-    elseif a:locate
+    if a:up_deep >= 0 && s:extension =~ s:extension_expr
+        exec(':pyf $VIM/vimfiles/bundle/cppenv/autoload/switch_dd.py')
+        return 
+    elseif a:up_deep == -1
         let s:grep_pattern = ''
         for ext in s:extension_list
             let s:grep_pattern = s:grep_pattern . '\(\/' . s:filename . '\\.' . ext . '\)' . '\|'
@@ -211,9 +189,11 @@ func! cppenv#infect()
         inoremap <CR> <ESC>:call cppenv#enter()<CR>a<CR>
     endif
 
-    map gs :call cppenv#switch_dd(0, 0)<CR>
-    map gvs :call cppenv#switch_dd(0, 1)<CR><C-W>L<C-W>h
-    map gS :call cppenv#switch_dd(1, 0)<CR>
+    map gs :call cppenv#switch_dd(0, 0, 0)<CR>
+    map gns :call cppenv#switch_dd(1, 0, 0)<CR>
+    map gvs :call cppenv#switch_dd(0, 0, 1)<CR><C-W>L<C-W>h
+    map gvns :call cppenv#switch_dd(1, 0, 1)<CR><C-W>L<C-W>h
+    map gS :call cppenv#switch_dd(-1, 0, 0)<CR>
 endfunc
 
 func! cppenv#uninfect()
@@ -243,7 +223,9 @@ func! cppenv#uninfect()
 
     call cppenv#warn("Close cppenv.")
     unmap gs
+    unmap gns
     unmap gvs
+    unmap gvns
     unmap gS
 endfunc
 
