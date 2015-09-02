@@ -79,7 +79,6 @@ set hlsearch
 set nowrap
 set nofoldenable
 set autochdir
-set sel=inclusive
 
 set expandtab "Tab转换成空格
 set tabstop=4
@@ -179,4 +178,4 @@ set noswapfile
 set undofile
 set undodir=$VIM/vimfiles/undodir
 set undolevels=100
-
+set sel=inclusive
