@@ -5,6 +5,13 @@ elseif has("windows")
     map ;c :e $VIM/_vimrc<CR>
 endif
 
+" gvim on windows
+if !has("unix")
+    source $VIMRUNTIME/vimrc_example.vim
+    source $VIMRUNTIME/mswin.vim
+    behave mswin
+endif
+
 map <F12> :source %:p<CR>
 map ;b ^
 map ;e $
@@ -80,6 +87,12 @@ set nowrap
 set nofoldenable
 set autochdir
 set sel=inclusive
+
+set nobackup
+set noswapfile
+set undofile
+set undodir=$VIM/vimfiles/undodir
+set undolevels=100
 
 set expandtab "Tab转换成空格
 set tabstop=4
@@ -166,17 +179,3 @@ au BufNewFile,BufRead *.go nnoremap <F4> :GoErrCheck<CR>
 " tags
 set tags=tags,./tags,/usr/include/tags
 "set tags+=/home/yyz/C/Bex/Bex/tags,/home/yyz/C/Bex/boost/include/tags
-
-" gvim on windows
-if !has("unix")
-    source $VIMRUNTIME/vimrc_example.vim
-    source $VIMRUNTIME/mswin.vim
-    behave mswin
-endif
-
-set nobackup
-set noswapfile
-set undofile
-set undodir=$VIM/vimfiles/undodir
-set undolevels=100
-
