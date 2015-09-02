@@ -79,6 +79,7 @@ set hlsearch
 set nowrap
 set nofoldenable
 set autochdir
+set sel=inclusive
 
 set expandtab "Tab转换成空格
 set tabstop=4
@@ -167,7 +168,7 @@ set tags=tags,./tags,/usr/include/tags
 "set tags+=/home/yyz/C/Bex/Bex/tags,/home/yyz/C/Bex/boost/include/tags
 
 " gvim on windows
-if has("windows")
+if !has("unix")
     source $VIMRUNTIME/vimrc_example.vim
     source $VIMRUNTIME/mswin.vim
     behave mswin
