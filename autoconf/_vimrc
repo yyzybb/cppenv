@@ -79,6 +79,7 @@ set hlsearch
 set nowrap
 set nofoldenable
 set autochdir
+set fo-=r
 
 set expandtab "Tab转换成空格
 set tabstop=4
