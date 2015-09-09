@@ -24,6 +24,9 @@ map ;/ :nohls<CR>
 map ; "
 noremap ' ;
 
+map <C-l> :tabnext<CR>
+map <C-h> :tabprevious<CR>
+
 func! Toggle_relative_nu()
     if getbufvar('', "&rnu") == 0
         set relativenumber
