@@ -156,6 +156,7 @@ map TU :TlistUpdate<CR>
 
 " cppenv
 au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.go execute cppenv#infect()
+au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.go set fo-=ro
 
 " vim-go
 let g:go_fmt_autosave = 0
