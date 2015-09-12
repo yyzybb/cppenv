@@ -53,6 +53,7 @@ autocmd BufNewFile,BufRead *.c map <F5> <F7>:! %:p:h/out.exe<CR>
 autocmd BufNewFile,BufRead *.cpp map <F7> :! g++ -std=c++11 %:p -o out.exe -g -lpthread<CR>
 autocmd BufNewFile,BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
 autocmd BufNewFile,BufRead *.cpp map <F8> :! g++ -std=c++11 %:p -o out.exe -g -lpthread -lboost_system -lboost_thread<CR>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.cpp map mkco :! g++ -std=c++11 %:p -o out.exe -g -lcoroutine -lpthread -lboost_system -lboost_thread -ldl<CR>:! %:p:h/out.exe<CR>
 
 " go
 autocmd BufNewFile,BufRead *.go map <F7> :! go build %<CR>
