@@ -102,10 +102,10 @@ func! cppenv#enter()
         let s:end_bracket = '}'
         if line_info =~ '^\s*{}\s*$' && pos[1] > 1
             let prev_line_info = getline(pos[1] - 1)
-            if prev_line_info =~ '^\s*\(class\|struct\|union\)\s\+[^{}]*$' || prev_line_info =~ '^.*=\s*$'
+            if prev_line_info =~ '^\s*\(class\|struct\|union\)\s\+[^{}]*$' || prev_line_info =~ '^.*=\s*$' || prev_line_info =~ '^\s*go\s\+\[.*\][^{}]*$'
                 let s:end_bracket = '};'
             endif
-        elseif line_info =~ '^\(\s*\|.*\s\+\)\(class\|struct\|union\)\s\+\(\w\|\d\|_\)\+\s*{}\s*$' || line_info =~ '^.*=\s*{}\s*$'
+        elseif line_info =~ '^\(\s*\|.*\s\+\)\(class\|struct\|union\)\s\+\(\w\|\d\|_\)\+\s*{}\s*$' || line_info =~ '^.*=\s*{}\s*$' || line_info =~ '^\s*go\s\+\[.*\][^{}]*{}$'
             let s:end_bracket = '};'
         endif
         call append(pos[1], repeat(' ', cindent('.')) . s:end_bracket)
