@@ -43,7 +43,7 @@ map <F11> :e $VIM/vimfiles/bundle/cppenv/autoload/cppenv.vim<CR>
 """"""""""""""""""""""""""Make"""""""""""""""""""""""
 
 " python
-autocmd BufNewFile,BufRead *.py map <F5> :! python %:p<CR><CR>
+autocmd BufNewFile,BufRead *.py map <F5> :! python %:p<CR>
 
 " C
 autocmd BufNewFile,BufRead *.c map <F7> :! gcc %:p -o out.exe -g -lpthread<CR>
@@ -156,8 +156,8 @@ map TL :Tlist<CR>
 map TU :TlistUpdate<CR>
 
 " cppenv
-au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.go execute cppenv#infect()
-au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.go set fo-=ro
+au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go execute cppenv#infect()
+au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go set fo-=ro
 
 " vim-go
 let g:go_fmt_autosave = 0
