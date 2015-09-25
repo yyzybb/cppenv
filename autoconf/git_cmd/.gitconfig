@@ -14,3 +14,6 @@
 	co = checkout
 	br = branch -av
 	ss = status
+
+[core]
+    editor = vim
