@@ -6,3 +6,9 @@ snippet date
 `!p import time; snip.rv = time.strftime("%Y-%m-%d")`
 endsnippet
 
+snippet "namespace (\w+)" "namespace-snippet" r
+namespace ${1:`!p snip.rv = match.group(1)`}
+{
+
+} //namespace ${1:`!p snip.rv = match.group(1)`}
+endsnippet
