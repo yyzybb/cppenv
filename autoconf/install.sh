@@ -22,29 +22,42 @@
 # install dos2unix, git, vim, g++, ctags, cmake, python-dev
 ./change_source_list.sh
 
-sudo apt-get update -y
+VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
+YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
 
-dos2unix --version || sudo apt-get install dos2unix -y
+set -e
+
+INSTALL_TOOL=apt-get
+PY_NAME=python-dev
+if [ `which apt-get 2>/dev/null | wc -l` -eq 0 ] ; then
+    INSTALL_TOOL=yum
+    PY_NAME=python-devel
+fi
+echo $INSTALL_TOOL
+
+sudo $INSTALL_TOOL update -y
+
+dos2unix --version || sudo $INSTALL_TOOL install dos2unix -y
 dos2unix --version || exit 1
 
-git --version || sudo apt-get install git -y
+git --version || sudo $INSTALL_TOOL install git -y
 git --version || exit 1
 git config --global user.email user_email@gmail.com
 git config --global user.name user_name
 
-vim --version || sudo apt-get install vim -y
+vim --version || sudo $INSTALL_TOOL install vim -y
 vim --version || exit 1
 
-g++ --version || sudo apt-get install g++ -y
+g++ --version || sudo $INSTALL_TOOL install g++ -y
 g++ --version || exit 1
 
-ctags --version || sudo apt-get install ctags -y
+ctags --version || sudo $INSTALL_TOOL install ctags -y
 ctags --version || exit 1
 
-cmake --version || sudo apt-get install cmake -y
+cmake --version || sudo $INSTALL_TOOL install cmake -y
 cmake --version || exit 1
 
-sudo apt-get install python-dev -y
+sudo $INSTALL_TOOL install $PY_NAME -y
 
 # copy _vimrc file to $HOME
 dos2unix _vimrc
@@ -61,23 +74,34 @@ vim_path=`vim --version | grep '$VIM:' | cut -d'"' -f2`
 vundle_path=${vim_path}/vimfiles/bundle/Vundle.vim
 #echo $vim_path
 #echo ${vundle_path}
-if test -d ${vundle_path}; then
-    cd ${vundle_path}
-    sudo git pull || exit 2
-else
-    sudo git clone https://github.com/gmarik/Vundle.vim.git ${vundle_path} || exit 2
-fi
+while true
+do
+    if test -d ${vundle_path}; then
+        cd ${vundle_path}
+        sudo git pull && break
+    else
+        sudo git clone ${VUNDLE_GIT} ${vundle_path} && break
+    fi
+done
 
 # gitclone and compile YouCompleteMe
 ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
-if test -d ${ycm_path}; then
-    cd ${ycm_path}
-    sudo git pull || exit 2
-else
-    sudo git clone https://github.com/Valloric/YouCompleteMe.git ${ycm_path} || exit 2
-    cd ${ycm_path}
-fi
-sudo git submodule update --init --recursive
+while true
+do
+    if test -d ${ycm_path}; then
+        cd ${ycm_path}
+        sudo git pull && break
+    else
+        sudo git clone ${YCM_GIT} ${ycm_path} && break
+        cd ${ycm_path}
+    fi
+done
+
+while true
+do
+    sudo git submodule update --init --recursive && break
+done
+
 sudo ./install.sh --clang-completer || exit 3
 
 # install vim-plugins
