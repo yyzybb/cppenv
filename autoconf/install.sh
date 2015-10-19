@@ -61,16 +61,17 @@ sudo $INSTALL_TOOL install $PY_NAME -y
 
 # copy _vimrc file to $HOME
 dos2unix _vimrc
-rm ~/_vimrc -f
-ln _vimrc ~/_vimrc
-chmod 0666 ~/_vimrc
+rm $HOME/_vimrc -f
+ln _vimrc $HOME/_vimrc
+chmod 0666 $HOME/_vimrc
 dos2unix .ycm_extra_conf.py
-rm ~/.ycm_extra_conf.py -f
-cp .ycm_extra_conf.py ~/
-chmod 0666 ~/.ycm_extra_conf.py
+rm $HOME/.ycm_extra_conf.py -f
+cp .ycm_extra_conf.py $HOME/
+chmod 0666 $HOME/.ycm_extra_conf.py
 
 # git clone vim-vundle.git
-vim_path=`vim --version | grep '$VIM:' | cut -d'"' -f2`
+#vim_path=`vim --version | grep '$VIM:' | cut -d'"' -f2`
+vim_path=$HOME/.vim
 vundle_path=${vim_path}/vimfiles/bundle/Vundle.vim
 #echo $vim_path
 #echo ${vundle_path}
@@ -78,9 +79,9 @@ while true
 do
     if test -d ${vundle_path}; then
         cd ${vundle_path}
-        sudo git pull && break
+        git pull && break
     else
-        sudo git clone ${VUNDLE_GIT} ${vundle_path} && break
+        git clone ${VUNDLE_GIT} ${vundle_path} && break
     fi
 done
 
@@ -90,18 +91,15 @@ while true
 do
     if test -d ${ycm_path}; then
         cd ${ycm_path}
-        sudo git pull && break
+        git pull && break
     else
-        sudo git clone ${YCM_GIT} ${ycm_path} && break
+        git clone ${YCM_GIT} ${ycm_path} && break
         cd ${ycm_path}
     fi
 done
 
-while true
-do
-    sudo git submodule update --init --recursive && break
-done
-
+cd ${ycm_path}
+sudo git submodule update --init --recursive
 sudo ./install.sh --clang-completer || exit 3
 
 # install vim-plugins
