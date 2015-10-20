@@ -113,6 +113,8 @@ func! cppenv#enter()
     endif
 endfunc
 
+let g:py_dir = fnamemodify(expand('<sfile>'), ':p:h:gs?\\?/?')
+
 " switch in .h/.hpp/.inl/.cpp/.c/.cc files
 " @up_deep: 向上搜索的深度(等于-1时, 用locate命令全局搜索)
 " @down_deep：向下搜索的深度
@@ -132,7 +134,7 @@ func! cppenv#switch_dd(up_deep, down_deep, vsplit)
     "echo(s:extension_expr)
 
     if a:up_deep >= 0 && s:extension =~ s:extension_expr
-        exec(':pyf $VIM/vimfiles/bundle/cppenv/autoload/switch_dd.py')
+        exec(':pyf ' . g:py_dir . '/switch_dd.py')
         return 
     elseif a:up_deep == -1
         let s:grep_pattern = ''

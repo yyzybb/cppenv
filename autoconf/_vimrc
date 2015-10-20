@@ -37,7 +37,7 @@ endfunc
 map <F2> :call Toggle_relative_nu()<CR>
 
 """"""""""""""""""""""""""MyPlugin"""""""""""""""""""""""
-map <F11> :e $VIM/vimfiles/bundle/cppenv/autoload/cppenv.vim<CR>
+map <F11> :e $HOME/.vim/vimfiles/bundle/cppenv/autoload/cppenv.vim<CR>
 
 
 """"""""""""""""""""""""""Make"""""""""""""""""""""""
