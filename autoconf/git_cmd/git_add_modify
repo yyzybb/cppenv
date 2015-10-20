@@ -1,13 +1,13 @@
 #!/bin/sh
 
-add_files=`git status $@ | grep modifi | awk '{print $2}'`
+add_files=`git status -s $@ | egrep "^.(A|M)" | awk '{print $2}'`
 for f in $add_files
 do
     git add $f;
     echo add $f;
 done
 
-deleted_files=`git status $@ | egrep "^\s*deleted" | awk '{print $2}'`
+deleted_files=`git status -s $@ | egrep "^\s+D" | awk '{print $2}'`
 for f in $deleted_files
 do
     git rm $f;

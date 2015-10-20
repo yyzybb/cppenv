@@ -42,8 +42,6 @@ dos2unix --version || exit 1
 
 git --version || sudo $INSTALL_TOOL install git -y
 git --version || exit 1
-git config --global user.email user_email@gmail.com
-git config --global user.name user_name
 
 vim --version || sudo $INSTALL_TOOL install vim -y
 vim --version || exit 1
@@ -94,16 +92,16 @@ do
         git pull && break
     else
         git clone ${YCM_GIT} ${ycm_path} && break
-        cd ${ycm_path}
     fi
 done
 
 cd ${ycm_path}
-sudo git submodule update --init --recursive
+sudo git submodule update --init
+sudo git submodule update --init third_party/ycmd
 sudo ./install.sh --clang-completer || exit 3
 
 # install vim-plugins
-sudo vim +BundleInstall -c quitall
+vim +BundleInstall -c quitall
 
 echo 'vim-env is ok, good luck!'
 

@@ -109,7 +109,8 @@ hi colorcolumn ctermbg=9 guibg=blue
 set nocompatible
 filetype off
 set rtp+=$VIM/vimfiles/bundle/Vundle.vim,$VIM/vimfiles/bundle
-call vundle#begin("$VIM/vimfiles/bundle")
+set rtp+=$HOME/.vim/vimfiles/bundle/Vundle.vim,$HOME/.vim/vimfiles/bundle
+call vundle#begin("$HOME/.vim/vimfiles/bundle")
 Plugin 'gmarik/Vundle.vim'
 Plugin 'bling/vim-airline'
 Plugin 'scrooloose/nerdtree'
