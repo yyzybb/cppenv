@@ -107,6 +107,10 @@ flags = [
 '-isystem',
 '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
 '-include',
+'/usr/include/c++/4.8/cstddef',
+'-include',
+'/usr/include/stdint.h',
+'-include',
 'cstddef',
 '-include',
 'stdint.h',
@@ -202,7 +206,7 @@ def GetCompilationInfoForFile( filename ):
 
 ## Add includes flags from the Makefile.
 #
-makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile']
+makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile', 'build/Makefile', '../build/Makefile']
 
 def ExtractIncludesFromMakefile(path):
     Log('ExtractIncludesFromMakefile')
