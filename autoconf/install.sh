@@ -20,7 +20,7 @@
 #
 
 # install dos2unix, git, vim, g++, ctags, cmake, python-dev
-./change_source_list.sh
+sudo ./change_source_list.sh
 
 VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
 YCM_GIT=https://code.csdn.net/u014579048/youcompleteme.git
