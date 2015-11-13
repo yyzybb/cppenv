@@ -60,7 +60,7 @@ sudo $INSTALL_TOOL install $PY_NAME -y
 # copy _vimrc file to $HOME
 dos2unix _vimrc
 rm $HOME/_vimrc -f
-ln _vimrc $HOME/_vimrc
+ln _vimrc $HOME/_vimrc || cp _vimrc $HOME/_vimrc
 chmod 0666 $HOME/_vimrc
 dos2unix .ycm_extra_conf.py
 rm $HOME/.ycm_extra_conf.py -f
