@@ -107,7 +107,7 @@ if [ "SYS_CLANG" == "0" ]
 then
     sudo ./install.sh --clang-completer
 else
-    sudo ./install.sh --clang-completer --system-clang
+    sudo ./install.sh --clang-completer --system-libclang
 fi
 
 # install vim-plugins
