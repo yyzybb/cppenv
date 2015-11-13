@@ -23,7 +23,8 @@
 ./change_source_list.sh
 
 VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
-YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
+YCM_GIT=https://code.csdn.net/u014579048/youcompleteme.git
+#YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
 
 set -e
 
@@ -85,20 +86,29 @@ done
 
 # gitclone and compile YouCompleteMe
 ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
-while true
-do
-    if test -d ${ycm_path}; then
-        cd ${ycm_path}
-        git pull && break
-    else
-        git clone ${YCM_GIT} ${ycm_path} && break
-    fi
-done
+if test -d ${ycm_path}; then
+    cd ${ycm_path}
+    git pull
+else
+    git clone ${YCM_GIT} ${ycm_path}
+fi
 
 cd ${ycm_path}
-sudo git submodule update --init
-sudo git submodule update --init third_party/ycmd
-sudo ./install.sh --clang-completer || exit 3
+
+SYS_CLANG=0
+if [ "${INSTALL_TOOL}" == "yum" ]
+then
+    sudo yum install clang-devel -y && SYS_CLANG=1
+else
+    sudo apt-get install libclang-dev -y && SYS_CLANG=1
+fi
+
+if [ "SYS_CLANG" == "0" ]
+then
+    sudo ./install.sh --clang-completer
+else
+    sudo ./install.sh --clang-completer --system-clang
+fi
 
 # install vim-plugins
 vim +BundleInstall -c quitall
