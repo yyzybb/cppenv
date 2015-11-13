@@ -8,7 +8,7 @@ echo "Current OS: " $os_name
 echo "Version: " $os_ver
 
 # yum
-if [ "$os_name" == 'CentOS Linux' ] ; then
+if test -f /etc/centos-release ; then
     if [ "$os_ver" == '7' ] ; then
         test -f /etc/yum.repos.d/CentOS-Base.repo && sudo mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak_`date +%Y-%m-%d_%H-%M-%S`
         sudo cp sources/CentOS7-Base-163.repo /etc/yum.repos.d
