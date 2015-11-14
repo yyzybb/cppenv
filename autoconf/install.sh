@@ -22,7 +22,7 @@
 # install dos2unix, git, vim, g++, ctags, cmake, python-dev
 sudo ./change_source_list.sh
 
-VUNDLE_GIT=https://code.csdn.net/u014579048/vundle.vim.git
+VUNDLE_GIT=https://code.csdn.net/u014579048/vundle-vim.git
 YCM_GIT=https://code.csdn.net/u014579048/youcompleteme.git
 
 #VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
@@ -72,7 +72,7 @@ chmod 0666 $HOME/.ycm_extra_conf.py
 
 # git clone vim-vundle.git
 vim_path=$HOME/.vim
-vundle_path=${vim_path}/vimfiles/bundle/Vundle.vim
+vundle_path=${vim_path}/vimfiles/bundle/vundle.vim
 #echo $vim_path
 #echo ${vundle_path}
 while true
