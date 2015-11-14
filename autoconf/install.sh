@@ -69,7 +69,6 @@ cp .ycm_extra_conf.py $HOME/
 chmod 0666 $HOME/.ycm_extra_conf.py
 
 # git clone vim-vundle.git
-#vim_path=`vim --version | grep '$VIM:' | cut -d'"' -f2`
 vim_path=$HOME/.vim
 vundle_path=${vim_path}/vimfiles/bundle/Vundle.vim
 #echo $vim_path
@@ -85,15 +84,13 @@ do
 done
 
 # gitclone and compile YouCompleteMe
-ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
+ycm_path=${vim_path}/vimfiles/bundle/youcompleteme
 if test -d ${ycm_path}; then
     cd ${ycm_path}
     git pull
 else
     git clone ${YCM_GIT} ${ycm_path}
 fi
-
-cd ${ycm_path}
 
 SYS_CLANG=0
 if [ "${INSTALL_TOOL}" == "yum" ]
@@ -103,11 +100,12 @@ else
     sudo apt-get install libclang-dev -y && SYS_CLANG=1
 fi
 
+cd ${ycm_path}
 if [ "SYS_CLANG" == "0" ]
 then
-    sudo ./install.sh --clang-completer
+    ./install.sh --clang-completer
 else
-    sudo ./install.sh --clang-completer --system-libclang
+    ./install.sh --clang-completer --system-libclang
 fi
 
 # install vim-plugins
