@@ -72,7 +72,7 @@ chmod 0666 $HOME/.ycm_extra_conf.py
 
 # git clone vim-vundle.git
 vim_path=$HOME/.vim
-vundle_path=${vim_path}/vimfiles/bundle/vundle.vim
+vundle_path=${vim_path}/vimfiles/bundle/Vundle.vim
 #echo $vim_path
 #echo ${vundle_path}
 while true

@@ -111,7 +111,7 @@ filetype off
 set rtp+=$VIM/vimfiles/bundle/Vundle.vim,$VIM/vimfiles/bundle
 set rtp+=$HOME/.vim/vimfiles/bundle/Vundle.vim,$HOME/.vim/vimfiles/bundle
 call vundle#begin("$HOME/.vim/vimfiles/bundle")
-Plugin 'https://code.csdn.net/u014579048/vundle-vim.git', {'name': 'vundle.vim'}
+Plugin 'https://code.csdn.net/u014579048/vundle-vim.git', {'name': 'Vundle.vim'}
 Plugin 'yyzybb/cppenv'
 Plugin 'yyzybb/quickfixer'
 Plugin 'https://code.csdn.net/u014579048/vim-airline.git'
