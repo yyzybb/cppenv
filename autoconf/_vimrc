@@ -111,17 +111,26 @@ filetype off
 set rtp+=$VIM/vimfiles/bundle/Vundle.vim,$VIM/vimfiles/bundle
 set rtp+=$HOME/.vim/vimfiles/bundle/Vundle.vim,$HOME/.vim/vimfiles/bundle
 call vundle#begin("$HOME/.vim/vimfiles/bundle")
-Plugin 'gmarik/Vundle.vim'
-Plugin 'bling/vim-airline'
-Plugin 'scrooloose/nerdtree'
-Plugin 'vim-scripts/taglist.vim'
+Plugin 'https://code.csdn.net/u014579048/vundle.vim.git'
 Plugin 'yyzybb/cppenv'
 Plugin 'yyzybb/quickfixer'
+Plugin 'https://code.csdn.net/u014579048/vim-airline.git'
+Plugin 'https://code.csdn.net/u014579048/nerdtree.git'
+Plugin 'https://code.csdn.net/u014579048/taglist.vim.git'
+Plugin 'https://code.csdn.net/u014579048/ultisnips.git'
+Plugin 'https://code.csdn.net/u014579048/vim-snippets.git'
+Plugin 'https://code.csdn.net/u014579048/vim-go.git'
 Plugin 'https://code.csdn.net/u014579048/youcompleteme.git'
+"Plugin 'gmarik/Vundle.vim'
+"Plugin 'bling/vim-airline'
+"Plugin 'scrooloose/nerdtree'
+"Plugin 'vim-scripts/taglist.vim'
+"Plugin 'yyzybb/cppenv'
+"Plugin 'yyzybb/quickfixer'
 "Plugin 'Valloric/YouCompleteMe'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
-Plugin 'fatih/vim-go'
+"Plugin 'SirVer/ultisnips'
+"Plugin 'honza/vim-snippets'
+"Plugin 'fatih/vim-go'
 call vundle#end()
 filetype plugin indent on
 
