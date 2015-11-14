@@ -103,7 +103,7 @@ else
 fi
 
 cd ${ycm_path}
-if [ "SYS_CLANG" == "0" ]
+if [ "${SYS_CLANG}" == "0" ]
 then
     ./install.sh --clang-completer
 else
