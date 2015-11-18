@@ -1,11 +1,14 @@
+########################################################
 snippet time
 `!p import time; snip.rv = time.strftime("%Y-%m-%d %H:%M:%S")`
 endsnippet
 
+########################################################
 snippet date
 `!p import time; snip.rv = time.strftime("%Y-%m-%d")`
 endsnippet
 
+########################################################
 snippet "namespace (\w+)" "namespace-snippet" r
 namespace ${1:`!p snip.rv = match.group(1)`}
 {
@@ -13,6 +16,7 @@ namespace ${1:`!p snip.rv = match.group(1)`}
 } //namespace ${1:`!p snip.rv = match.group(1)`}
 endsnippet
 
+########################################################
 snippet "GNU License ([\d\w]+)" "implement-module" r
 // Copyright (C) 2011, 2012  Google Inc.
 //
@@ -33,6 +37,15 @@ snippet "GNU License ([\d\w]+)" "implement-module" r
 
 endsnippet
 
+########################################################
 snippet "impl ([\d\w]+)" "implement-module" r
-will create impl.
+`!p
+import vim
+class_name = match.group(1)
+# find class
+snip.rv = "will create impl: " + str(vim.current.buffer.name) `
 endsnippet
+
+# class a {};
+# impl a
+
