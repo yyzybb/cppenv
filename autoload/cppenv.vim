@@ -5,6 +5,9 @@
 
 let s:indent_space = repeat(' ', 4)
 
+func! cppenv#dummy()
+endfunc
+
 func! cppenv#warn(msg)
     echohl WarningMsg
     echomsg a:msg
@@ -114,6 +117,7 @@ func! cppenv#enter()
 endfunc
 
 let g:py_dir = fnamemodify(expand('<sfile>'), ':p:h:gs?\\?/?')
+let g:pyclang_dir = fnamemodify(expand('<sfile>'), ':p:h:h:gs?\\?/?') . '/pyclang'
 
 " switch in .h/.hpp/.inl/.cpp/.c/.cc files
 " @up_deep: 向上搜索的深度(等于-1时, 用locate命令全局搜索)

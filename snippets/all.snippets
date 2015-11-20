@@ -13,39 +13,40 @@ snippet "namespace (\w+)" "namespace-snippet" r
 namespace ${1:`!p snip.rv = match.group(1)`}
 {
 
-} //namespace ${1:`!p snip.rv = match.group(1)`}
+} //namespace $1
 endsnippet
 
 ########################################################
-snippet "GNU License ([\d\w]+)" "implement-module" r
+snippet "GNU License ([\d\w]+)" "Make GNU License" r
 // Copyright (C) 2011, 2012  Google Inc.
 //
 // This file is part of ${1:`!p snip.rv = match.group(1)`}
 //
-// ${1:`!p snip.rv = match.group(1)`} is free software: you can redistribute it and/or modify
+// $1 is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// ${1:`!p snip.rv = match.group(1)`} is distributed in the hope that it will be useful,
+// $1 is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with ${1:`!p snip.rv = match.group(1)`}.  If not, see <http://www.gnu.org/licenses/>.
+// along with $1.  If not, see <http://www.gnu.org/licenses/>.
 
 endsnippet
 
 ########################################################
-snippet "impl ([\d\w]+)" "implement-module" r
+snippet "def ([\d\w]+)" "Make Cxx Class Method Definitions" r
 `!p
-import vim
+import vim, sys
+sys.path.append(vim.eval('g:pyclang_dir'))
+import gen_methods
 class_name = match.group(1)
-# find class
-snip.rv = "will create impl: " + str(vim.current.buffer.name) `
+code, err = gen_methods.gen_methods_definition(vim.current.buffer.name, class_name)
+snip.rv = code + err`
 endsnippet
 
 # class a {};
-# impl a
-
+# GNU License a

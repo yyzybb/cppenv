@@ -167,6 +167,7 @@ map TL :Tlist<CR>
 map TU :TlistUpdate<CR>
 
 " cppenv
+execute cppenv#dummy()
 au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go execute cppenv#infect()
 au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go set fo-=ro
 
