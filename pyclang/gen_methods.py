@@ -111,8 +111,13 @@ def gen_one_method_definition(f):
 def get_functions_by_class(class_node):
     out_list = []
     for c in class_node.get_children():
-        if c.kind.name in method_kinds:
-            out_list.append(c)
+        if c.kind.name not in method_kinds:
+            continue
+
+        if c.is_definition():
+            continue
+
+        out_list.append(c)
     return out_list
 
 def show_ast(cursor, point_c = None):
