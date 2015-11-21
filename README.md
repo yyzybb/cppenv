@@ -3,7 +3,7 @@
 
 ## Overview ##
 
-My aim was making coding C++ fast, automation, and correctly. So, I choosed vim as our editor, because his shortcut keys often need sing``le press. But, I want to more...
+My aim was making coding in C++ fast, fluent, and correct, so I chose vim as my editor because its shortcut keys often only require single press. However, I want more...
 
 This project has two parts:
 
@@ -26,11 +26,11 @@ and some plugins below:
 - taglist
 - vim-snippet
     
-You can run the script `autoconf/install.sh` to install all of the vim environment I provide. It will automation install all of the tools and plugins above. If you are in Chinese, it maybe cost only 4 minutes.
+You can run the script `autoconf/install.sh` to install all of the vim environment I provide. It will automatically install all of the tools and plugins above. If you are in China, it takes only 4 minutes.
 
 ## Install ##
 
-If you want use the complete `cppenv`, please step by step below:
+If you want use the complete `cppenv`, please follow the instruction below:
 
 1. clone this git repository
 2. run script `autoconf/install.sh` with the user that you coding with
