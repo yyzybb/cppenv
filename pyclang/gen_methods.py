@@ -40,7 +40,7 @@ def find_class_definition_in_file(file_cursor, class_name):
             kind_name = cursor.kind.name
             if kind_name in class_kinds:
                 defs.append(cursor)
-                continue
+                break
 
         for c in cursor.get_children():
             stack.append(c)
