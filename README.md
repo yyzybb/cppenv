@@ -3,7 +3,7 @@
 
 ## Overview ##
 
-My aim was making coding in C++ fast, fluent, and correct, so I chose vim as my editor because its shortcut keys often only require single press. However, I want more...
+I'm aim at making coding in C++ fast, fluent, and correct, so I choose vim as my editor because its shortcut keys often only require single press. However, I want more...
 
 This project has two parts:
 
@@ -52,7 +52,7 @@ Look likes:
 
 **Auto complete brackets:**
 This feature supports `class`, `struct`, `union`, `function`, `lambda` and `C++ coroutine lambda`.
-The `C++ coroutine lambda` refer to [https://github.com/yyzybb537/cpp_features](https://github.com/yyzybb537/cpp_features)
+The `C++ coroutine lambda` refers to [https://github.com/yyzybb537/cpp_features](https://github.com/yyzybb537/cpp_features)
 ***
 
 ![definitions](http://img.hoop8.com/attachments/1511/9291900695509.gif)
@@ -81,7 +81,7 @@ This feature supports all of combination `class` and `method` types below:
 - `gvs`
 - `gvns`
 
-The `gs` can jump between `header` and `source` if there were in a same folder. If the two files have the same parent folder, you can use `gns` to jump between there. If the two files were not in a same folder and have not the same parent folder, the `gs` cannot work, here, you can use `gS`. `gS` will use `locate` command to find the files in all of your file-system, and show the results in `quickfix` window when the results more than one.
+Use `gs` can jump between `header` and `source` if there were in a same folder. If the two files have the same parent folder, you can use `gns` to jump between there. If the two files were not in a same folder and have not the same parent folder, the `gs` cannot work, here, you can use `gS`. `gS` will use `locate` command to find the files in all of your file-system, and show the results in `quickfix` window when the results more than one.
 
 `gvs`, `gvns` are as same as `gs`, `gns` nearly. Difference was the shortcut key including `v` will split the window vertical, and show the other file buffer on right.
 
