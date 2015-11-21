@@ -89,7 +89,21 @@ The `gs` can jump between `header` and `source` if there were in a same folder. 
 
 If you install the complete vim environment, the `_vimrc` taken effect. It will give you a lot of shortcut key to boost your coding efficiency.
 
-#### Normal
+#### Plugins
+
+`YouCompleteMe` provides syntax complete and check.
+
+![YouCompleteMe GIF demo](http://img.hoop8.com/attachments/1511/1801900695509.gif)
+
+`NerdTree` provides show the files tree.
+
+![NerdTree](http://img.hoop8.com/attachments/1511/4341900695509.gif)
+
+`TagList` provides show the functions in current file.
+
+![taglist](http://img.hoop8.com/attachments/1511/6051900695509.gif)
+
+#### ShortcutKey
 
 I used `;` as the vim leader charactor, so seted below:
 
@@ -200,4 +214,4 @@ Support snippet trigger list below:
 		void A::foo()                                                                   
 		{                                                                               
 		                                                                                
-		} 
+		}
