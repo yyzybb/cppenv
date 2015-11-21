@@ -85,18 +85,16 @@ do
     fi
 done
 
+# install vim-plugins
+vim +BundleInstall -c quitall
+
 # gitclone and compile YouCompleteMe
 ycm_path=${vim_path}/vimfiles/bundle/youcompleteme
-if test -d ${ycm_path}; then
-    cd ${ycm_path}
-    git pull
-else
-    git clone ${YCM_GIT} ${ycm_path}
-fi
 
 SYS_CLANG=0
 if [ "${INSTALL_TOOL}" == "yum" ]
 then
+    sudo yum install mlocate -y
     sudo yum install clang-devel -y && SYS_CLANG=1
 else
     sudo apt-get install libclang-dev -y && SYS_CLANG=1
@@ -109,9 +107,6 @@ then
 else
     ./install.sh --clang-completer --system-libclang
 fi
-
-# install vim-plugins
-vim +BundleInstall -c quitall
 
 echo 'vim-env is ok, good luck!'
 
