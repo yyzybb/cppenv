@@ -24,6 +24,7 @@ sudo ./change_source_list.sh
 
 VUNDLE_GIT=https://code.csdn.net/u014579048/vundle-vim.git
 YCM_GIT=https://code.csdn.net/u014579048/youcompleteme.git
+LLVM_CLANG_GIT=https://code.csdn.net/u014579048/llvm-clang.git
 
 #VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
 #YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
@@ -58,6 +59,9 @@ ctags --version || exit 1
 cmake --version || sudo $INSTALL_TOOL install cmake -y
 cmake --version || exit 1
 
+locate --version || sudo $INSTALL_TOOL install mlocate -y
+locate --version || exit 1
+
 sudo $INSTALL_TOOL install $PY_NAME -y
 
 # copy _vimrc file to $HOME
@@ -88,38 +92,73 @@ done
 # install vim-plugins
 vim +BundleInstall -c quitall
 
-# gitclone and compile YouCompleteMe
-ycm_path=${vim_path}/vimfiles/bundle/youcompleteme
+test_python_clang()
+{
+    echo 'import clang.cindex; s = clang.cindex.conf.lib' | python
+}
 
-SYS_CLANG=0
-SYS_PYCLANG=1
-if [ "${INSTALL_TOOL}" == "yum" ]
+test_python_clang
+if [ "$?" == "1" ]
 then
-    SYS_PYCLANG=0
-    sudo yum install mlocate -y
-    sudo yum install clang-devel -y && SYS_CLANG=1
-else
-    sudo apt-get install libclang-3.6-dev -y && SYS_CLANG=1 || SYS_PYCLANG=0
-    sudo apt-get install python-clang-3.6 -y || SYS_PYCLANG=0
+    sudo $INSTALL_TOOL install python-clang-3.6 -y && \
+    sudo $INSTALL_TOOL install libclang-3.6-dev -y && \
+    echo ''
+fi
 
-    if [ "${SYS_CLANG}" == "0" ] ; then
-        sudo apt-get install libclang-dev -y && SYS_CLANG=1
+test_python_clang
+if [ "$?" == "1" ]
+then
+    echo 'Not found python-clang in sys source, will install there from llvm-clang source code.'
+
+    llvm_clang_dir=$HOME/llvm-clang
+    if test -d $llvm_clang_dir; then
+        cd $llvm_clang_dir
+        git pull
+    else
+        git clone $LLVM_CLANG_GIT $llvm_clang_dir
+        cd $llvm_clang_dir
     fi
+
+    rm clang.tar llvm.tar -rf
+    rm cfe-3.7.0.src llvm-3.7.0.src -rf
+
+    xz -dk llvm.tar.xz
+    xz -dk clang.tar.xz
+    tar xf clang.tar
+    tar xf llvm.tar
+
+    cd llvm-3.7.0.src
+    mkdir build
+    cd build
+    cmake ..
+    make
+    sudo make install
+    cd ../..
+
+    cd cfe-3.7.0.src
+    mkdir build
+    cd build
+    cmake ..
+    make
+    sudo make install
+    cd ..
+
+    pyclang_dst=/usr/lib/python2.7/dist-packages
+    test -d $pyclang_dst || pyclang_dst=/usr/lib/python2.7/site-packages
+    sudo cp bindings/python/clang $pyclang_dst -r
+
+    #TODO: add /usr/local/lib into /etc/ld.so.conf and /etc/ld.so.conf.d/llvm-*.conf
 fi
 
+# compile YouCompleteMe
+ycm_path=${vim_path}/vimfiles/bundle/youcompleteme
 cd ${ycm_path}
-if [ "${SYS_CLANG}" == "0" ]
-then
-    ./install.sh --clang-completer
-else
-    ./install.sh --clang-completer --system-libclang
-fi
+./install.sh --clang-completer --system-libclang
 
-if [ "${SYS_PYCLANG}" == "0" ]
+test_python_clang
+if [ "$?" == "1" ]
 then
-    echo 'The python-clang lib is not installed, some features will not available.'
-
-    #TODO: install python-clang
+    echo "Error: python-clang install error, please check libclang.so and cindex.py!"
 fi
 
 echo 'vim-env is ok, good luck!'
