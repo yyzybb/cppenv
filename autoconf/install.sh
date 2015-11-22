@@ -92,12 +92,19 @@ vim +BundleInstall -c quitall
 ycm_path=${vim_path}/vimfiles/bundle/youcompleteme
 
 SYS_CLANG=0
+SYS_PYCLANG=1
 if [ "${INSTALL_TOOL}" == "yum" ]
 then
+    SYS_PYCLANG=0
     sudo yum install mlocate -y
     sudo yum install clang-devel -y && SYS_CLANG=1
 else
-    sudo apt-get install libclang-dev -y && SYS_CLANG=1
+    sudo apt-get install libclang-3.6-dev -y && SYS_CLANG=1 || SYS_PYCLANG=0
+    sudo apt-get install python-clang-3.6 -y || SYS_PYCLANG=0
+
+    if [ "${SYS_CLANG}" == "0" ] ; then
+        sudo apt-get install libclang-dev -y && SYS_CLANG=1
+    fi
 fi
 
 cd ${ycm_path}
@@ -106,6 +113,13 @@ then
     ./install.sh --clang-completer
 else
     ./install.sh --clang-completer --system-libclang
+fi
+
+if [ "${SYS_PYCLANG}" == "0" ]
+then
+    echo 'The python-clang lib is not installed, some features will not available.'
+
+    #TODO: install python-clang
 fi
 
 echo 'vim-env is ok, good luck!'
