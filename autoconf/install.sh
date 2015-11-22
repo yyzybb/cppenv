@@ -29,7 +29,7 @@ LLVM_CLANG_GIT=https://code.csdn.net/u014579048/llvm-clang.git
 #VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
 #YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
 
-set -e
+#set -e
 
 INSTALL_TOOL=apt-get
 PY_NAME=python-dev
