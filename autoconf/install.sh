@@ -60,7 +60,8 @@ dos2unix .ycm_extra_conf.py
 rm $HOME/.ycm_extra_conf.py -f
 cp .ycm_extra_conf.py $HOME/
 chmod 0666 $HOME/.ycm_extra_conf.py
-vim_exe_dir=dirname `which vim`
+vim_exe=`which vim`
+vim_exe_dir=`dirname $vim_exe`
 ln -s ${vim_exe_dir}/vim ${vim_exe_dir}v || echo ''
 
 # git clone vim-vundle.git
