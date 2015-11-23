@@ -100,7 +100,7 @@ test_python_clang()
 install_python_clang_from_source()
 {
     sudo $INSTALL_TOOL install python-clang-3.6 -y && \
-    sudo $INSTALL_TOOL install libclang-3.6-dev -y ||
+    sudo $INSTALL_TOOL install libclang-3.6-dev -y || echo 'err'
 }
 
 make_llvm_clang()
