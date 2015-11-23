@@ -161,23 +161,23 @@ version_large_or_equal()
 {
     lhs=$1
     rhs=$2
-    lhs_major=echo $lhs | cut -d. -f1
-    lhs_minor=echo $lhs | cut -d. -f2
-    lhs_num=echo $lhs | cut -d. -f3
-    rhs_major=echo $rhs | cut -d. -f1
-    rhs_minor=echo $rhs | cut -d. -f2
-    rhs_num=echo $rhs | cut -d. -f3
-    lhs_cmp=expr $lhs_major \* 10000 + $lhs_minor \* 100 + $lhs_num
-    rhs_cmp=expr $rhs_major \* 10000 + $rhs_minor \* 100 + $rhs_num
+    lhs_major=`echo $lhs | cut -d. -f1`
+    lhs_minor=`echo $lhs | cut -d. -f2`
+    lhs_num=`echo $lhs | cut -d. -f3`
+    rhs_major=`echo $rhs | cut -d. -f1`
+    rhs_minor=`echo $rhs | cut -d. -f2`
+    rhs_num=`echo $rhs | cut -d. -f3`
+    lhs_cmp=`expr $lhs_major \* 10000 + $lhs_minor \* 100 + $lhs_num`
+    rhs_cmp=`expr $rhs_major \* 10000 + $rhs_minor \* 100 + $rhs_num`
     test $lhs_cmp -ge $rhs_cmp
 }
 
 install_cmake()
 {
     if [ "${INSTALL_TOOL}" == "yum" ] ; then
-        cmake_ver=yum info cmake | grep "版本\|Version" | sed 's/\([^0-9.]\+\)//g'
+        cmake_ver=`sudo yum info cmake | grep "版本\|Version" | sed 's/\([^0-9.]\+\)//g'`
     else
-        cmake_ver=sudo apt-cache show cmake |  grep "版本\|Version" | sed 's/\([^0-9.]\+\)//g'
+        cmake_ver=`sudo apt-cache show cmake |  grep "版本\|Version" | sed 's/\([^0-9.]\+\)//g'`
     fi 
 
     version_large_or_equal $cmake_ver "2.8.12" && install_cmake_from_source_list || build_cmake_by_source_code
