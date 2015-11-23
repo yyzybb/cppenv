@@ -62,7 +62,7 @@ cp .ycm_extra_conf.py $HOME/
 chmod 0666 $HOME/.ycm_extra_conf.py
 vim_exe=`which vim`
 vim_exe_dir=`dirname $vim_exe`
-sudo ln -s ${vim_exe_dir}/vim ${vim_exe_dir}v || echo ''
+sudo ln -s ${vim_exe_dir}/vim ${vim_exe_dir}/v || echo ''
 
 # git clone vim-vundle.git
 vim_path=$HOME/.vim
@@ -107,8 +107,8 @@ build_llvm_clang()
         cd $llvm_clang_dir
     fi
 
-    xz -dk llvm.tar.xz
-    xz -dk clang.tar.xz
+    xz -dk llvm.tar.xz || echo ''
+    xz -dk clang.tar.xz || echo ''
     tar xf clang.tar
     tar xf llvm.tar
 
