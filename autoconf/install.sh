@@ -84,6 +84,7 @@ vim +BundleInstall -c quitall
 
 test_python_clang()
 {
+    sudo ldconfig
     echo 'import clang.cindex; s = clang.cindex.conf.lib' | python
 }
 
