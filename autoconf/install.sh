@@ -62,7 +62,7 @@ cp .ycm_extra_conf.py $HOME/
 chmod 0666 $HOME/.ycm_extra_conf.py
 vim_exe=`which vim`
 vim_exe_dir=`dirname $vim_exe`
-ln -s ${vim_exe_dir}/vim ${vim_exe_dir}v || echo ''
+sudo ln -s ${vim_exe_dir}/vim ${vim_exe_dir}v || echo ''
 
 # git clone vim-vundle.git
 vim_path=$HOME/.vim
@@ -156,7 +156,7 @@ build_cmake_by_source_code()
     cd cmake-3.4.0
     ./bootstrap
     gmake
-    sudo ${INSTALL_TOOL} remove cmake || echo ''
+    sudo ${INSTALL_TOOL} remove cmake -y || echo ''
     sudo gmake install
 }
 
