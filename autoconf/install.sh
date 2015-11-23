@@ -25,6 +25,7 @@ sudo ./change_source_list.sh
 VUNDLE_GIT=https://code.csdn.net/u014579048/vundle-vim.git
 YCM_GIT=https://code.csdn.net/u014579048/youcompleteme.git
 LLVM_CLANG_GIT=https://code.csdn.net/u014579048/llvm-clang.git
+CMAKE_GIT=https://code.csdn.net/u014579048/cmake.git
 
 #VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
 #YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
@@ -42,25 +43,11 @@ echo $INSTALL_TOOL
 sudo $INSTALL_TOOL update -y
 
 dos2unix --version || sudo $INSTALL_TOOL install dos2unix -y
-dos2unix --version || exit 1
-
 git --version || sudo $INSTALL_TOOL install git -y
-git --version || exit 1
-
 vim --version || sudo $INSTALL_TOOL install vim -y
-vim --version || exit 1
-
 g++ --version || sudo $INSTALL_TOOL install g++ -y || sudo $INSTALL_TOOL install gcc-c++ -y
-g++ --version || exit 1
-
 ctags --version || sudo $INSTALL_TOOL install ctags -y
-ctags --version || exit 1
-
-cmake --version || sudo $INSTALL_TOOL install cmake -y
-cmake --version || exit 1
-
 locate --version || sudo $INSTALL_TOOL install mlocate -y
-locate --version || exit 1
 
 sudo $INSTALL_TOOL install $PY_NAME -y
 
@@ -73,6 +60,8 @@ dos2unix .ycm_extra_conf.py
 rm $HOME/.ycm_extra_conf.py -f
 cp .ycm_extra_conf.py $HOME/
 chmod 0666 $HOME/.ycm_extra_conf.py
+vim_exe_dir=dirname `which vim`
+ln -s ${vim_exe_dir}/vim ${vim_exe_dir}v || echo ''
 
 # git clone vim-vundle.git
 vim_path=$HOME/.vim
@@ -103,11 +92,11 @@ install_python_clang_from_source()
     sudo $INSTALL_TOOL install libclang-3.6-dev -y || echo 'err'
 }
 
-make_llvm_clang()
+build_llvm_clang()
 {
     echo 'Not found python-clang in sys source, will install there from llvm-clang source code.'
 
-    llvm_clang_dir=$HOME/llvm-clang
+    llvm_clang_dir=$HOME/llvm-clang_cppenv
     if test -d $llvm_clang_dir; then
         cd $llvm_clang_dir
         git pull
@@ -146,8 +135,57 @@ make_llvm_clang()
     sudo echo '/usr/local/lib' > /etc/ld.so.conf.d/cppenv.conf
 }
 
+install_cmake_from_source_list()
+{
+    cmake --version || sudo $INSTALL_TOOL install cmake -y
+}
+
+build_cmake_by_source_code()
+{
+    cmake_dir=$HOME/cmake_cppenv
+    if test -d $cmake_dir; then
+        cd $cmake_dir
+        git pull
+    else
+        git clone $CMAKE_GIT $cmake_dir
+        cd $cmake_dir
+    fi
+
+    ./bootstrap
+    gmake
+    sudo ${INSTALL_TOOL} remove cmake || echo ''
+    sudo gmake install
+}
+
+version_large_or_equal()
+{
+    lhs=$1
+    rhs=$2
+    lhs_major=echo $lhs | cut -d. -f1
+    lhs_minor=echo $lhs | cut -d. -f2
+    lhs_num=echo $lhs | cut -d. -f3
+    rhs_major=echo $rhs | cut -d. -f1
+    rhs_minor=echo $rhs | cut -d. -f2
+    rhs_num=echo $rhs | cut -d. -f3
+    lhs_cmp=expr $lhs_major \* 10000 + $lhs_minor \* 100 + $lhs_num
+    rhs_cmp=expr $rhs_major \* 10000 + $rhs_minor \* 100 + $rhs_num
+    test $lhs_cmp -ge $rhs_cmp
+}
+
+install_cmake()
+{
+    if [ "${INSTALL_TOOL}" == "yum" ] ; then
+        cmake_ver=yum info cmake | grep "版本\|Version" | sed 's/\([^0-9.]\+\)//g'
+    else
+        cmake_ver=sudo apt-cache show cmake |  grep "版本\|Version" | sed 's/\([^0-9.]\+\)//g'
+    fi 
+
+    version_large_or_equal $cmake_ver "2.8.12" && install_cmake_from_source_list || build_cmake_by_source_code
+}
+
 test_python_clang || install_python_clang_from_source
-test_python_clang || make_llvm_clang
+install_cmake
+test_python_clang || build_llvm_clang
 
 # compile YouCompleteMe
 ycm_path=${vim_path}/vimfiles/bundle/youcompleteme
