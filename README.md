@@ -26,14 +26,14 @@ and some plugins below:
 - taglist
 - vim-snippet
     
-You can run the script `autoconf/install.sh` to install all of the vim environment I provide. It will automatically install all of the tools and plugins above. If you are in China, it takes only 4 minutes.
+You can run the script `autoconf/install` to install all of the vim environment I provide. It will automatically install all of the tools and plugins above. If you are in China, it takes only 4 minutes.
 
 ## Install ##
 
 If you want use the complete `cppenv`, please follow the instruction below:
 
 1. clone this git repository
-2. run script `autoconf/install.sh` with the user that you coding with
+2. run script `autoconf/install` with the user that you coding with
 3. wait about 4 minutes
 
 The script will install `_vimrc`, `.ycm_extra_conf.py` and other plugins in `~/.vim`.
