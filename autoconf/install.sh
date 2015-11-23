@@ -99,7 +99,7 @@ build_llvm_clang()
     echo 'Not found python-clang in sys source, will install there from llvm-clang source code.'
 
     llvm_clang_dir=$HOME/llvm-clang_cppenv
-    sudo ${workdir}/install_clang.sh
+    sudo ${workdir}/install_clang.sh $llvm_clang_dir
 }
 
 install_cmake_from_source_list()
