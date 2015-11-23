@@ -50,7 +50,7 @@ git --version || exit 1
 vim --version || sudo $INSTALL_TOOL install vim -y
 vim --version || exit 1
 
-g++ --version || sudo $INSTALL_TOOL install g++ -y
+g++ --version || sudo $INSTALL_TOOL install g++ -y || sudo $INSTALL_TOOL install gcc-c++ -y
 g++ --version || exit 1
 
 ctags --version || sudo $INSTALL_TOOL install ctags -y
