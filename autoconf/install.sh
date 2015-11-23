@@ -151,6 +151,8 @@ build_cmake_by_source_code()
         cd $cmake_dir
     fi
 
+    tar zxf cmake-3.4.0.tar.gz
+    cd cmake-3.4.0
     ./bootstrap
     gmake
     sudo ${INSTALL_TOOL} remove cmake || echo ''
