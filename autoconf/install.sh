@@ -107,9 +107,6 @@ build_llvm_clang()
         cd $llvm_clang_dir
     fi
 
-    rm clang.tar llvm.tar -rf
-    rm cfe-3.7.0.src llvm-3.7.0.src -rf
-
     xz -dk llvm.tar.xz
     xz -dk clang.tar.xz
     tar xf clang.tar
