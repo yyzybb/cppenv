@@ -113,7 +113,7 @@ build_llvm_clang()
     tar xf llvm.tar
 
     cd llvm-3.7.0.src
-    mkdir build
+    mkdir -p build
     cd build
     cmake ..
     make
@@ -121,7 +121,7 @@ build_llvm_clang()
     cd ../..
 
     cd cfe-3.7.0.src
-    mkdir build
+    mkdir -p build
     cd build
     cmake ..
     make
