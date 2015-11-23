@@ -29,7 +29,7 @@ LLVM_CLANG_GIT=https://code.csdn.net/u014579048/llvm-clang.git
 #VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
 #YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
 
-#set -e
+set -e
 
 INSTALL_TOOL=apt-get
 PY_NAME=python-dev
@@ -97,17 +97,14 @@ test_python_clang()
     echo 'import clang.cindex; s = clang.cindex.conf.lib' | python
 }
 
-test_python_clang
-if [ "$?" == "1" ]
-then
+install_python_clang_from_source()
+{
     sudo $INSTALL_TOOL install python-clang-3.6 -y && \
-    sudo $INSTALL_TOOL install libclang-3.6-dev -y && \
-    echo ''
-fi
+    sudo $INSTALL_TOOL install libclang-3.6-dev -y ||
+}
 
-test_python_clang
-if [ "$?" == "1" ]
-then
+make_llvm_clang()
+{
     echo 'Not found python-clang in sys source, will install there from llvm-clang source code.'
 
     llvm_clang_dir=$HOME/llvm-clang
@@ -146,20 +143,17 @@ then
     pyclang_dst=/usr/lib/python2.7/dist-packages
     test -d $pyclang_dst || pyclang_dst=/usr/lib/python2.7/site-packages
     sudo cp bindings/python/clang $pyclang_dst -r
+    sudo echo '/usr/local/lib' > /etc/ld.so.conf.d/cppenv.conf
+}
 
-    #TODO: add /usr/local/lib into /etc/ld.so.conf and /etc/ld.so.conf.d/llvm-*.conf
-fi
+test_python_clang || install_python_clang_from_source
+test_python_clang || make_llvm_clang
 
 # compile YouCompleteMe
 ycm_path=${vim_path}/vimfiles/bundle/youcompleteme
 cd ${ycm_path}
 ./install.sh --clang-completer --system-libclang
 
-test_python_clang
-if [ "$?" == "1" ]
-then
-    echo "Error: python-clang install error, please check libclang.so and cindex.py!"
-fi
-
+test_python_clang || echo "Error: python-clang install error, please check libclang.so and cindex.py!"
 echo 'vim-env is ok, good luck!'
 
