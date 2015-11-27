@@ -94,6 +94,23 @@ func! cppenv#end_brackets(bracket)
     call setpos('.', pos)
 endfunc
 
+let s:pos_back=[0,0,0,0]
+
+func! cppenv#back_imode_cursor()
+    let s:pos_back=getpos('.')
+    return ''
+endfunc
+
+func! cppenv#restore_imode_cursor()
+    call setpos('.', s:pos_back)
+    let pos = getpos('.')
+    if pos[2] < s:pos_back[2]
+        noremap <C-i>i a
+    else
+        noremap <C-i>i i
+    endif
+endfunc
+
 " enter in {}
 func! cppenv#enter()
     let line_info = getline('.')
@@ -170,6 +187,10 @@ endfunc
 """"""""""""""""""""maps"""""""""""""""""""""
 let s:is_infect = 0
 
+func! cppenv#test_expr()
+    return '###'
+endfunc
+
 func! cppenv#infect()
     let s:is_infect = 1
 
@@ -187,12 +208,22 @@ func! cppenv#infect()
     imap ] <Esc>:call cppenv#end_brackets('[]')<CR>a
     imap } <Esc>:call cppenv#end_brackets('{}')<CR>a
 
-    imap <C-l> <ESC>:call cppenv#enter()<CR>a<CR>
+    imap <expr> <C-i>b cppenv#back_imode_cursor()
+    map <C-i>r :call cppenv#restore_imode_cursor()<CR><C-i>i
+    "imap <C-i>i "was setting in func! restore_imode_cursor()"
+    
+    cnoremap <C-i>cr <CR>
+    inoremap <C-i>cr <CR>
+    imap <C-l> <C-i>b<ESC>:call cppenv#enter()<C-i>cr<C-i>r<C-i>cr
 
     if has("unix")
         "imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
         "imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
-        inoremap <CR> <ESC>:call cppenv#enter()<CR>a<CR>
+
+        imap <CR> <C-l>
+
+        "inoremap <expr> G cppenv#test_expr()
+        "imap F G<CR>
     endif
 
     map gs :call cppenv#switch_dd(0, 0, 0)<CR>
@@ -224,6 +255,7 @@ func! cppenv#uninfect()
     if has("unix")
         "iunmap <
         "iunmap >
+
         iunmap <CR>
     endif
 
