@@ -105,9 +105,9 @@ func! cppenv#restore_imode_cursor()
     call setpos('.', s:pos_back)
     let pos = getpos('.')
     if pos[2] < s:pos_back[2]
-        noremap <C-i>i a
+        noremap <C-a>i a
     else
-        noremap <C-i>i i
+        noremap <C-a>i i
     endif
 endfunc
 
@@ -208,13 +208,13 @@ func! cppenv#infect()
     imap ] <Esc>:call cppenv#end_brackets('[]')<CR>a
     imap } <Esc>:call cppenv#end_brackets('{}')<CR>a
 
-    imap <expr> <C-i>b cppenv#back_imode_cursor()
-    map <C-i>r :call cppenv#restore_imode_cursor()<CR><C-i>i
-    "imap <C-i>i "was setting in func! restore_imode_cursor()"
+    imap <expr> <C-a>b cppenv#back_imode_cursor()
+    map <C-a>r :call cppenv#restore_imode_cursor()<CR><C-a>i
+    "imap <C-a>i "was setting in func! restore_imode_cursor()"
     
-    cnoremap <C-i>cr <CR>
-    inoremap <C-i>cr <CR>
-    imap <C-l> <C-i>b<ESC>:call cppenv#enter()<C-i>cr<C-i>r<C-i>cr
+    cnoremap <C-a>cr <CR>
+    inoremap <C-a>cr <CR>
+    imap <C-l> <C-a>b<ESC>:call cppenv#enter()<C-a>cr<C-a>r<C-a>cr
 
     if has("unix")
         "imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
