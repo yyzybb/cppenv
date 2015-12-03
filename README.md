@@ -33,7 +33,7 @@ You can run the script `autoconf/install` to install all of the vim environment 
 If you want use the complete `cppenv`, please follow the instruction below:
 
 1. clone this git repository
-2. run script `autoconf/install` with the user that you coding with
+2. change work directory to `autoconf` and run script `./install` with the user that you coding with
 3. wait about 4 minutes
 
 The script will install `_vimrc`, `.ycm_extra_conf.py` and other plugins in `~/.vim`.
