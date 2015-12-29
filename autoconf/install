@@ -33,8 +33,6 @@ CMAKE_GIT=https://code.csdn.net/u014579048/cmake.git
 #VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
 #YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
 
-set -e
-
 INSTALL_TOOL=apt-get
 PY_NAME=python-dev
 if [ `which apt-get 2>/dev/null | wc -l` -eq 0 ] ; then
@@ -44,6 +42,8 @@ fi
 echo $INSTALL_TOOL
 
 sudo $INSTALL_TOOL update -y
+
+set -e
 
 dos2unix --version || sudo $INSTALL_TOOL install dos2unix -y
 git --version || sudo $INSTALL_TOOL install git -y
