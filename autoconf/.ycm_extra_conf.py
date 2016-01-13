@@ -31,6 +31,7 @@
 import os
 import ycm_core
 import re
+import traceback
 
 _debug = 1
 
@@ -261,6 +262,71 @@ def MakefileIncludesFlags(filename):
     Log(str(mk_flags))
     return mk_flags
 
+def ExtractIncludesFromCMake(cmk):
+    Log('ExtractIncludesFromCMake')
+    cmk_dir = os.path.dirname(cmk)
+    args_dict = {
+            'CMAKE_SOURCE_DIR' : cmk_dir,
+            'CMAKE_BINARY_DIR' : cmk_dir,
+            'PROJECT_SOURCE_DIR' : cmk_dir,
+            'PROJECT_BINARY_DIR' : cmk_dir,
+            }
+    includes = []
+    set_c = 0
+    include_c = 0
+    with open(cmk, 'r') as f:
+        fileinfo = f.read()
+        for it in re.finditer(r'\s*set\s*\(([^"]+)\s+(.*)\)\s*', fileinfo, re.IGNORECASE):
+            set_c += 1
+            args_dict[it.group(1).strip().upper()] = it.group(2).strip().strip('"')
+
+        for it in re.finditer(r'\s*include_directories\s*\((.*)\)\s*', fileinfo, re.IGNORECASE):
+            include_c += 1
+            d = it.group(1).strip().strip('"')
+            while True:
+                finded = False
+                for it in re.finditer(r'\$\{(.*)\}', d):
+                    finded = True
+                    k = it.group(1).upper()
+                    v = args_dict.get(k)
+                    if not v:
+                        Log('unkown key: %s, when parse %s' % (k, cmk))
+                        break
+
+                    d = d.replace(it.group(0), v)
+
+                if not finded:
+                    break
+
+            includes.append(d)
+
+    Log('set_c=%s, include_c=%s' % (set_c, include_c))
+    return includes
+
+def CMakeIncludesFlags(filename):
+    Log('CMakeIncludesFlags')
+    try:
+        flags = []
+        cmake_filename = 'CMakeLists.txt'
+        for deep in range(3):
+            cmk = os.path.dirname(filename)
+            for i in range(deep):
+                cmk = os.path.dirname(cmk)
+            cmk = os.path.join(cmk, cmake_filename)
+            Log('test isfile %s' % cmk)
+            if not os.path.isfile(cmk):
+                continue
+
+            includes = ExtractIncludesFromCMake(cmk)
+            for include in includes:
+                flags.append('-I')
+                flags.append(include)
+            break
+    except:
+        Log(traceback.format_exc())
+
+    Log(str(flags))
+    return flags
 
 def FlagsForFile( filename, **kwargs ):
   Log("Process file: %s" % filename)
@@ -290,8 +356,9 @@ def FlagsForFile( filename, **kwargs ):
     relative_to = '/etc/vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm'
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
 
-  final_flags.extend(MakefileIncludesFlags(filename))
   final_flags.extend(['-I', os.path.dirname(filename)])
+  final_flags.extend(MakefileIncludesFlags(filename))
+  final_flags.extend(CMakeIncludesFlags(filename))
 
   Log(str(final_flags))
 
