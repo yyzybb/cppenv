@@ -48,14 +48,12 @@ Look likes:
 
 `cppenv` provides some simple auto complete. And others, supported by `YouCompleteMe`.
 
-![brackets](http://img.hoop8.com/attachments/1511/4511900695509.gif)
-
 **Auto complete brackets:**
 This feature supports `class`, `struct`, `union`, `function`, `lambda` and `C++ coroutine lambda`.
 The `C++ coroutine lambda` refers to [https://github.com/yyzybb537/cpp_features](https://github.com/yyzybb537/cpp_features)
 ***
 
-![definitions](http://img.hoop8.com/attachments/1511/9291900695509.gif)
+![brackets](http://i.imgur.com/RVNcD8o.gif)
 
 **Auto complete class-methods definitions:**
 This feature supports all of combination `class` and `method` types below:
@@ -70,6 +68,7 @@ This feature supports all of combination `class` and `method` types below:
 - `static method`
 - `static template method`
 
+![defclass](http://imgur.com/npFkaoj.gif)
 
 ## Jump File ##
 
@@ -170,6 +169,3 @@ Support snippet trigger list below:
 	![license](http://i.imgur.com/C2cN20p.gif)
 
 - **`def <class name>`** First, you must save your class definition. Then, input `def <class name>`, will output all method definitions of the class.
-  
-
-	![defclass](http://imgur.com/npFkaoj.gif)
