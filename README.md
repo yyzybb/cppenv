@@ -93,7 +93,7 @@ If you install the complete vim environment, the `_vimrc` taken effect. It will 
 
 `YouCompleteMe` provides syntax complete and check.
 
-![YouCompleteMe GIF demo](http://img.hoop8.com/attachments/1511/1801900695509.gif)
+![YouCompleteMe GIF demo](http://i.imgur.com/0OP4ood.gif)
 
 `NerdTree` provides show the files tree.
 
