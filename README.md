@@ -166,52 +166,10 @@ Support snippet trigger list below:
 
 - **`GNU License <name>`** Make gnu license copyright header in source file.
 
-	e.g: 
 
-	input
-
-		`GNU License Ucorf`
-
-	output
-
-        // Copyright (C) 2011, 2012  Google Inc.   
-	    // 
-	    // This file is part of Ucorf  
-	    // 
-	    // Ucorf is free software: you can redistribute it and/or modify   
-	    // it under the terms of the GNU General Public License as published by
-	    // the Free Software Foundation, either version 3 of the License, or   
-	    // (at your option) any later version. 
-	    // 
-	    // Ucorf is distributed in the hope that it will be useful,
-	    // but WITHOUT ANY WARRANTY; without even the implied warranty of  
-	    // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the   
-	    // GNU General Public License for more details.
-	    // 
-	    // You should have received a copy of the GNU General Public License   
-	    // along with Ucorf.  If not, see <http://www.gnu.org/licenses/>.
+	![license](http://i.imgur.com/C2cN20p.gif)
 
 - **`def <class name>`** First, you must save your class definition. Then, input `def <class name>`, will output all method definitions of the class.
   
-	e.g:
 
-	intput
-
-		class A                                                                            
-		{                                                                                  
-		    void foo();                                                                    
-		};                                                                                 
-		                                                                                   
-		def A
-
-	output
-
-		class A                                                                            
-		{                                                                                  
-		    void foo();                                                                    
-		};                                                                                 
-		                                                                                   
-		void A::foo()                                                                   
-		{                                                                               
-		                                                                                
-		}
+	![defclass](http://imgur.com/npFkaoj.gif)
