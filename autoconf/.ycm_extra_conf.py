@@ -291,6 +291,7 @@ def ExtractIncludesFromCMake(cmk):
                     v = args_dict.get(k)
                     if not v:
                         Log('unkown key: %s, when parse %s' % (k, cmk))
+                        finded = False
                         break
 
                     d = d.replace(it.group(0), v)
