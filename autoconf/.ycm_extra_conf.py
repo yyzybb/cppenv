@@ -299,6 +299,8 @@ def ExtractIncludesFromCMake(cmk):
                 if not finded:
                     break
 
+            if not os.path.isabs(d):
+                d = os.path.join(cmk_dir, d)
             includes.append(d)
 
     Log('set_c=%s, include_c=%s' % (set_c, include_c))
@@ -314,8 +316,9 @@ def CMakeIncludesFlags(filename):
             for i in range(deep):
                 cmk = os.path.dirname(cmk)
             cmk = os.path.join(cmk, cmake_filename)
-            Log('test isfile %s' % cmk)
-            if not os.path.isfile(cmk):
+            isfile = os.path.isfile(cmk)
+            Log('test isfile %s: %s' % (cmk, isfile))
+            if not isfile:
                 continue
 
             includes = ExtractIncludesFromCMake(cmk)
