@@ -83,10 +83,15 @@ set wildmenu
 set number
 set hlsearch
 set nowrap
-set nofoldenable
 set autochdir
 set fo-=ro
 
+"折叠
+set nofoldenable
+set foldmethod=syntax
+set foldlevel=1
+
+"tab
 set expandtab "Tab转换成空格
 set tabstop=4
 set shiftwidth=4
@@ -96,7 +101,6 @@ set gcr=a:block-blinkon0 "禁止光标闪烁
 set guioptions-=m
 set guioptions-=T
 set laststatus=2
-set foldmethod=syntax
 set guifont=Courier\ New:h12
 set encoding=utf-8
 set fileencoding=utf-8
