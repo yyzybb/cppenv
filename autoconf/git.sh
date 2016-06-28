@@ -17,6 +17,7 @@ git config --global alias.br "branch -av"
 git config --global alias.ss status
 git config --global alias.co checkout
 git config --global alias.cmt commit
+git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 
 git config --global receive.denyCurrentBranch true
 git config --global core.editor vim
