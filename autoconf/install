@@ -146,6 +146,7 @@ version_large_or_equal()
 
 install_cmake()
 {
+    install_cmake_from_source_list
     cmake_ver=''
     cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/\([^0-9.]\+\)//g'` || echo ''
     if test -z $cmake_ver ; then
@@ -156,11 +157,11 @@ install_cmake()
         fi 
     fi 
 
-    version_large_or_equal $cmake_ver "2.8.12" && install_cmake_from_source_list || build_cmake_by_source_code
+    version_large_or_equal $cmake_ver "2.8.12" || build_cmake_by_source_code
 }
 
-test_python_clang || install_python_clang_from_source
 install_cmake
+test_python_clang || install_python_clang_from_source
 test_python_clang || build_llvm_clang
 
 # compile YouCompleteMe
