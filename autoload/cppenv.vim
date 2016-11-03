@@ -29,7 +29,8 @@ endfunc
 
 " comment one line code
 func! cppenv#comment()
-    call setline('.', '//' . getline('.'))
+    let line_info = substitute(getline('.'), '\s*', '\0//', "")
+    call setline('.', line_info)
 endfunc
 
 " uncomment one line code
