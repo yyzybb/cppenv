@@ -113,6 +113,8 @@ set fileencodings=utf-8,gbk ",utf-16,gb2312 "可识别文件编码
 set cc=80
 hi colorcolumn ctermbg=9 guibg=blue
 
+set backspace=indent,eol,start
+
 """"""""""""""""""""""""""Plugin Config"""""""""""""""""""""""
 
 " Vundle
