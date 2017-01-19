@@ -19,6 +19,8 @@ map ;jw <C-W>j
 map gl :b#<CR>
 map gL <C-W>vgl
 map gY gygL
+map gr viw;ny:grep <C-r>n *<CR>
+map gR viw;ny:grep <C-r>n *<CR><CR><C-o>:cw<CR>
 
 map ;/ :nohls<CR>
 map ; "
@@ -54,8 +56,8 @@ autocmd BufNewFile,BufRead *.cpp map <F7> :! g++ -std=c++11 %:p -o out.exe -g -p
 autocmd BufNewFile,BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
 autocmd BufNewFile,BufRead *.cpp map <F6> :! g++ -std=c++11 %:p -o out.exe -g -Wl,--whole-archive -lpthread -Wl,--no-whole-archive -static<CR>:! %:p:h/out.exe<CR>
 autocmd BufNewFile,BufRead *.cpp map <F8> :! g++ -std=c++11 %:p -o out.exe -g -lboost_system -lboost_thread -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
-autocmd BufNewFile,BufRead *.cpp map mkco :! g++ -std=c++11 %:p -o out.exe -O3 -llibgo -lboost_thread -lboost_system -ldl -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
-autocmd BufNewFile,BufRead *.cpp map mkcob :! g++ -std=c++11 %:p -o out.exe -O3 -llibgo -lboost_coroutine -lboost_context -lboost_thread -lboost_system -ldl -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.cpp map mkco :! g++ -std=c++11 %:p -o out.exe -g -llibgo -lboost_thread -lboost_system -ldl -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.cpp map mkcob :! g++ -std=c++11 %:p -o out.exe -g -llibgo -lboost_coroutine -lboost_context -lboost_thread -lboost_system -ldl -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
 
 " go
 autocmd BufNewFile,BufRead *.go map <F7> :! go build %<CR>
@@ -112,7 +114,6 @@ set fileencodings=utf-8,gbk ",utf-16,gb2312 "可识别文件编码
 
 set cc=80
 hi colorcolumn ctermbg=9 guibg=blue
-
 set backspace=indent,eol,start
 
 """"""""""""""""""""""""""Plugin Config"""""""""""""""""""""""
