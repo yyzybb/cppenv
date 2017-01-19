@@ -19,8 +19,8 @@ map ;jw <C-W>j
 map gl :b#<CR>
 map gL <C-W>vgl
 map gY gygL
-map gr viw;ny:grep <C-r>n *<CR>
-map gR viw;ny:grep <C-r>n *<CR><CR><C-o>:cw<CR>
+map gr viw;ny:grep <C-r>n *<CR><CR><C-o>:cw<CR>
+map gR viw;ny:grep <C-r>n *<CR>
 
 map ;/ :nohls<CR>
 map ; "
