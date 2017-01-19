@@ -20,7 +20,7 @@ map gl :b#<CR>
 map gL <C-W>vgl
 map gY gygL
 map gr viw;ny:grep <C-r>n *<CR><CR><C-o>:cw<CR>
-map gR viw;ny:grep <C-r>n *<CR>
+vmap gr ;ny:grep <C-r>n *<CR><CR><C-o>:cw<CR>
 
 map ;/ :nohls<CR>
 map ; "
