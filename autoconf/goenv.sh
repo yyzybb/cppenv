@@ -1,8 +1,10 @@
 #!/bin/sh
 
-go get github.com/nsf/gocode
-go get github.com/rogpeppe/godef 
-go get github.com/bradfitz/goimports
-go get github.com/bytbox/golint
-go get github.com/jstemmer/gotags
-go get github.com/kisielk/errcheck
+go get -v github.com/golang/tools
+go get -v github.com/nsf/gocode
+go get -v github.com/rogpeppe/godef 
+go get -v github.com/bradfitz/goimports
+go get -v github.com/bytbox/golint
+go get -v github.com/jstemmer/gotags
+go get -v github.com/kisielk/errcheck
+
