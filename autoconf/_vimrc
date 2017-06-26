@@ -137,6 +137,13 @@ Plugin 'https://code.csdn.net/u014579048/ultisnips.git'
 Plugin 'https://code.csdn.net/u014579048/vim-snippets.git'
 Plugin 'https://code.csdn.net/u014579048/vim-go.git'
 Plugin 'https://code.csdn.net/u014579048/youcompleteme.git'
+
+Plugin 'https://code.csdn.net/u014579048/vim-toml.git'
+
+"Plugin 'godlygeek/tabular'
+"Plugin 'plasticboy/vim-markdown'
+"Plugin 'suan/vim-instant-markdown'
+
 "Plugin 'gmarik/Vundle.vim'
 "Plugin 'bling/vim-airline'
 "Plugin 'scrooloose/nerdtree'
@@ -147,6 +154,7 @@ Plugin 'https://code.csdn.net/u014579048/youcompleteme.git'
 "Plugin 'SirVer/ultisnips'
 "Plugin 'honza/vim-snippets'
 "Plugin 'fatih/vim-go'
+"Plugin 'cespare/vim-toml'
 call vundle#end()
 filetype plugin indent on
 
@@ -199,6 +207,34 @@ au BufNewFile,BufRead *.go nnoremap <F4> :GoErrCheck<CR>
 " tags
 set tags=tags,./tags,/usr/include/tags
 "set tags+=/home/yyz/C/Bex/Bex/tags,/home/yyz/C/Bex/boost/include/tags
+
+"" vim-markdown
+"let g:vim_markdown_folding_disabled = 1
+"let g:vim_markdown_folding_style_pythonic = 1
+"let g:vim_markdown_override_foldtext = 0
+"let g:vim_markdown_folding_level = 6
+"let g:vim_markdown_no_default_key_mappings = 1
+"let g:vim_markdown_toc_autofit = 1
+"let g:vim_markdown_emphasis_multiline = 0
+"set conceallevel=2
+"let g:vim_markdown_conceal = 0
+"let g:tex_conceal = ""
+"let g:vim_markdown_math = 1
+"let g:vim_markdown_fenced_languages = ['csharp=cs', 'go=golang', 'c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
+"let g:vim_markdown_math = 1
+"let g:vim_markdown_frontmatter = 1
+"let g:vim_markdown_toml_frontmatter = 1
+"let g:vim_markdown_json_frontmatter = 1
+"let g:vim_markdown_new_list_item_indent = 2
+"let g:vim_markdown_no_extensions_in_markdown = 1
+"let g:vim_markdown_autowrite = 1
+"
+"" vim-instant-markdown
+"let g:instant_markdown_slow = 1
+"let g:instant_markdown_autostart = 0
+"let g:instant_markdown_open_to_the_world = 1
+"let g:instant_markdown_allow_unsafe_content = 1
+"let g:instant_markdown_allow_external_content = 0
 
 " gvim on windows
 if !has("unix")
