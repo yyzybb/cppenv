@@ -190,6 +190,13 @@ func! cppenv#switch_dd(up_deep, down_deep, vsplit)
     echo('Not find switch files.')
 endfunc
 
+" switch to .proto files
+func! cppenv#switch_proto()
+    let s:filename = expand('%:r:r')
+    let s:protofile = s:filename . '.proto'
+    exec(':e ' . s:protofile)
+endfunc
+
 """"""""""""""""""""maps"""""""""""""""""""""
 let s:is_infect = 0
 
@@ -232,6 +239,7 @@ func! cppenv#infect()
         "imap F G<CR>
     endif
 
+    map gp :call cppenv#switch_proto()<CR>
     map gs :call cppenv#switch_dd(0, 0, 0)<CR>
     map gns :call cppenv#switch_dd(1, 0, 0)<CR>
     map gvs :call cppenv#switch_dd(0, 0, 1)<CR><C-W>L<C-W>h
@@ -266,6 +274,7 @@ func! cppenv#uninfect()
     endif
 
     call cppenv#warn("Close cppenv.")
+    unmap gp
     unmap gs
     unmap gns
     unmap gvs
