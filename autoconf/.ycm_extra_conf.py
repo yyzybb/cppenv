@@ -227,7 +227,7 @@ def GetCompilationInfoForFile( filename ):
 
 ## Add includes flags from the Makefile.
 #
-makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile', 'build/Makefile', '../build/Makefile']
+makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile', 'build/Makefile', '../build/Makefile', '../../Makefile', '../../makefile']
 
 def ExtractIncludesFromMakefile(path):
     Log('ExtractIncludesFromMakefile')
