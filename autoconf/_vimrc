@@ -9,7 +9,7 @@ map <F12> :source %:p<CR>
 map ;b ^
 map ;e $
 
-map ;q :q<CR>
+map ;q :q<cr>
 map ;Q :quitall<CR>
 map ;w :w<CR>
 map ;lw <C-W>l
@@ -127,20 +127,19 @@ filetype off
 set rtp+=$VIM/vimfiles/bundle/Vundle.vim,$VIM/vimfiles/bundle
 set rtp+=$HOME/.vim/vimfiles/bundle/Vundle.vim,$HOME/.vim/vimfiles/bundle
 call vundle#begin("$HOME/.vim/vimfiles/bundle")
-Plugin 'https://gitee.com/yyzybb537/vundle-vim.git', {'name': 'Vundle.vim'}
+Plugin 'https://gitee.com/yyzybb537/Vundle.vim.git', {'name': 'Vundle.vim'}
 Plugin 'yyzybb/cppenv'
 Plugin 'yyzybb/quickfixer'
 Plugin 'https://gitee.com/yyzybb537/vim-airline.git'
 Plugin 'https://gitee.com/yyzybb537/nerdtree.git'
-Plugin 'https://gitee.com/yyzybb537/taglist-vim.git', {'name': 'taglist.vim'}
+Plugin 'https://gitee.com/yyzybb537/taglist.vim.git', {'name': 'taglist.vim'}
 Plugin 'https://gitee.com/yyzybb537/ultisnips.git'
 Plugin 'https://gitee.com/yyzybb537/vim-snippets.git'
 Plugin 'https://gitee.com/yyzybb537/vim-go.git'
-Plugin 'https://gitee.com/yyzybb537/YouCompleteMe.git'
-
 Plugin 'https://gitee.com/yyzybb537/vim-toml.git'
 Plugin 'https://gitee.com/yyzybb537/tabular.git'
 Plugin 'https://gitee.com/yyzybb537/vim-markdown.git'
+Plugin 'https://gitee.com/yyzybb537/YouCompleteMe.git'
 
 "Plugin 'godlygeek/tabular'
 "Plugin 'plasticboy/vim-markdown'

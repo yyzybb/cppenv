@@ -26,7 +26,30 @@
 workdir=`pwd`
 sudo ./change_source_list.sh
 
-VUNDLE_GIT=https://gitee.com/yyzybb537/vundle-vim.git
+compileVim() {
+    cd /tmp
+    test -d vim || git clone https://gitee.com/yyzybb537/vim.git
+    cd vim
+    git reset --hard v7.4.2367
+    git clean -f
+    pyConfig=`python-config --configdir`
+    ./configure --with-features=huge --enable-multibyte \
+        --enable-pythoninterp=yes --enable-rubyinterp=yes \
+        --enable-luainterp=yes --enable-perlinterp=yes \
+        --with-python-config-dir=${pyConfig} \
+        --enable-gui=gtk2 \
+        --enable-cscope --prefix=/usr 
+    make
+    sudo make install
+}
+
+vim --version || compileVim
+if [ `vim --version | grep 1-2367 -c` == "0" ]
+then
+    compileVim
+fi
+
+VUNDLE_GIT=https://gitee.com/yyzybb537/Vundle.vim.git
 YCM_GIT=https://gitee.com/yyzybb537/youcompleteme.git
 CMAKE_GIT=https://gitee.com/yyzybb537/cmake.git
 
@@ -41,7 +64,7 @@ if [ `which apt-get 2>/dev/null | wc -l` -eq 0 ] ; then
 fi
 echo $INSTALL_TOOL
 
-sudo $INSTALL_TOOL update -y
+#sudo $INSTALL_TOOL update -y
 
 set -e
 
@@ -165,9 +188,12 @@ test_python_clang || install_python_clang_from_source
 test_python_clang || build_llvm_clang
 
 # compile YouCompleteMe
-ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
+bundle_path=${vim_path}/vimfiles/bundle
+cd ${bundle_path}
+test -d YouCompleteMe || git clone https://gitee.com/yyzybb537/YouCompleteMe.git
+ycm_path=${bundle_path}/YouCompleteMe
 cd ${ycm_path}
-./install.sh --clang-completer --system-libclang
+./install.py --clang-completer --system-libclang --go-completer
 
 test_python_clang || echo "Error: python-clang install error, please check libclang.so and cindex.py!"
 echo 'vim-env is ok, good luck!'
