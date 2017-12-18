@@ -44,8 +44,10 @@ compileVim() {
 }
 
 vim --version || compileVim
-if [ `vim --version | grep 1-2367 -c` == "0" ]
-then
+vimVer=`vim --version | grep 1-2367 -c`
+if test ${vimVer} = "1"; then
+    echo "No need compile Vim"
+else
     compileVim
 fi
 
