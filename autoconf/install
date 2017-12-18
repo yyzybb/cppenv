@@ -205,11 +205,12 @@ test_python_clang || build_llvm_clang
 
 # compile YouCompleteMe
 bundle_path=${vim_path}/vimfiles/bundle
-cd ${bundle_path}
-test -d YouCompleteMe || git clone ${YCM_GIT}
+#cd ${bundle_path}
+#test -d YouCompleteMe || git clone ${YCM_GIT}
 ycm_path=${bundle_path}/YouCompleteMe
 cd ${ycm_path}
-./install.py --clang-completer --system-libclang --go-completer
+./install.py --go-completer
+#./install.py --clang-completer --system-libclang --go-completer
 
 test_python_clang || echo "Error: python-clang install error, please check libclang.so and cindex.py!"
 echo 'vim-env is ok, good luck!'
