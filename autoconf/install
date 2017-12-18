@@ -50,11 +50,8 @@ then
 fi
 
 VUNDLE_GIT=https://gitee.com/yyzybb537/Vundle.vim.git
-YCM_GIT=https://gitee.com/yyzybb537/youcompleteme.git
+YCM_GIT=https://gitee.com/yyzybb537/YouCompleteMe.git
 CMAKE_GIT=https://gitee.com/yyzybb537/cmake.git
-
-#VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
-#YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
 
 INSTALL_TOOL=apt-get
 PY_NAME=python-dev
@@ -190,7 +187,7 @@ test_python_clang || build_llvm_clang
 # compile YouCompleteMe
 bundle_path=${vim_path}/vimfiles/bundle
 cd ${bundle_path}
-test -d YouCompleteMe || git clone https://gitee.com/yyzybb537/YouCompleteMe.git
+test -d YouCompleteMe || git clone ${YCM_GIT}
 ycm_path=${bundle_path}/YouCompleteMe
 cd ${ycm_path}
 ./install.py --clang-completer --system-libclang --go-completer
