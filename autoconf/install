@@ -26,6 +26,36 @@
 workdir=`pwd`
 sudo ./change_source_list.sh
 
+set -e
+
+# config git address
+VUNDLE_GIT=https://gitee.com/yyzybb537/Vundle.vim.git
+YCM_GIT=https://gitee.com/yyzybb537/YouCompleteMe.git
+CMAKE_GIT=https://gitee.com/yyzybb537/cmake.git
+
+# install tool
+INSTALL_TOOL=apt-get
+INSTALL_SHOW="apt-cache show"
+PY_NAME=python-dev
+RUBY_DEV_NAME=ruby-dev
+if [ `which apt-get 2>/dev/null | wc -l` -eq 0 ] ; then
+    INSTALL_TOOL=yum
+    INSTALL_SHOW="yum info"
+    PY_NAME=python-devel
+    RUBY_DEV_NAME=ruby-devel
+fi
+echo "INSTALL_TOOL: $INSTALL_TOOL"
+
+#sudo $INSTALL_TOOL update -y
+
+installPackage() {
+    $INSTALL_SHOW $1 || $INSTALL_TOOL install -y $1
+}
+
+installProgram() {
+    $1 --version || $INSTALL_TOOL install -y $1
+}
+
 compileVim() {
     cd /tmp
     test -d vim || git clone https://gitee.com/yyzybb537/vim.git
@@ -43,38 +73,25 @@ compileVim() {
     sudo make install
 }
 
+installPackage $PY_NAME
+installPackage $RUBY_DEV_NAME
+
+installProgram python
+installProgram ruby
+installProgram dos2unix
+installProgram git
+installProgram ctags
+g++ --version || sudo $INSTALL_TOOL install g++ -y || sudo $INSTALL_TOOL install gcc-c++ -y
+locate --version || sudo $INSTALL_TOOL install mlocate -y
+
 vim --version || compileVim
 vimVer=`vim --version | grep 1-2367 -c`
 if test ${vimVer} = "1"; then
     echo "No need compile Vim"
 else
     compileVim
+    cd $workdir
 fi
-
-VUNDLE_GIT=https://gitee.com/yyzybb537/Vundle.vim.git
-YCM_GIT=https://gitee.com/yyzybb537/YouCompleteMe.git
-CMAKE_GIT=https://gitee.com/yyzybb537/cmake.git
-
-INSTALL_TOOL=apt-get
-PY_NAME=python-dev
-if [ `which apt-get 2>/dev/null | wc -l` -eq 0 ] ; then
-    INSTALL_TOOL=yum
-    PY_NAME=python-devel
-fi
-echo $INSTALL_TOOL
-
-#sudo $INSTALL_TOOL update -y
-
-set -e
-
-dos2unix --version || sudo $INSTALL_TOOL install dos2unix -y
-git --version || sudo $INSTALL_TOOL install git -y
-vim --version || sudo $INSTALL_TOOL install vim -y
-g++ --version || sudo $INSTALL_TOOL install g++ -y || sudo $INSTALL_TOOL install gcc-c++ -y
-ctags --version || sudo $INSTALL_TOOL install ctags -y
-locate --version || sudo $INSTALL_TOOL install mlocate -y
-
-sudo $INSTALL_TOOL install $PY_NAME -y
 
 # copy _vimrc file to $HOME
 dos2unix _vimrc
