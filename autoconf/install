@@ -26,9 +26,9 @@
 workdir=`pwd`
 sudo ./change_source_list.sh
 
-VUNDLE_GIT=https://code.csdn.net/u014579048/vundle-vim.git
-YCM_GIT=https://code.csdn.net/u014579048/youcompleteme.git
-CMAKE_GIT=https://code.csdn.net/u014579048/cmake.git
+VUNDLE_GIT=https://gitee.com/yyzybb537/vundle-vim.git
+YCM_GIT=https://gitee.com/yyzybb537/youcompleteme.git
+CMAKE_GIT=https://gitee.com/yyzybb537/cmake.git
 
 #VUNDLE_GIT=https://github.com/gmarik/Vundle.vim.git
 #YCM_GIT=https://github.com/Valloric/YouCompleteMe.git
@@ -165,7 +165,7 @@ test_python_clang || install_python_clang_from_source
 test_python_clang || build_llvm_clang
 
 # compile YouCompleteMe
-ycm_path=${vim_path}/vimfiles/bundle/youcompleteme
+ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
 cd ${ycm_path}
 ./install.sh --clang-completer --system-libclang
 

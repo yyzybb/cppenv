@@ -5,7 +5,7 @@ set -e
 PATH=$PATH:/usr/local/bin
 
 llvm_clang_dir=$1
-LLVM_CLANG_GIT=https://code.csdn.net/u014579048/llvm-clang.git
+LLVM_CLANG_GIT=https://gitee.com/yyzybb537/llvm-clang.git
 if test -d $llvm_clang_dir; then
     cd $llvm_clang_dir
     git pull
