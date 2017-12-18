@@ -71,6 +71,7 @@ compileVim() {
         --enable-cscope --prefix=/usr 
     make
     sudo make install
+    cd $workdir
 }
 
 installPackage $PY_NAME
@@ -90,7 +91,6 @@ if test ${vimVer} = "1"; then
     echo "No need compile Vim"
 else
     compileVim
-    cd $workdir
 fi
 
 # copy _vimrc file to $HOME
