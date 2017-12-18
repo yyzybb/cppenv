@@ -139,7 +139,7 @@ Plugin 'https://gitee.com/yyzybb537/vim-go.git'
 Plugin 'https://gitee.com/yyzybb537/vim-toml.git'
 Plugin 'https://gitee.com/yyzybb537/tabular.git'
 Plugin 'https://gitee.com/yyzybb537/vim-markdown.git'
-Plugin 'https://gitee.com/yyzybb537/YouCompleteMe.git'
+"Plugin 'https://gitee.com/yyzybb537/YouCompleteMe.git'
 
 "Plugin 'godlygeek/tabular'
 "Plugin 'plasticboy/vim-markdown'
