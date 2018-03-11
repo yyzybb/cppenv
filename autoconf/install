@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Install the vim and cppenviron.
 # * It's contains software:
@@ -49,14 +49,15 @@ echo "INSTALL_TOOL: $INSTALL_TOOL"
 #sudo $INSTALL_TOOL update -y
 
 installPackage() {
-    $INSTALL_SHOW $1 || $INSTALL_TOOL install -y $1
+    $INSTALL_SHOW $1 || sudo $INSTALL_TOOL install -y $2
 }
 
 installProgram() {
-    $1 --version || $INSTALL_TOOL install -y $1
+    $1 --version || sudo $INSTALL_TOOL install -y $2
 }
 
 compileVim() {
+    echo "Start compileVim"
     cd /tmp
     test -d vim || git clone https://gitee.com/yyzybb537/vim.git
     cd vim
@@ -68,28 +69,31 @@ compileVim() {
         --enable-luainterp=yes --enable-perlinterp=yes \
         --with-python-config-dir=${pyConfig} \
         --enable-gui=gtk2 \
-        --enable-cscope --prefix=/usr 
+        --enable-cscope --prefix=/usr \
+        --with-tlib=ncurses
     make
     sudo make install
     cd $workdir
 }
 
-installPackage $PY_NAME
-installPackage $RUBY_DEV_NAME
+installPackage libncurses5-dev
+installPackage $RUBY_DEV_NAME $RUBY_DEV_NAME
 
-installProgram python
-installProgram ruby
-installProgram dos2unix
-installProgram git
-installProgram ctags
+installProgram python python
+installProgram python-config $PY_NAME
+installProgram ruby ruby
+installProgram dos2unix dos2unix
+installProgram git git
+installProgram ctags ctags 
 g++ --version || sudo $INSTALL_TOOL install g++ -y || sudo $INSTALL_TOOL install gcc-c++ -y
 locate --version || sudo $INSTALL_TOOL install mlocate -y
 
 vim --version || compileVim
-vimVer=`vim --version | grep 1-2367 -c`
+vimVer=`vim --version | grep 1-2367 -c` ||
 if test ${vimVer} = "1"; then
     echo "No need compile Vim"
 else
+    echo "Need compile Vim"
     compileVim
 fi
 
