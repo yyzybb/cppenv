@@ -34,7 +34,9 @@ func! cppenv#comment()
     "   let indent_n = cindent(line('.') - 1)
     "   let line_info = repeat(' ', indent_n)
     "endif
-    let new_info = substitute(line_info, '\s*', '\0//', "")
+    
+    "let new_info = substitute(line_info, '\s*', '\0//', "")
+    let new_info = '//' . line_info
     call setline('.', new_info)
 endfunc
 
@@ -87,13 +89,30 @@ func! cppenv#end_brackets(bracket)
     let line_info = getline('.')
     let pos = getpos('.')
     let active = 0
-    if empty(line_info)
-        let active = 0
-    elseif line_info[pos[2]] == a:bracket[1]
+    "if empty(line_info)
+    "    let active = 0
+    "elseif line_info[pos[2]] == a:bracket[1]
+    "    let active = 1
+    "endif
+    
+    let n1 = 0
+    let n2 = 0
+    let iter = 0
+    while iter < strlen(line_info)
+        let s:char = line_info[iter]
+        if s:char == a:bracket[0]
+            let n1 += 1
+        endif
+        if s:char == a:bracket[1]
+            let n2 += 1
+        endif
+        let iter += 1
+    endwhile
+    if n1 > n2
         let active = 1
     endif
 
-    let bracket = active == 0 ? a:bracket[1] : ''
+    let bracket = active == 1 ? a:bracket[1] : ''
     let result = strpart(line_info, 0, pos[2]) . bracket . strpart(line_info, pos[2])
     call setline('.', result)
     let pos[2] = pos[2] + 1
