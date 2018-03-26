@@ -126,6 +126,8 @@ func! cppenv#enter()
         call setline('.', before . '{')
 
         let s:end_bracket = '}'
+        
+        " for cpp
         if line_info =~ '^\s*{}\s*$' && pos[1] > 1
             let prev_line_info = getline(pos[1] - 1)
             if prev_line_info =~ '^\s*\(class\|struct\|union\)\s\+[^{}]*$' || prev_line_info =~ '^.*=\s*$' || prev_line_info =~ '^\s*go\s\+\[.*\][^{}]*$'
@@ -134,7 +136,9 @@ func! cppenv#enter()
         elseif line_info =~ '^\(\s*\|.*\s\+\)\(class\|struct\|union\)\s\+\(\w\|\d\|_\)\+\s*{}\s*$' || line_info =~ '^.*=\s*{}\s*$' || line_info =~ '^\s*go\s\+\[.*\][^{}]*{}$'
             let s:end_bracket = '};'
         endif
-        call append(pos[1], repeat(' ', cindent('.')) . s:end_bracket)
+
+        call append(pos[1], s:end_bracket)
+        "call append(pos[1], repeat(' ', cindent('.')) . s:end_bracket)
         call setpos('.', pos)
     endif
 endfunc
@@ -227,7 +231,8 @@ func! cppenv#infect()
     
     cnoremap <C-a>cr <CR>
     inoremap <C-a>cr <CR>
-    imap <C-l> <C-a>b<ESC>:call cppenv#enter()<C-a>cr<C-a>r<C-a>cr
+    " use =j to indent below line '}'
+    imap <C-l> <C-a>b<ESC>:call cppenv#enter()<C-a>cr=j<C-a>r<C-a>cr
 
     if has("unix")
         "imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
