@@ -88,7 +88,7 @@ endfunc
 func! cppenv#end_brackets(bracket)
     let line_info = getline('.')
     let pos = getpos('.')
-    let active = 0
+    let active = 1
     "if empty(line_info)
     "    let active = 0
     "elseif line_info[pos[2]] == a:bracket[1]
@@ -108,8 +108,8 @@ func! cppenv#end_brackets(bracket)
         endif
         let iter += 1
     endwhile
-    if n1 > n2
-        let active = 1
+    if line_info[pos[2]] == a:bracket[1] && n1 <= n2
+        let active = 0
     endif
 
     let bracket = active == 1 ? a:bracket[1] : ''
@@ -140,24 +140,34 @@ endfunc
 func! cppenv#enter()
     let line_info = getline('.')
     let pos = getpos('.')
+    let s:bracket = ""
     if strpart(line_info, pos[2] - 1, 2) =~ '{}' && line_info =~ '{}\s*$'
-        let before = strpart(line_info, 0, pos[2] - 1)
-        call setline('.', before . '{')
+        let s:bracket = "{}"
+    elseif strpart(line_info, pos[2] - 1, 2) =~ '()' && line_info =~ '^import\s*()\s*$'
+        let s:bracket = "()"
+    endif
 
-        let s:end_bracket = '}'
+    " 分行
+    if s:bracket != ""
+        let before = strpart(line_info, 0, pos[2] - 1)
+        call setline('.', before . s:bracket[0])
+
+        let s:end_bracket = s:bracket[1]
         
         " for cpp
         if line_info =~ '^\s*{}\s*$' && pos[1] > 1
             let prev_line_info = getline(pos[1] - 1)
             if prev_line_info =~ '^\s*\(class\|struct\|union\)\s\+[^{}]*$' || prev_line_info =~ '^.*=\s*$' || prev_line_info =~ '^\s*go\s\+\[.*\][^{}]*$'
-                let s:end_bracket = '};'
+                let s:end_bracket = s:end_bracket . ';'
             endif
         elseif line_info =~ '^\(\s*\|.*\s\+\)\(class\|struct\|union\)\s\+\(\w\|\d\|_\)\+\s*{}\s*$' || line_info =~ '^.*=\s*{}\s*$' || line_info =~ '^\s*go\s\+\[.*\][^{}]*{}$'
-            let s:end_bracket = '};'
+            let s:end_bracket = s:end_bracket . ';'
         endif
 
+        " for go.import
+        " nothing need to do
+
         call append(pos[1], s:end_bracket)
-        "call append(pos[1], repeat(' ', cindent('.')) . s:end_bracket)
         call setpos('.', pos)
     endif
 endfunc
@@ -251,7 +261,8 @@ func! cppenv#infect()
     cnoremap <C-a>cr <CR>
     inoremap <C-a>cr <CR>
     " use =j to indent below line '}'
-    imap <C-l> <C-a>b<ESC>:call cppenv#enter()<C-a>cr=j<C-a>r<C-a>cr
+    imap <C-a>= <C-a>b<ESC>=j<C-a>r
+    imap <C-l> <C-a>b<ESC>:call cppenv#enter()<C-a>cr<C-a>r<C-a>=<C-a>cr
 
     if has("unix")
         "imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
