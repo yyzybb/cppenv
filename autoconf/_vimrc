@@ -198,7 +198,8 @@ au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go execute cppenv#i
 au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go set fo-=ro
 
 " auto_govender
-au BufWritePost *.go execute ag#onSave()
+au BufNewFile,BufRead *.go execute ag#dummy()
+au BufWritePost *.go call ag#onSave()
 
 " vim-go
 let g:go_fmt_autosave = 0
