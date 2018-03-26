@@ -130,6 +130,7 @@ call vundle#begin("$HOME/.vim/vimfiles/bundle")
 Plugin 'https://gitee.com/yyzybb537/Vundle.vim.git', {'name': 'Vundle.vim'}
 Plugin 'yyzybb/cppenv'
 Plugin 'yyzybb/quickfixer'
+Plugin 'yyzybb/auto_govender'
 Plugin 'https://gitee.com/yyzybb537/vim-airline.git'
 Plugin 'https://gitee.com/yyzybb537/nerdtree.git'
 Plugin 'https://gitee.com/yyzybb537/taglist.vim.git', {'name': 'taglist.vim'}
@@ -195,6 +196,9 @@ map TU :TlistUpdate<CR>
 au BufNewFile,BufRead * execute cppenv#dummy()
 au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go execute cppenv#infect()
 au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go set fo-=ro
+
+" auto_govender
+au BufWritePost *.go execute ag#onSave()
 
 " vim-go
 let g:go_fmt_autosave = 0
