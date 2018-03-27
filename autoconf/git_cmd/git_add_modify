@@ -7,7 +7,7 @@ do
     echo add $f;
 done
 
-deleted_files=`git status -s $@ | egrep "^\s+D" | awk '{print $2}'`
+deleted_files=`git status -s $@ | egrep "^[^\s]*D[^\s]*\s" | awk '{print $2}'`
 for f in $deleted_files
 do
     git rm $f;

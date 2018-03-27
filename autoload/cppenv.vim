@@ -105,7 +105,7 @@ func! cppenv#auto_brackets(bracket)
         endif
         noremap <C-a>auto a
     else
-        let line_info = strpart(line_info, 0, pos[2]) . a:bracket . strpart(line_info, pos[2])
+        let line_info = strpart(line_info, 0, pos[2]) . a:bracket[0] . strpart(line_info, pos[2])
         noremap <C-a>auto a
     endif
 
