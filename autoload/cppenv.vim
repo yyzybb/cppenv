@@ -38,7 +38,7 @@ func! cppenv#uncomment()
 endfunc
 
 " auto () [] {}
-func! cppenv#auto_brackets(bracket)
+func! cppenv#auto_brackets11(bracket)
     let line_info = getline('.')
     let pos = getpos('.')
     let pat = '^.\{' . pos[2] . '\}\s\+.*$'
@@ -71,6 +71,49 @@ func! cppenv#auto_brackets(bracket)
     call setpos('.', pos)
 endfunc
 
+func! cppenv#strcount(str, c)
+    let n = 0
+    let iter = 0
+    while iter < strlen(a:str)
+        let s:char = a:str[iter]
+        if s:char == a:c
+            let n += 1
+        endif
+        let iter += 1
+    endwhile
+    return n
+endfunc
+
+" auto complete () [] {}
+func! cppenv#auto_brackets(bracket)
+    let line_info = getline('.')
+    let pos = getpos('.')
+    if empty(line_info)
+        let line_info = line_info . a:bracket
+        " indent
+        noremap <C-a>auto ==a
+    elseif len(line_info) <= pos[2]
+        let line_info = line_info . a:bracket
+        noremap <C-a>auto a
+    elseif line_info[pos[2]] == a:bracket[1]
+        let n1 = cppenv#strcount(line_info, a:bracket[0])
+        let n2 = cppenv#strcount(line_info, a:bracket[1])
+        if n1 < n2
+            let line_info = strpart(line_info, 0, pos[2]) . a:bracket[0] . strpart(line_info, pos[2])
+        else
+            let line_info = strpart(line_info, 0, pos[2]) . a:bracket . strpart(line_info, pos[2])
+        endif
+        noremap <C-a>auto a
+    else
+        let line_info = strpart(line_info, 0, pos[2]) . a:bracket . strpart(line_info, pos[2])
+        noremap <C-a>auto a
+    endif
+
+    call setline('.', line_info)
+    let pos[2] = pos[2] + 1
+    call setpos('.', pos)
+endfunc
+
 " end () [] {}
 func! cppenv#end_brackets(bracket)
     let line_info = getline('.')
@@ -82,19 +125,8 @@ func! cppenv#end_brackets(bracket)
     "    let active = 1
     "endif
     
-    let n1 = 0
-    let n2 = 0
-    let iter = 0
-    while iter < strlen(line_info)
-        let s:char = line_info[iter]
-        if s:char == a:bracket[0]
-            let n1 += 1
-        endif
-        if s:char == a:bracket[1]
-            let n2 += 1
-        endif
-        let iter += 1
-    endwhile
+    let n1 = cppenv#strcount(line_info, a:bracket[0])
+    let n2 = cppenv#strcount(line_info, a:bracket[1])
     if line_info[pos[2]] == a:bracket[1] && n1 <= n2
         let active = 0
     endif
@@ -256,14 +288,6 @@ func! cppenv#infect()
     map <C-u> :call cppenv#uncomment()<CR>
     imap <C-u> <Esc>:call cppenv#uncomment()<CR>
 
-    imap ( <Esc>:call cppenv#auto_brackets('()')<CR>a
-    imap [ <Esc>:call cppenv#auto_brackets('[]')<CR>a
-    imap { <Esc>:call cppenv#auto_brackets('{}')<CR>a
-
-    imap ) <Esc>:call cppenv#end_brackets('()')<CR>a
-    imap ] <Esc>:call cppenv#end_brackets('[]')<CR>a
-    imap } <Esc>:call cppenv#end_brackets('{}')<CR>a
-
     imap <expr> <C-a>b cppenv#back_imode_cursor()
     map <C-a>r :call cppenv#restore_imode_cursor()<CR><C-a>i
     "imap <C-a>i "was setting in func! restore_imode_cursor()"
@@ -276,9 +300,22 @@ func! cppenv#infect()
     "imap <C-l> <C-a>cr<C-a>b<ESC>ko
     imap <C-l> <C-a>cr<C-a>b<ESC>:call cppenv#onEnter()<C-a>cr<C-a>r
 
+    "imap ( <Esc>:call cppenv#auto_brackets('()')<CR>a
+    "imap [ <Esc>:call cppenv#auto_brackets('[]')<CR>a
+    "imap { <Esc>:call cppenv#auto_brackets('{}')<CR>a
+    
+    imap ( <Esc>:call cppenv#auto_brackets('()')<CR><C-a>auto
+    imap [ <Esc>:call cppenv#auto_brackets('[]')<CR><C-a>auto
+    imap { <Esc>:call cppenv#auto_brackets('{}')<CR><C-a>auto
+
+    imap ) <Esc>:call cppenv#end_brackets('()')<CR>a
+    imap ] <Esc>:call cppenv#end_brackets('[]')<CR>a
+    imap } <Esc>:call cppenv#end_brackets('{}')<CR>a
+
+
     if has("unix")
-        "imap < <Esc>:call cppenv#auto_brackets('<>')<CR>a
-        "imap > <Esc>:call cppenv#end_brackets('<>')<CR>a
+        "imap < <Esc>:call cppenv#auto_brackets('<>')<CR><C-a>auto
+        "imap > <Esc>:call cppenv#end_brackets('<>')<CR><C-a>auto
 
         imap <CR> <C-l>
 
