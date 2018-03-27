@@ -67,6 +67,19 @@ func! cppenv#auto_brackets(bracket)
     call setpos('.', pos)
 endfunc
 
+func! cppenv#strcount(str, c)
+    let n = 0
+    let iter = 0
+    while iter < strlen(a:str)
+        let s:char = a:str[iter]
+        if s:char == a:c
+            let n += 1
+        endif
+        let iter += 1
+    endwhile
+    return n
+endfunc
+
 " end () [] {}
 func! cppenv#end_brackets(bracket)
     let line_info = getline('.')
