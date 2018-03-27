@@ -37,53 +37,6 @@ func! cppenv#uncomment()
     endif
 endfunc
 
-" auto () [] {}
-func! cppenv#auto_brackets11(bracket)
-    let line_info = getline('.')
-    let pos = getpos('.')
-    let pat = '^.\{' . pos[2] . '\}\s\+.*$'
-    let active = 0
-    if empty(line_info)
-        let active = 1
-    elseif len(line_info) == pos[2]
-        let active = 2
-    elseif line_info =~ pat
-        let active = 3
-    endif
-    "echo pat
-    "echo active
-    "echo virtcol('.') col(',') getpos('.')[2] wincol()
-    let bracket = active > 0 ? a:bracket : strpart(a:bracket, 0, 1)
-    let result = strpart(line_info, 0, pos[2]) . bracket . strpart(line_info, pos[2])
-
-    if a:bracket[0] == '{' && active == 1
-        let indent_n = cindent(line('.') - 1)
-        let pos[2] = indent_n + 1
-        let result = repeat(' ', indent_n) . result
-    elseif active == 1
-        let pos[2] = wincol()
-        let result = repeat(' ', wincol() - 1) . result
-    else
-        let pos[2] = pos[2] + 1
-    endif
-
-    call setline('.', result)
-    call setpos('.', pos)
-endfunc
-
-func! cppenv#strcount(str, c)
-    let n = 0
-    let iter = 0
-    while iter < strlen(a:str)
-        let s:char = a:str[iter]
-        if s:char == a:c
-            let n += 1
-        endif
-        let iter += 1
-    endwhile
-    return n
-endfunc
-
 " auto complete () [] {}
 func! cppenv#auto_brackets(bracket)
     let line_info = getline('.')
@@ -154,11 +107,11 @@ func! cppenv#restore_imode_cursor()
         return
     endif
 
-    if pos[2] < s:pos_back[2]
-        noremap <C-a>i a
-    else
+    "if pos[2] < s:pos_back[2]
+    "    noremap <C-a>i a
+    "else
         noremap <C-a>i i
-    endif
+    "endif
 endfunc
 
 func! cppenv#onEnter()
@@ -210,6 +163,12 @@ func! cppenv#onEnter()
         noremap <C-a>i S
     else
         echo "normal enter"
+        let s:mapping = 1
+        if line2 =~ "^\s*$"
+            noremap <C-a>i S
+        else
+            noremap <C-a>i A
+        endif
     endif
     "redir ""
 endfunc
