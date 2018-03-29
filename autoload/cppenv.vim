@@ -180,7 +180,7 @@ func! cppenv#onEnter()
         if line2 =~ "^\s*$"
             noremap <C-a>i S
         else
-            noremap <C-a>i A
+            noremap <C-a>i i
         endif
     endif
     "redir ""
