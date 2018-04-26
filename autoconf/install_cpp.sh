@@ -63,10 +63,41 @@ install_clang()
 
     echo 'Not found clang in system, will install there from llvm-clang source code.'
     llvm_clang_dir=$HOME/.vim.git/llvm-clang_cppenv
-    sudo ${workdir}/install_clang.sh $llvm_clang_dir
+
+    LLVM_CLANG_GIT=https://gitee.com/yyzybb537/llvm-clang.git
+    git_clone $LLVM_CLANG_GIT $llvm_clang_dir
+    cd $llvm_clang_dir
+
+    xz -dk llvm.tar.xz || echo ''
+    xz -dk clang.tar.xz || echo ''
+    tar xf clang.tar
+    tar xf llvm.tar
+
+    cd llvm-6.0.0.src
+    mkdir -p build
+    cd build
+    cmake ..
+    make
+    sudo make install
+    cd ../..
+
+    cd cfe-6.0.0.src
+    mkdir -p build
+    cd build
+    cmake ..
+    make
+    sudo make install
+    cd ..
+
+    pyclang_dst=/usr/lib/python2.7/dist-packages
+    test -d $pyclang_dst || pyclang_dst=/usr/lib/python2.7/site-packages
+    cp bindings/python/clang $pyclang_dst -r
+    echo '/usr/local/lib' > /etc/ld.so.conf.d/cppenv.conf
 }
 install_clang
 
 ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
+#cd $ycm_path
 #./install.py --clang-completer --system-libclang --go-completer
 echo 'vim-cpp-env is ok, good luck!'
+
