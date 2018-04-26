@@ -58,9 +58,8 @@ installProgram() {
 
 compileVim() {
     echo "Start compileVim"
-    cd /tmp
-    test -d vim || git clone https://gitee.com/yyzybb537/vim.git
-    cd vim
+    git_clone https://gitee.com/yyzybb537/vim.git $HOME/.vim.git/vim
+    cd $HOME/.vim.git/vim
     git reset --hard v7.4.2367
     git clean -f
     pyConfig=`python-config --configdir`
@@ -116,16 +115,18 @@ vundle_path=${vim_path}/vimfiles/bundle/Vundle.vim
 #echo $vim_path
 #echo ${vundle_path}
 
-if test -d ${vundle_path}; then
-    cd ${vundle_path}
-    git pull
-    cd -
-else
-    git clone ${VUNDLE_GIT} ${vundle_path}
-fi
+git_clone()
+{
+    remote=$1
+    dir=$2
+    mkdir -p $dir
 
-# install vim-plugins
-vim +BundleInstall -c quitall
+    cd $dir
+    git status && git pull || git clone $remote .
+    cd -
+}
+
+git_clone ${VUNDLE_GIT} ${vundle_path}
 
 test_python_clang()
 {
@@ -133,89 +134,15 @@ test_python_clang()
     echo 'import clang.cindex; s = clang.cindex.conf.lib' | python
 }
 
-install_python_clang_from_source()
-{
-    sudo $INSTALL_TOOL install python-clang-3.6 -y && \
-    sudo $INSTALL_TOOL install libclang-3.6-dev -y || echo 'err'
-}
-
-build_llvm_clang()
-{
-    echo 'Not found python-clang in sys source, will install there from llvm-clang source code.'
-
-    llvm_clang_dir=$HOME/llvm-clang_cppenv
-    sudo ${workdir}/install_clang.sh $llvm_clang_dir
-}
-
-install_cmake_from_source_list()
-{
-    cmake --version || sudo $INSTALL_TOOL install cmake -y
-}
-
-build_cmake_by_source_code()
-{
-    cmake_dir=$HOME/cmake_cppenv
-    if test -d $cmake_dir; then
-        cd $cmake_dir
-        git pull
-    else
-        git clone $CMAKE_GIT $cmake_dir
-        cd $cmake_dir
-    fi
-
-    tar zxf cmake-3.4.0.tar.gz
-    cd cmake-3.4.0
-    ./bootstrap
-    gmake
-    sudo ${INSTALL_TOOL} remove cmake -y || echo ''
-    sudo gmake install
-    sudo ln -s /usr/local/bin/cmake /usr/bin/cmake || echo ''
-}
-
-version_large_or_equal()
-{
-    lhs=$1
-    rhs=$2
-    lhs_major=`echo $lhs | cut -d. -f1`
-    lhs_minor=`echo $lhs | cut -d. -f2`
-    lhs_num=`echo $lhs | cut -d. -f3`
-    rhs_major=`echo $rhs | cut -d. -f1`
-    rhs_minor=`echo $rhs | cut -d. -f2`
-    rhs_num=`echo $rhs | cut -d. -f3`
-    lhs_cmp=`expr $lhs_major \* 10000 + $lhs_minor \* 100 + $lhs_num`
-    rhs_cmp=`expr $rhs_major \* 10000 + $rhs_minor \* 100 + $rhs_num`
-    test $lhs_cmp -ge $rhs_cmp
-}
-
-install_cmake()
-{
-    install_cmake_from_source_list
-    cmake_ver=''
-    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/\([^0-9.]\+\)//g'` || echo ''
-    if test -z $cmake_ver ; then
-        if [ "${INSTALL_TOOL}" == "yum" ] ; then
-            cmake_ver=`sudo yum info cmake | grep "版本\|Version" | sed 's/\([^0-9.]\+\)//g'`
-        else
-            cmake_ver=`sudo apt-cache show cmake |  grep "版本\|Version" | sed 's/\([^0-9.]\+\)//g'`
-        fi 
-    fi 
-
-    version_large_or_equal $cmake_ver "2.8.12" || build_cmake_by_source_code
-}
-
-install_cmake
-test_python_clang || install_python_clang_from_source
-test_python_clang || build_llvm_clang
-
 # compile YouCompleteMe
-bundle_path=${vim_path}/vimfiles/bundle
-#cd ${bundle_path}
-#test -d YouCompleteMe || git clone ${YCM_GIT}
-ycm_path=${bundle_path}/YouCompleteMe
+ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
+git_clone ${YCM_GIT} ${ycm_path}
 cd ${ycm_path}
 ./install.py --go-completer
-#./install.py --clang-completer --system-libclang --go-completer
 
-test_python_clang || echo "Error: python-clang install error, please check libclang.so and cindex.py!"
-echo 'vim-env is ok, good luck!'
+# install other's vim-plugins
+vim +BundleInstall -c quitall
+
+#test_python_clang || echo "Error: python-clang install error, please check libclang.so and cindex.py!"
+echo 'vim-go-env is ok, good luck!'
 
