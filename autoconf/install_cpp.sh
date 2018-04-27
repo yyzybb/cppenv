@@ -64,6 +64,44 @@ install_clang()
     echo 'Not found clang in system, will install there from llvm-clang source code.'
     llvm_clang_dir=$HOME/.vim.git/llvm-clang_cppenv
 
+    os_ver=`cat /etc/os-release | grep VERSION_ID | cut -d\" -f2`
+    os_name=`cat /etc/os-release | grep NAME | head -n1 | cut -d\" -f2`
+    echo "Current OS: " $os_name
+    echo "Version: " $os_ver
+
+    built_from_source=0
+    if [ "$os_name" == "Ubuntu" ]
+    then
+        if [ "$os_ver" == "16.04" ]
+        then
+            cd $HOME/.vim.git
+            test -f clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+            test -d clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04 || tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+            cd clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04
+        else
+            if [ "$os_ver" == "14.04" ]
+            then
+                cd $HOME/.vim.git
+                test -f clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+                test -d clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04 || tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+                cd clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04
+            else
+                built_from_source=1
+            fi
+        fi
+    fi
+
+    if [ "$built_from_source" == "0" ]
+    then
+        sudo cp bin/* /usr/bin
+        sudo cp include/* /usr/include -r
+        sudo cp lib/* /usr/lib -r
+        sudo cp libexec/* /usr/bin
+        return
+    fi
+
+    return
+
     LLVM_CLANG_GIT=https://gitee.com/yyzybb537/llvm-clang.git
     git_clone $LLVM_CLANG_GIT $llvm_clang_dir
     cd $llvm_clang_dir
@@ -97,7 +135,7 @@ install_clang()
 install_clang
 
 ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
-#cd $ycm_path
-#./install.py --clang-completer --system-libclang --go-completer
+cd $ycm_path
+./install.py --clang-completer --system-libclang --go-completer
 echo 'vim-cpp-env is ok, good luck!'
 
