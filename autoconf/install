@@ -23,10 +23,19 @@
 
 # install dos2unix, git, vim, g++, ctags, cmake, python-dev
 
-workdir=`pwd`
-sudo ./change_source_list.sh
-
 set -e
+
+workdir=`pwd`
+isMac=`uname -a | grep Darwin -c`
+if [ "$isMac" == '1' ]
+then
+    brew --version || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    brew update
+    wget --version || brew install wget
+    echo 'MacOS brew installed OK'
+else
+    sudo ./change_source_list.sh
+fi
 
 # config git address
 VUNDLE_GIT=https://gitee.com/yyzybb537/Vundle.vim.git
@@ -34,30 +43,38 @@ YCM_GIT=https://gitee.com/yyzybb537/YouCompleteMe.git
 CMAKE_GIT=https://gitee.com/yyzybb537/cmake.git
 
 # install tool
-INSTALL_TOOL=apt-get
+INSTALL_TOOL="sudo apt-get"
 INSTALL_SHOW="apt-cache show"
 PY_NAME=python-dev
 RUBY_DEV_NAME=ruby-dev
 if [ `which apt-get 2>/dev/null | wc -l` -eq 0 ] ; then
-    INSTALL_TOOL=yum
+    INSTALL_TOOL="sudo yum"
     INSTALL_SHOW="yum info"
     PY_NAME=python-devel
     RUBY_DEV_NAME=ruby-devel
 fi
+if [ "$isMac" == '1' ]
+then
+    INSTALL_TOOL=brew
+    INSTALL_SHOW="brew info"
+fi
 echo "INSTALL_TOOL: $INSTALL_TOOL"
 
-#sudo $INSTALL_TOOL update -y
-
 installPackage() {
-    $INSTALL_SHOW $1 || sudo $INSTALL_TOOL install -y $2
+    $INSTALL_SHOW $1 || $INSTALL_TOOL install -y $2
 }
 
 installProgram() {
-    $1 --version || sudo $INSTALL_TOOL install -y $2
+    $1 --version || $INSTALL_TOOL install -y $2
 }
 
 compileVim() {
     echo "Start compileVim"
+    installPackage libncurses5-dev
+    installPackage $RUBY_DEV_NAME $RUBY_DEV_NAME
+    installProgram python python
+    installProgram python-config $PY_NAME
+    installProgram ruby ruby
     git_clone https://gitee.com/yyzybb537/vim.git $HOME/.vim.git/vim
     cd $HOME/.vim.git/vim
     git reset --hard v7.4.2367
@@ -75,25 +92,22 @@ compileVim() {
     cd $workdir
 }
 
-installPackage libncurses5-dev
-installPackage $RUBY_DEV_NAME $RUBY_DEV_NAME
-
-installProgram python python
-installProgram python-config $PY_NAME
-installProgram ruby ruby
 installProgram dos2unix dos2unix
 installProgram git git
-installProgram ctags ctags 
-g++ --version || sudo $INSTALL_TOOL install g++ -y || sudo $INSTALL_TOOL install gcc-c++ -y
-locate --version || sudo $INSTALL_TOOL install mlocate -y
+g++ --version || $INSTALL_TOOL install g++ -y || $INSTALL_TOOL install gcc-c++ -y
 
-vim --version || compileVim
-vimVer=`vim --version | grep 1-2367 -c` ||
-if test ${vimVer} = "1"; then
-    echo "No need compile Vim"
-else
-    echo "Need compile Vim"
-    compileVim
+if [ "$isMac" == "0" ]; then
+    installProgram ctags ctags 
+    locate --version || $INSTALL_TOOL install mlocate -y
+
+    vim --version || compileVim
+    vimVer=`vim --version | grep 1-2367 -c` ||
+    if test ${vimVer} = "1"; then
+        echo "No need compile Vim"
+    else
+        echo "Need compile Vim"
+        compileVim
+    fi
 fi
 
 # copy _vimrc file to $HOME
@@ -133,6 +147,40 @@ test_python_clang()
     sudo ldconfig
     echo 'import clang.cindex; s = clang.cindex.conf.lib' | python
 }
+
+version_large_or_equal()
+{
+    lhs=$1
+    rhs=$2
+    lhs_major=`echo $lhs | cut -d. -f1`
+    lhs_minor=`echo $lhs | cut -d. -f2`
+    lhs_num=`echo $lhs | cut -d. -f3`
+    rhs_major=`echo $rhs | cut -d. -f1`
+    rhs_minor=`echo $rhs | cut -d. -f2`
+    rhs_num=`echo $rhs | cut -d. -f3`
+    lhs_cmp=`expr $lhs_major \* 10000 + $lhs_minor \* 100 + $lhs_num`
+    rhs_cmp=`expr $rhs_major \* 10000 + $rhs_minor \* 100 + $rhs_num`
+    test $lhs_cmp -ge $rhs_cmp
+}
+
+install_cmake()
+{
+    cmake_ver=''
+    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/\([^0-9.]\+\)//g'` || echo ''
+    test ! -z $cmake_ver && version_large_or_equal $cmake_ver "3.4.3" && return 0 || echo ''
+
+    cmake_dir=$HOME/.vim.git/cmake_cppenv
+    git_clone $CMAKE_GIT $cmake_dir
+    cd $cmake_dir
+
+    tar zxf cmake.tar.gz
+    ./bootstrap
+    make
+    sudo make install
+    sudo ln -s /usr/local/bin/cmake /usr/bin/cmake || echo ''
+}
+
+install_cmake
 
 # compile YouCompleteMe
 ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
