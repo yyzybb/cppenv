@@ -5,6 +5,9 @@
 #   llvm = 6.0.0
 #   clang = 6.0.0
 #   rebuild YCM
+set -e
+
+isMac=`uname -a | grep Darwin -c`
 
 git_clone()
 {
@@ -35,10 +38,13 @@ version_large_or_equal()
 install_cmake()
 {
     cmake_ver=''
-    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/\([^0-9.]\+\)//g'` || echo ''
+    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/[^0-9.]//g'` || echo ''
+    echo $cmake_ver
     test ! -z $cmake_ver && version_large_or_equal $cmake_ver "3.4.3" && return 0 || echo ''
+    echo "install cmake from source"
 
     cmake_dir=$HOME/.vim.git/cmake_cppenv
+    CMAKE_GIT=https://gitee.com/yyzybb537/cmake.git
     git_clone $CMAKE_GIT $cmake_dir
     cd $cmake_dir
 
@@ -54,37 +60,49 @@ install_cmake
 install_clang()
 {
     clang_ver=''
-    clang --version && clang_ver=`clang --version | grep version -i | sed 's/\([^0-9.]\+\)//g'` || echo ''
+    clang --version && clang_ver=`clang --version | grep version -i | sed 's/[^0-9.]//g'` || echo ''
     test ! -z $clang_ver && version_large_or_equal $clang_ver "6.0.0" && return 0 || echo ''
 
     echo 'Not found clang in system, will install there from llvm-clang source code.'
+    mkdir -p $HOME/.vim.git
     llvm_clang_dir=$HOME/.vim.git/llvm-clang_cppenv
 
-    os_ver=`cat /etc/os-release | grep VERSION_ID | cut -d\" -f2`
-    os_name=`cat /etc/os-release | grep NAME | head -n1 | cut -d\" -f2`
-    echo "Current OS: " $os_name
-    echo "Version: " $os_ver
-
     built_from_source=0
-    if [ "$os_name" == "Ubuntu" ]
-    then
-        if [ "$os_ver" == "16.04" ]
+
+    echo "isMac:" $isMac
+    if [ "$isMac" == "0" ]; then
+        os_ver=`cat /etc/os-release | grep VERSION_ID | cut -d\" -f2`
+        os_name=`cat /etc/os-release | grep NAME | head -n1 | cut -d\" -f2`
+        echo "Current OS: " $os_name
+        echo "Version: " $os_ver
+
+        if [ "$os_name" == "Ubuntu" ]
         then
-            cd $HOME/.vim.git
-            test -f clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
-            test -d clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04 || tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
-            cd clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04
-        else
-            if [ "$os_ver" == "14.04" ]
+            if [ "$os_ver" == "16.04" ]
             then
                 cd $HOME/.vim.git
-                test -f clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
-                test -d clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04 || tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
-                cd clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04
+                test -f clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+                test -d clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04 || tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+                cd clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04
             else
-                built_from_source=1
+                if [ "$os_ver" == "14.04" ]
+                then
+                    cd $HOME/.vim.git
+                    test -f clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+                    test -d clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04 || tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+                    cd clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04
+                else
+                    built_from_source=1
+                fi
             fi
         fi
+    else
+        echo "download clang6.0-Darwin"
+        cd $HOME/.vim.git
+        test -f clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+        test -d clang+llvm-6.0.0-x86_64-apple-darwin || tar xf clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+        cd clang+llvm-6.0.0-x86_64-apple-darwin
+        exit 0
     fi
 
     if [ "$built_from_source" == "0" ]
@@ -95,8 +113,6 @@ install_clang()
         sudo cp bin/* /usr/bin
         return
     fi
-
-    return
 
     LLVM_CLANG_GIT=https://gitee.com/yyzybb537/llvm-clang.git
     git_clone $LLVM_CLANG_GIT $llvm_clang_dir

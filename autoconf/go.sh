@@ -48,7 +48,7 @@ version_large_or_equal()
 install_golang()
 {
     go_ver=''
-    go version && go_ver=`go version | awk '{print $3}' | sed 's/\([^0-9.]\+\)//g'` || echo ''
+    go version && go_ver=`go version | awk '{print $3}' | sed 's/[^0-9.]//g'` || echo ''
     test ! -z $go_ver && version_large_or_equal $go_ver "1.10.1" && return 0 || echo ''
     echo "---------- download golang 1.10.1 -----------"
     cd $HOME/.vim.git

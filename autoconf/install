@@ -166,7 +166,7 @@ version_large_or_equal()
 install_cmake()
 {
     cmake_ver=''
-    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/\([^0-9.]\+\)//g'` || echo ''
+    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/[^0-9.]//g'` || echo ''
     test ! -z $cmake_ver && version_large_or_equal $cmake_ver "3.4.3" && return 0 || echo ''
 
     cmake_dir=$HOME/.vim.git/cmake_cppenv
