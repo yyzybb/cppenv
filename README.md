@@ -1,4 +1,4 @@
-# Cppenv: complete vim environment for coding C++
+# Cppenv: complete vim environment for coding C++/Golang
 ***
 
 ## Overview ##
@@ -35,6 +35,8 @@ If you want use the complete `cppenv`, please follow the instruction below:
 1. clone this git repository
 2. change work directory to `autoconf` and run script `./install` with the user that you coding with
 3. wait about 4 minutes
+4. if you want coding golang, run script `./go.sh`
+5. if you want coding c++, run script `./install_cpp.sh`
 
 The script will install `_vimrc`, `.ycm_extra_conf.py` and other plugins in `~/.vim`.
 
