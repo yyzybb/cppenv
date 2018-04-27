@@ -58,7 +58,7 @@ install_cmake
 install_clang()
 {
     clang_ver=''
-    clang --version && clang_ver=`cmake --version | grep version -i | sed 's/\([^0-9.]\+\)//g'` || echo ''
+    clang --version && clang_ver=`clang --version | grep version -i | sed 's/\([^0-9.]\+\)//g'` || echo ''
     test ! -z $clang_ver && version_large_or_equal $clang_ver "6.0.0" && return 0 || echo ''
 
     echo 'Not found clang in system, will install there from llvm-clang source code.'
@@ -134,7 +134,7 @@ install_clang()
 }
 install_clang
 
-ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
+ycm_path=$HOME/.vim/vimfiles/bundle/YouCompleteMe
 cd $ycm_path
 ./install.py --clang-completer --system-libclang --go-completer
 echo 'vim-cpp-env is ok, good luck!'
