@@ -1,7 +1,4 @@
 export GOROOT=~/go
-export GOOS=linux
-export GOARCH=amd64
-export GOBIN=$GOROOT/bin
 export GOPATH=~/gopath
 export PATH=$PATH:$GOBIN
 

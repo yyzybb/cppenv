@@ -19,10 +19,6 @@ git_clone()
 
 version_large_or_equal()
 {
-    if test -z $cmake_ver; then
-        return 1
-    fi
-
     lhs=$1
     rhs=$2
     lhs_major=`echo $lhs | cut -d. -f1`
