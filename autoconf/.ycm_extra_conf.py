@@ -141,7 +141,7 @@ def Log(msg):
     if not _debug:
         return 
 
-    f = open("/tmp/ycm_temp/conf.log", 'a+')
+    f = open("/tmp/ycm_conf.log", 'a+')
     f.write(msg + '\n')
     f.close()
 

@@ -93,10 +93,10 @@ install_clang()
 
     if [ "$built_from_source" == "0" ]
     then
-        sudo cp bin/* /usr/bin
         sudo cp include/* /usr/include -r
         sudo cp lib/* /usr/lib -r
         sudo cp libexec/* /usr/bin
+        sudo cp bin/* /usr/bin
         return
     fi
 
