@@ -137,6 +137,15 @@ flags = [
 'stdint.h',
 ]
 
+env_cpath = os.environ["CPATH"]
+cpaths = env_cpath.split(':')
+for cpath in cpaths:
+    if cpath == '':
+        continue
+
+    flags.append("-I")
+    flags.append(cpath)
+
 def Log(msg):
     if not _debug:
         return 
