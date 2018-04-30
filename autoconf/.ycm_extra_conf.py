@@ -117,6 +117,8 @@ flags = [
 '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
 '-isystem',
 '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
+'-isystem',
+'/usr/include/c++/4.2.1',
 '-include',
 '/usr/include/c++/4.7/cstddef',
 '-include',
@@ -137,14 +139,15 @@ flags = [
 'stdint.h',
 ]
 
-env_cpath = os.environ["CPATH"]
-cpaths = env_cpath.split(':')
-for cpath in cpaths:
-    if cpath == '':
-        continue
+env_cpath = os.environ.get("CPATH")
+if env_cpath:
+    cpaths = env_cpath.split(':')
+    for cpath in cpaths:
+        if cpath == '':
+            continue
 
-    flags.append("-I")
-    flags.append(cpath)
+        flags.append("-I")
+        flags.append(cpath)
 
 def Log(msg):
     if not _debug:
