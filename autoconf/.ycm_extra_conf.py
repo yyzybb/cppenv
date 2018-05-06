@@ -295,6 +295,7 @@ def MakefileIncludesFlags(filename):
     Log(str(mk_flags))
     return mk_flags
 
+# TODO: use cmake command: -DCMAKE_EXPORT_COMPILE_COMMANDS=ON to make json file.
 def ExtractIncludesFromCMake(cmk):
     Log('ExtractIncludesFromCMake')
     cmk_dir = os.path.dirname(cmk)
