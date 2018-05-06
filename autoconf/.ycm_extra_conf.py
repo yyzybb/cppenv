@@ -93,29 +93,59 @@ flags = [
 './tests/gmock',
 '-isystem',
 './tests/gmock/include',
-'-isystem',
-'/usr/include',
-'-isystem',
-'/usr/include/x86_64-linux-gnu',
-'-isystem',
-'/usr/include/i386-linux-gnu',
+#'-isystem',
+#'/usr/include/c++/v1',
+#'-isystem',
+#'/usr/include',
+#'-isystem',
+#'/usr/local/include',
 ]
+
+gcc_search_dirs = ''
+if os.path.isfile('/tmp/gcc_search_dirs'):
+    f = open('/tmp/gcc_search_dirs', 'r')
+    gcc_search_dirs = f.read().strip()
+    f.close()
+
+if gcc_search_dirs == '':
+    f = open('/tmp/ycm_tmp.cpp', 'w')
+    f.write('#include <iostream>\n')
+    f.write('main() {}')
+    f.close()
+    r, w, e = os.popen3('g++ -std=c++11 -v -H /tmp/ycm_tmp.cpp -o /dev/null')
+    gcc_search_dirs = e.read()
+    start = '#include <...> search starts here:'
+    end = 'End of search list.'
+    gcc_search_dirs = gcc_search_dirs[gcc_search_dirs.index(start) + len(start):gcc_search_dirs.index(end)]
+    gcc_search_dirs = gcc_search_dirs.strip()
+    f = open('/tmp/gcc_search_dirs', 'w')
+    f.write(gcc_search_dirs)
+    f.close()
+
+Log('gcc_search_dirs:' + gcc_search_dirs)
+dirs = gcc_search_dirs.split('\n')
+for d in dirs:
+    d = d.strip()
+    if d == '':
+        continue
+    flags.append('-isystem')
+    flags.append(d)
 
 gcc_version = os.popen('gcc --version | head -1 | cut -d\) -f2 | awk \'{print $1}\'').read().strip()
 Log('gcc_version:' + gcc_version)
-if gcc_version != "":
-    realpath = os.path.realpath('/usr/include/c++/' + gcc_version)
-    major = os.path.basename(realpath)
-    flags.append('-isystem')
-    flags.append('/usr/include/x86_64-linux-gnu/c++/' + major)
-    flags.append('-isystem')
-    flags.append('/usr/include/x86_64-linux-gnu/c++/' + major + '/bits')
-    flags.append('-isystem')
-    flags.append('/usr/include/i386-linux-gnu/c++/' + major)
-    flags.append('-isystem')
-    flags.append('/usr/include/c++/' + major)
-    flags.append('-isystem')
-    flags.append('/usr/include/c++/' + major + '/bits')
+#if gcc_version != "":
+#    realpath = os.path.realpath('/usr/include/c++/' + gcc_version)
+#    major = os.path.basename(realpath)
+#    flags.append('-isystem')
+#    flags.append('/usr/include/x86_64-linux-gnu/c++/' + major)
+#    flags.append('-isystem')
+#    flags.append('/usr/include/x86_64-linux-gnu/c++/' + major + '/bits')
+#    flags.append('-isystem')
+#    flags.append('/usr/include/i386-linux-gnu/c++/' + major)
+#    flags.append('-isystem')
+#    flags.append('/usr/include/c++/' + major)
+#    flags.append('-isystem')
+#    flags.append('/usr/include/c++/' + major + '/bits')
 
 env_cpath = os.environ.get("CPATH")
 if env_cpath:
@@ -129,21 +159,23 @@ if env_cpath:
 
 flags.extend([
     '-isystem',
-    '/usr/local/include',
-    '-isystem',
     '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
     '-isystem',
     '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
     '-isystem',
     '/usr/include/linux',
+    '-isystem',
+    '/usr/include/x86_64-linux-gnu',
+    '-isystem',
+    '/usr/include/i386-linux-gnu',
     #'-include',
     #'/usr/include/stdint.h',
     #'-include',
     #'/usr/include/c++/v1/cstddef',
-    '-include',
-    'stdint.h',
-    '-include',
-    'stddef.h',
+    #'-include',
+    #'stddef.h',
+    #'-include',
+    #'stdint.h',
     ])
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
