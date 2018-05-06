@@ -104,7 +104,8 @@ flags = [
 gcc_version = os.popen('gcc --version | head -1 | cut -d\) -f2 | awk \'{print $1}\'').read().strip()
 Log('gcc_version:' + gcc_version)
 if gcc_version != "":
-    major = gcc_version[0]
+    realpath = os.path.realpath('/usr/include/c++/' + gcc_version)
+    major = os.path.basename(realpath)
     flags.append('-isystem')
     flags.append('/usr/include/x86_64-linux-gnu/c++/' + major)
     flags.append('-isystem')
@@ -141,6 +142,8 @@ flags.extend([
     #'/usr/include/c++/v1/cstddef',
     '-include',
     'stdint.h',
+    '-include',
+    'stddef.h',
     ])
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
