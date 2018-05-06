@@ -35,6 +35,14 @@ import traceback
 
 _debug = 1
 
+def Log(msg):
+    if not _debug:
+        return 
+
+    f = open("/tmp/ycm_conf.log", 'a+')
+    f.write(msg + '\n')
+    f.close()
+
 # These are the compilation flags that will be used in case there's no
 # compilation database set (by default, one is not set).
 # CHANGE THIS LIST OF FLAGS. YES, THIS IS THE DROID YOU HAVE BEEN LOOKING FOR.
@@ -88,56 +96,25 @@ flags = [
 '-isystem',
 '/usr/include',
 '-isystem',
-'/usr/lib/llvm-3.5/lib/clang/3.5/include',
-'-isystem',
 '/usr/include/x86_64-linux-gnu',
 '-isystem',
-'/usr/include/x86_64-linux-gnu/c++/4.8',
-'-isystem',
 '/usr/include/i386-linux-gnu',
-'-isystem',
-'/usr/include/c++/4.7',
-'-isystem',
-'/usr/include/c++/4.8',
-'-isystem',
-'/usr/include/c++/4.9',
-'-isystem',
-'/usr/include/c++/5.0',
-'-isystem',
-'/usr/include/c++/5.1',
-'-isystem',
-'/usr/include/c++/5.2',
-'-isystem',
-'/usr/include/i386-linux-gnu/c++/4.8',
-'-isystem',
-'/usr/local/include',
-'-isystem',
-'/usr/include/linux',
-'-isystem',
-'/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
-'-isystem',
-'/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
-'-isystem',
-'/usr/include/c++/4.2.1',
-'-include',
-'/usr/include/c++/4.7/cstddef',
-'-include',
-'/usr/include/c++/4.8/cstddef',
-'-include',
-'/usr/include/c++/4.9/cstddef',
-'-include',
-'/usr/include/c++/5.0/cstddef',
-'-include',
-'/usr/include/c++/5.1/cstddef',
-'-include',
-'/usr/include/c++/5.2/cstddef',
-'-include',
-'/usr/include/stdint.h',
-'-include',
-'cstddef',
-'-include',
-'stdint.h',
 ]
+
+gcc_version = os.popen('gcc --version | head -1 | cut -d\) -f2 | awk \'{print $1}\'').read().strip()
+Log('gcc_version:' + gcc_version)
+if gcc_version != "":
+    major = gcc_version[0]
+    flags.append('-isystem')
+    flags.append('/usr/include/x86_64-linux-gnu/c++/' + major)
+    flags.append('-isystem')
+    flags.append('/usr/include/x86_64-linux-gnu/c++/' + major + '/bits')
+    flags.append('-isystem')
+    flags.append('/usr/include/i386-linux-gnu/c++/' + major)
+    flags.append('-isystem')
+    flags.append('/usr/include/c++/' + major)
+    flags.append('-isystem')
+    flags.append('/usr/include/c++/' + major + '/bits')
 
 env_cpath = os.environ.get("CPATH")
 if env_cpath:
@@ -149,13 +126,22 @@ if env_cpath:
         flags.append("-I")
         flags.append(cpath)
 
-def Log(msg):
-    if not _debug:
-        return 
-
-    f = open("/tmp/ycm_conf.log", 'a+')
-    f.write(msg + '\n')
-    f.close()
+flags.extend([
+    '-isystem',
+    '/usr/local/include',
+    '-isystem',
+    '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
+    '-isystem',
+    '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
+    '-isystem',
+    '/usr/include/linux',
+    #'-include',
+    #'/usr/include/stdint.h',
+    #'-include',
+    #'/usr/include/c++/v1/cstddef',
+    '-include',
+    'stdint.h',
+    ])
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
 # compile_commands.json file to use that instead of 'flags'. See here for
@@ -216,7 +202,7 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
 
 def IsHeaderFile( filename ):
   extension = os.path.splitext( filename )[ 1 ]
-  return extension in [ '.h', '.hxx', '.hpp', '.hh' ]
+  return extension in [ '.h', '.hxx', '.hpp', '.hh' ] #or extension.startswith('/usr/include')
 
 
 def GetCompilationInfoForFile( filename ):
