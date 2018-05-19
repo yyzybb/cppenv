@@ -313,6 +313,7 @@ def ExtractIncludesFromCMake(cmk, filename):
 
 def CMakeJsonMatch(js, matcher):
     includes = []
+    h = {}
     for unit in js:
         if not matcher(unit):
             continue
@@ -322,9 +323,13 @@ def CMakeJsonMatch(js, matcher):
         for elem in cmd_elems:
             if len(elem) > 2 and elem[:2] == '-I':
                 #Log("Add elem:{%s}" % elem)
+                d = elem[2:]
+                if h.get(d) != None:
+                    continue
+                h[d] = 1
                 includes.append(elem[2:])
 
-    return list(set(includes))
+    return includes
 
 def CMakeIncludesFlags(filename):
     Log('CMakeIncludesFlags')
