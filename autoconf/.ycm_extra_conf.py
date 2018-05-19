@@ -1,3 +1,4 @@
+# -*- coding:utf8 -*-
 # This file is NOT licensed under the GPLv3, which is the license for the rest
 # of YouCompleteMe.
 #
@@ -32,6 +33,7 @@ import os
 import ycm_core
 import re
 import traceback
+import json
 
 _debug = 1
 
@@ -133,19 +135,6 @@ for d in dirs:
 
 gcc_version = os.popen('gcc --version | head -1 | cut -d\) -f2 | awk \'{print $1}\'').read().strip()
 Log('gcc_version:' + gcc_version)
-#if gcc_version != "":
-#    realpath = os.path.realpath('/usr/include/c++/' + gcc_version)
-#    major = os.path.basename(realpath)
-#    flags.append('-isystem')
-#    flags.append('/usr/include/x86_64-linux-gnu/c++/' + major)
-#    flags.append('-isystem')
-#    flags.append('/usr/include/x86_64-linux-gnu/c++/' + major + '/bits')
-#    flags.append('-isystem')
-#    flags.append('/usr/include/i386-linux-gnu/c++/' + major)
-#    flags.append('-isystem')
-#    flags.append('/usr/include/c++/' + major)
-#    flags.append('-isystem')
-#    flags.append('/usr/include/c++/' + major + '/bits')
 
 env_cpath = os.environ.get("CPATH")
 if env_cpath:
@@ -168,14 +157,6 @@ flags.extend([
     '/usr/include/x86_64-linux-gnu',
     '-isystem',
     '/usr/include/i386-linux-gnu',
-    #'-include',
-    #'/usr/include/stdint.h',
-    #'-include',
-    #'/usr/include/c++/v1/cstddef',
-    #'-include',
-    #'stddef.h',
-    #'-include',
-    #'stdint.h',
     ])
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
@@ -260,7 +241,6 @@ def GetCompilationInfoForFile( filename ):
 
 ## Add includes flags from the Makefile.
 #
-makefile_list = ['Makefile', 'makefile', '../Makefile', '../makefile', 'build/Makefile', '../build/Makefile', '../../Makefile', '../../makefile']
 
 def ExtractIncludesFromMakefile(path):
     Log('ExtractIncludesFromMakefile')
@@ -279,92 +259,110 @@ def ExtractIncludesFromMakefile(path):
 def MakefileIncludesFlags(filename):
     Log('MakefileIncludesFlags')
     mk_flags = []
-    path = os.path.split(filename)[0]
-    for mk in makefile_list:
-        abs_mk = os.path.join(path, mk) 
-        if not os.path.isfile(abs_mk):
-            continue
+    makefile_list = ['Makefile', 'makefile', 'build/Makefile', 'build/makefile']
+    mk = findProjectFile(filename, makefile_list)
+    if not mk:
+        return mk_flags
 
-        include_flags = ExtractIncludesFromMakefile(os.path.split(abs_mk)[0])
-        for flag in include_flags:
-            mk_flags.append('-I')
-            mk_flags.append(flag)
-
-        break
+    include_flags = ExtractIncludesFromMakefile(os.path.dirname(mk))
+    for flag in include_flags:
+        mk_flags.append('-I')
+        mk_flags.append(flag)
 
     Log(str(mk_flags))
     return mk_flags
 
 # TODO: use cmake command: -DCMAKE_EXPORT_COMPILE_COMMANDS=ON to make json file.
-def ExtractIncludesFromCMake(cmk):
+def ExtractIncludesFromCMake(cmk, filename):
     Log('ExtractIncludesFromCMake')
     cmk_dir = os.path.dirname(cmk)
-    args_dict = {
-            'CMAKE_SOURCE_DIR' : cmk_dir,
-            'CMAKE_BINARY_DIR' : cmk_dir,
-            'PROJECT_SOURCE_DIR' : cmk_dir,
-            'PROJECT_BINARY_DIR' : cmk_dir,
-            }
-    includes = []
-    set_c = 0
-    include_c = 0
-    with open(cmk, 'r') as f:
-        fileinfo = f.read()
-        for it in re.finditer(r'\s*set\s*\(([^"]+)\s+(.*)\)\s*', fileinfo, re.IGNORECASE):
-            set_c += 1
-            args_dict[it.group(1).strip().upper()] = it.group(2).strip().strip('"')
+    tmp_dir = '/tmp' + cmk_dir
+    Log("cmake_dir:%s, tmp_dir:%s, filename:%s" % (cmk_dir, tmp_dir, filename))
+    ign = os.popen("mkdir -p %s && cd %s && cmake %s -DCMAKE_EXPORT_COMPILE_COMMANDS=ON" % (tmp_dir, tmp_dir, cmk_dir)).read()
+    json_file = os.path.join(tmp_dir, "compile_commands.json")
+    f = open(json_file, 'r')
+    strjs = f.read()
+    f.close()
 
-        for it in re.finditer(r'\s*include_directories\s*\((.*)\)\s*', fileinfo, re.IGNORECASE):
-            include_c += 1
-            d = it.group(1).strip().strip('"')
-            while True:
-                finded = False
-                for it in re.finditer(r'\$\{(.*)\}', d):
-                    finded = True
-                    k = it.group(1).upper()
-                    v = args_dict.get(k)
-                    if not v:
-                        Log('unkown key: %s, when parse %s' % (k, cmk))
-                        finded = False
-                        break
+    #Log("strjs:" + strjs)
+    js = json.loads(strjs)
+    #Log("object json:" + str(js))
 
-                    d = d.replace(it.group(0), v)
+    # 完全匹配
+    includes = CMakeJsonMatch(js, lambda unit: unit.get("file") == filename)
+    Log("Best Match returns:%s" % len(includes))
 
-                if not finded:
-                    break
+    # 尝试匹配对应的.cpp
+    cppfile = os.path.splitext(filename)[0] + ".cpp"
+    if len(includes) == 0:
+        includes = CMakeJsonMatch(js, lambda unit: unit.get("file") == cppfile)
+        Log("Match .cpp returns:%s" % len(includes))
 
-            if not os.path.isabs(d):
-                d = os.path.join(cmk_dir, d)
-            includes.append(d)
+    # 匹配同目录下的所有cpp
+    d = os.path.dirname(filename)
+    if len(includes) == 0:
+        includes = CMakeJsonMatch(js, lambda unit: os.path.dirname(unit.get("file")) == d)
+        Log("Match directory returns:%s" % len(includes))
 
-    Log('set_c=%s, include_c=%s' % (set_c, include_c))
+    # 整合所有cpp
+    if len(includes) == 0:
+        includes = CMakeJsonMatch(js, lambda unit: True)
+        Log("Match All returns:%s" % len(includes))
+
     return includes
+
+def CMakeJsonMatch(js, matcher):
+    includes = []
+    for unit in js:
+        if not matcher(unit):
+            continue
+
+        command = unit.get("command")
+        cmd_elems = command.split(" ")
+        for elem in cmd_elems:
+            if len(elem) > 2 and elem[:2] == '-I':
+                #Log("Add elem:{%s}" % elem)
+                includes.append(elem[2:])
+
+    return list(set(includes))
 
 def CMakeIncludesFlags(filename):
     Log('CMakeIncludesFlags')
     try:
         flags = []
-        cmake_filename = 'CMakeLists.txt'
-        for deep in range(3):
-            cmk = os.path.dirname(filename)
-            for i in range(deep):
-                cmk = os.path.dirname(cmk)
-            cmk = os.path.join(cmk, cmake_filename)
-            isfile = os.path.isfile(cmk)
-            Log('test isfile %s: %s' % (cmk, isfile))
-            if not isfile:
-                continue
+        cmk = findProjectFile(filename, ['CMakeLists.txt'])
+        if not cmk:
+            Log("Not find CMakeLists.txt")
+            return flags
 
-            includes = ExtractIncludesFromCMake(cmk)
-            for include in includes:
-                flags.append('-I')
-                flags.append(include)
-            break
+        includes = ExtractIncludesFromCMake(cmk, filename)
+        for include in includes:
+            flags.append('-I')
+            flags.append(include)
     except:
         Log(traceback.format_exc())
 
     Log(str(flags))
     return flags
+
+def findProjectFile(cppfile, pfnames):
+    Log('findProjectFile cppfile=%s, project_file_names=%s' % (cppfile, pfnames))
+    try:
+        d = cppfile
+        while True:
+            di = os.path.dirname(d)
+            if di == d:
+                return 
+
+            d = di
+            for projectfile in pfnames:
+                pf = os.path.join(d, projectfile)
+                Log("check:" + pf)
+                if os.path.isfile(pf):
+                    return pf
+    except:
+        Log(traceback.format_exc())
+    return
 
 def FlagsForFile( filename, **kwargs ):
   Log("Process file: %s" % filename)
