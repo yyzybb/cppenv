@@ -103,6 +103,8 @@ flags = [
 #'/usr/local/include',
 ]
 
+sysflags = []
+
 gcc_search_dirs = ''
 if os.path.isfile('/tmp/gcc_search_dirs'):
     f = open('/tmp/gcc_search_dirs', 'r')
@@ -130,8 +132,8 @@ for d in dirs:
     d = d.strip()
     if d == '':
         continue
-    flags.append('-isystem')
-    flags.append(d)
+    sysflags.append('-isystem')
+    sysflags.append(d)
 
 gcc_version = os.popen('gcc --version | head -1 | cut -d\) -f2 | awk \'{print $1}\'').read().strip()
 Log('gcc_version:' + gcc_version)
@@ -143,10 +145,10 @@ if env_cpath:
         if cpath == '':
             continue
 
-        flags.append("-I")
-        flags.append(cpath)
+        sysflags.append("-I")
+        sysflags.append(cpath)
 
-flags.extend([
+sysflags.extend([
     '-isystem',
     '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
     '-isystem',
@@ -400,6 +402,7 @@ def FlagsForFile( filename, **kwargs ):
   final_flags.extend(['-I', os.path.dirname(filename)])
   final_flags.extend(MakefileIncludesFlags(filename))
   final_flags.extend(CMakeIncludesFlags(filename))
+  final_flags.extend(sysflags)
 
   Log(str(final_flags))
 
