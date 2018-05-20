@@ -145,3 +145,17 @@ endif()
 # target
 target_link_libraries(${TARGET} -pthread -ldl -static)
 endsnippet
+
+# C plus plus - test code
+########################################################
+snippet cpptest
+#include <iostream>
+using namespace std;
+
+#define OUT(x) cout << #x << " = " << x << endl
+#define O(x) cout << x << endl
+
+int main() {
+	$1
+}
+endsnippet
