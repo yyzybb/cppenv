@@ -7,7 +7,7 @@
 #   rebuild YCM
 set -e
 
-isMac=`uname -a | grep Darwin -c`
+isMac=`uname -a | grep Darwin -c || echo -n`
 
 git_clone()
 {
@@ -38,9 +38,9 @@ version_large_or_equal()
 install_cmake()
 {
     cmake_ver=''
-    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/[^0-9.]//g'` || echo ''
+    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/[^0-9.]//g'` || echo -n
     echo $cmake_ver
-    test ! -z $cmake_ver && version_large_or_equal $cmake_ver "3.4.3" && return 0 || echo ''
+    test ! -z $cmake_ver && version_large_or_equal $cmake_ver "3.4.3" && return 0 || echo -n
     echo "install cmake from source"
 
     cmake_dir=$HOME/.vim.git/cmake_cppenv
@@ -52,7 +52,7 @@ install_cmake()
     ./bootstrap
     make
     sudo make install
-    sudo ln -s /usr/local/bin/cmake /usr/bin/cmake || echo ''
+    sudo ln -s /usr/local/bin/cmake /usr/bin/cmake || echo -n
 }
 
 install_cmake
@@ -60,8 +60,8 @@ install_cmake
 install_clang()
 {
     clang_ver=''
-    clang --version && clang_ver=`clang --version | grep version -i | sed 's/[^0-9.]//g'` || echo ''
-    test ! -z $clang_ver && version_large_or_equal $clang_ver "6.0.0" && return 0 || echo ''
+    clang --version && clang_ver=`clang --version | grep version -i | sed 's/[^0-9.]//g'` || echo -n
+    test ! -z $clang_ver && version_large_or_equal $clang_ver "6.0.0" && return 0 || echo -n
 
     echo 'Not found clang in system, will install there from llvm-clang source code.'
     mkdir -p $HOME/.vim.git
@@ -118,8 +118,8 @@ install_clang()
     git_clone $LLVM_CLANG_GIT $llvm_clang_dir
     cd $llvm_clang_dir
 
-    xz -dk llvm.tar.xz || echo ''
-    xz -dk clang.tar.xz || echo ''
+    xz -dk llvm.tar.xz || echo -n
+    xz -dk clang.tar.xz || echo -n
     tar xf clang.tar
     tar xf llvm.tar
 

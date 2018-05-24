@@ -26,7 +26,7 @@
 set -e
 
 workdir=`pwd`
-isMac=`uname -a | grep Darwin -c`
+isMac=`uname -a | grep Darwin -c || echo -n`
 if [ "$isMac" == '1' ]
 then
     brew --version || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
