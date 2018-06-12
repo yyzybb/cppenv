@@ -4,13 +4,11 @@ set -e
 
 . ../lib/lib.sh
 
-prefix=$1
-tmp=$2
-target=$prefix/bin/vim
+target=$PREFIX/bin/vim
 pkg=vim.tar.gz
 test -f $target && $target --version && exit 0
 
-cd $tmp
+cd $TMP
 download "https://github.com/vim/vim/archive/v7.4.2367.tar.gz" $pkg
 tar zxf $pkg
 dir=`tar tf $pkg | head -1`
@@ -21,7 +19,7 @@ cd $dir
     --enable-gui=gtk2 \
     --enable-cscope \
     --with-tlib=ncurses \
-    --with-python-config-dir=${prefix}/lib/python2.7/config \
-    --prefix=$prefix
+    --with-python-config-dir=$PREFIX/lib/python2.7/config \
+    --prefix=$PREFIX
 make
 make install

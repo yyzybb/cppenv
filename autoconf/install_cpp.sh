@@ -1,61 +1,16 @@
 #!/bin/bash
 
 # Install:
-#   cmake > 3.4.3
-#   llvm = 6.0.0
-#   clang = 6.0.0
+#   cmake 3.11
+#   llvm 6.0.0
+#   clang 6.0.0
 #   rebuild YCM
 set -e
 
-isMac=`uname -a | grep Darwin -c || echo -n`
-
-git_clone()
-{
-    remote=$1
-    dir=$2
-    mkdir -p $dir
-
-    cd $dir
-    git status && git pull || git clone $remote .
-    cd -
-}
-
-version_large_or_equal()
-{
-    lhs=$1
-    rhs=$2
-    lhs_major=`echo $lhs | cut -d. -f1`
-    lhs_minor=`echo $lhs | cut -d. -f2`
-    lhs_num=`echo $lhs | cut -d. -f3`
-    rhs_major=`echo $rhs | cut -d. -f1`
-    rhs_minor=`echo $rhs | cut -d. -f2`
-    rhs_num=`echo $rhs | cut -d. -f3`
-    lhs_cmp=`expr $lhs_major \* 10000 + $lhs_minor \* 100 + $lhs_num`
-    rhs_cmp=`expr $rhs_major \* 10000 + $rhs_minor \* 100 + $rhs_num`
-    test $lhs_cmp -ge $rhs_cmp
-}
-
-install_cmake()
-{
-    cmake_ver=''
-    cmake --version && cmake_ver=`cmake --version | grep version -i | sed 's/[^0-9.]//g'` || echo -n
-    echo $cmake_ver
-    test ! -z $cmake_ver && version_large_or_equal $cmake_ver "3.4.3" && return 0 || echo -n
-    echo "install cmake from source"
-
-    cmake_dir=$HOME/.vim.git/cmake_cppenv
-    CMAKE_GIT=https://gitee.com/yyzybb537/cmake.git
-    git_clone $CMAKE_GIT $cmake_dir
-    cd $cmake_dir
-
-    tar zxf cmake.tar.gz
-    ./bootstrap
-    make
-    sudo make install
-    sudo ln -s /usr/local/bin/cmake /usr/bin/cmake || echo -n
-}
-
-install_cmake
+. ./lib/lib.sh
+cd tools
+./cmake.sh
+cd -
 
 install_clang()
 {
@@ -69,6 +24,7 @@ install_clang()
 
     built_from_source=0
 
+    isMac=`uname -a | grep Darwin -c || echo -n`
     echo "isMac:" $isMac
     if [ "$isMac" == "0" ]; then
         os_ver=`cat /etc/os-release | grep VERSION_ID | cut -d\" -f2`
@@ -81,15 +37,17 @@ install_clang()
             if [ "$os_ver" == "16.04" ]
             then
                 cd $HOME/.vim.git
-                test -f clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
-                test -d clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04 || tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+                download http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+                xz -dk clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+                tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar
                 cd clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04
             else
                 if [ "$os_ver" == "14.04" ]
                 then
                     cd $HOME/.vim.git
-                    test -f clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
-                    test -d clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04 || tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+                    download http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+                    xz -dk clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+                    tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar
                     cd clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04
                 else
                     built_from_source=1
@@ -99,18 +57,19 @@ install_clang()
     else
         echo "download clang6.0-Darwin"
         cd $HOME/.vim.git
-        test -f clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz || wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
-        test -d clang+llvm-6.0.0-x86_64-apple-darwin || tar xf clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+        download http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+        xz -dk clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+        tar xf clang+llvm-6.0.0-x86_64-apple-darwin.tar
         cd clang+llvm-6.0.0-x86_64-apple-darwin
         exit 0
     fi
 
     if [ "$built_from_source" == "0" ]
     then
-        sudo cp include/* /usr/include -r
-        sudo cp lib/* /usr/lib -r
-        sudo cp libexec/* /usr/bin
-        sudo cp bin/* /usr/bin
+        cp include/* $HOME/include -r
+        cp lib/* $HOME/lib -r
+        cp libexec/* $HOME/bin
+        cp bin/* $HOME/bin
         return
     fi
 
@@ -126,23 +85,22 @@ install_clang()
     cd llvm-6.0.0.src
     mkdir -p build
     cd build
-    cmake ..
+    cmake .. -DCMAKE_INSTALL_PREFIX=$HOME
     make
-    sudo make install
+    make install
     cd ../..
 
     cd cfe-6.0.0.src
     mkdir -p build
     cd build
-    cmake ..
+    cmake .. -DCMAKE_INSTALL_PREFIX=$HOME
     make
-    sudo make install
+    make install
     cd ..
 
-    pyclang_dst=/usr/lib/python2.7/dist-packages
-    test -d $pyclang_dst || pyclang_dst=/usr/lib/python2.7/site-packages
-    cp bindings/python/clang $pyclang_dst -r
-    echo '/usr/local/lib' > /etc/ld.so.conf.d/cppenv.conf
+    pyclang_dst=$HOME/lib/python2.7/dist-packages
+    test -d $pyclang_dst || pyclang_dst=$HOME/lib/python2.7/site-packages
+    test -d $pyclang_dst && cp bindings/python/clang $pyclang_dst -r
 }
 install_clang
 

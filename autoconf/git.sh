@@ -2,7 +2,8 @@
 
 user_name="test"
 
-sudo cp ./git_cmd/* /usr/local/bin
+mkdir -p $HOME/bin
+cp ./git_cmd/* $HOME/bin
 
 if [ `git config --global --list | grep user | wc -l` -eq 0 ]
 then

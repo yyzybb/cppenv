@@ -2,6 +2,9 @@
 
 set -x
 
+export PREFIX=$HOME
+export TMP=$HOME/.vim.git
+
 message() {
     echo -e "\033[32m$@\033[0m"
 }
