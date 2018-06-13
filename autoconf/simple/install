@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Install the vim and cppenviron.
+#
+# * And contains config files:
+#       _vimrc
+#
+
+. ../lib/lib.sh $@
+
+set -e
+
+# copy _vimrc and .ycm_extra_conf to $HOME
+dos2unix _vimrc
+rm $HOME/_vimrc -f
+ln _vimrc $HOME/_vimrc || cp _vimrc $HOME/_vimrc
+chmod 0666 $HOME/_vimrc
+mkdir -p $HOME/bin
+rm $HOME/bin/v -f
+ln -s `which vim` $HOME/bin/v || echo -n
+message 'vim-simple-env is ok, good luck!'
+
