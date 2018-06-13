@@ -10,11 +10,16 @@
 
 set -e
 
-# copy _vimrc and .ycm_extra_conf to $HOME
-dos2unix _vimrc
+# copy _vimrc to $HOME
+which dos2unix && dos2unix _vimrc
 rm $HOME/_vimrc -f
-ln _vimrc $HOME/_vimrc || cp _vimrc $HOME/_vimrc
+cp _vimrc $HOME/_vimrc
 chmod 0666 $HOME/_vimrc
+
+# clean and backup .vimrc
+test -f $HOME/.vimrc && mv $HOME/.vimrc $HOME/.vimrc.`date "+%Y-%m-%dT%H:%M:%S"`
+
+# alias v to vim
 mkdir -p $HOME/bin
 rm $HOME/bin/v -f
 ln -s `which vim` $HOME/bin/v || echo -n
