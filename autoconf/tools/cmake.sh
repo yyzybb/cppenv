@@ -2,7 +2,8 @@
 
 set -e
 
-. ../lib/lib.sh
+. ../lib/lib.sh $@
+. ../lib/msg.sh $0
 
 target=$PREFIX/bin/cmake
 pkg=cmake.tar.gz
@@ -17,5 +18,5 @@ dir=`tar tf $pkg | head -1`
 cd $dir
 ./bootstrap --prefix=$PREFIX
 #./configure --prefix=$PREFIX
-make -j8
+make $MAKEFLAGS
 make install

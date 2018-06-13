@@ -2,7 +2,8 @@
 
 set -e
 
-. ../lib/lib.sh
+. ../lib/lib.sh $@
+. ../lib/msg.sh $0
 
 target=$PREFIX/bin/ruby
 pkg=ruby.tar.gz
@@ -14,5 +15,5 @@ tar zxf $pkg
 dir=`tar tf $pkg | head -1`
 cd $dir
 ./configure --prefix=$PREFIX
-make
+make $MAKEFLAGS
 make install

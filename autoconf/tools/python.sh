@@ -2,7 +2,8 @@
 
 set -e
 
-. ../lib/lib.sh
+. ../lib/lib.sh $@
+. ../lib/msg.sh $0
 
 target=$PREFIX/bin/python
 pkg=python.tar.xz
@@ -16,6 +17,6 @@ dir=`tar tf python.tar | head -1`
 cd $dir
 ./configure --prefix=$PREFIX
 ./configure --prefix=$PREFIX --enable-shared LDFLAGS="-Wl,-rpath $PREFIX/lib" --enable-unicode=ucs4 
-make
+make $MAKEFLAGS
 make install
 make commoninstall

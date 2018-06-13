@@ -2,7 +2,8 @@
 
 set -e
 
-. ../lib/lib.sh
+. ../lib/lib.sh $@
+. ../lib/msg.sh $0
 
 target=$PREFIX/bin/g++
 pkg=gcc.tar.gz
@@ -18,13 +19,16 @@ cd $dir
 mkdir gcc-build
 cd gcc-build
 ../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib --prefix=$PREFIX
-make
+make $MAKEFLAGS
 make install
 
 #set default compiler
-has=`grep "export CXX" -c $HOME/.profile || echo -n`
+has=`grep "export CXX=\$HOME/bin/g++" -c $HOME/.profile || echo -n`
 if [ "$has" == "0" ]
 then
     echo "export CC=$HOME/bin/gcc" >> $HOME/.profile
     echo "export CXX=$HOME/bin/g++" >> $HOME/.profile
+    echo "export LIBRARY_PATH=$HOME/lib:$HOME/lib64:$HOME/lib/gcc/x86_64-pc-linux-gnu/:$LIBRARY_PATH" >> $HOME/.profile
+    echo "export LD_LIBRARY_PATH=$HOME/lib:$HOME/lib64:$HOME/lib/gcc/x86_64-pc-linux-gnu/:$LD_LIBRARY_PATH" >> $HOME/.profile
+    source $HOME/.profile
 fi

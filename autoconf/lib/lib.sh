@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 export PREFIX=$HOME
 export TMP=$HOME/.vim.git
@@ -37,3 +37,29 @@ git_clone()
     git status && git pull || git clone $remote .
     cd -
 }
+
+usage()
+{
+    message "Flags: (-j4|-j8|...)"
+}
+
+while getopts "j:h" optvar
+do
+    case $optvar in
+        j):
+            __makeflags="-j$OPTARG"
+            ;;
+        h):
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$CPPENV_LIB_SHELL_INITED" == "" -o "$__makeflags" != "" ]
+then
+    export CPPENV_LIB_SHELL_INITED=1
+    export MAKEFLAGS=$__makeflags
+    message "set MAKEFLAGS=$MAKEFLAGS"
+fi
+

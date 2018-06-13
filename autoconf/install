@@ -31,7 +31,7 @@
 
 # install dos2unix, git, vim, g++, ctags, cmake, python-dev
 
-. ./lib/lib.sh
+. ./lib/lib.sh $@
 
 set -e
 
@@ -53,6 +53,7 @@ YCM_GIT=https://gitee.com/yyzybb537/YouCompleteMe.git
 # install tools
 cd tools
 ./gcc.sh
+source $HOME/.profile
 ./git.sh
 ./ctags.sh
 #./mlocate.sh
@@ -89,6 +90,7 @@ git_clone ${VUNDLE_GIT} ${vundle_path}
 ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
 git_clone ${YCM_GIT} ${ycm_path}
 cd ${ycm_path}
+. ./lib/msg.sh "build YouCompleteMe --go-completer"
 ./install.py --go-completer
 
 # install other's vim-plugins

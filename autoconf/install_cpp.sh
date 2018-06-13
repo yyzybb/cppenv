@@ -7,7 +7,7 @@
 #   rebuild YCM
 set -e
 
-. ./lib/lib.sh
+. ./lib/lib.sh $@
 cd tools
 ./cmake.sh
 cd -
@@ -82,19 +82,21 @@ install_clang()
     tar xf clang.tar
     tar xf llvm.tar
 
+    . ./lib/msg.sh "build llvm"
     cd llvm-6.0.0.src
     mkdir -p build
     cd build
     cmake .. -DCMAKE_INSTALL_PREFIX=$HOME
-    make
+    make $MAKEFLAGS
     make install
     cd ../..
 
+    . ./lib/msg.sh "build clang"
     cd cfe-6.0.0.src
     mkdir -p build
     cd build
     cmake .. -DCMAKE_INSTALL_PREFIX=$HOME
-    make
+    make $MAKEFLAGS
     make install
     cd ..
 
@@ -104,6 +106,7 @@ install_clang()
 }
 install_clang
 
+. ./lib/msg.sh "build YouCompleteMe --clang-completer"
 ycm_path=$HOME/.vim/vimfiles/bundle/YouCompleteMe
 cd $ycm_path
 ./install.py --clang-completer --system-libclang --go-completer

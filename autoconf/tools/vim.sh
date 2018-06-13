@@ -2,7 +2,8 @@
 
 set -e
 
-. ../lib/lib.sh
+. ../lib/lib.sh $@
+. ../lib/msg.sh $0
 
 target=$PREFIX/bin/vim
 pkg=vim.tar.gz
@@ -21,5 +22,5 @@ cd $dir
     --with-tlib=ncurses \
     --with-python-config-dir=$PREFIX/lib/python2.7/config \
     --prefix=$PREFIX
-make
+make $MAKEFLAGS
 make install
