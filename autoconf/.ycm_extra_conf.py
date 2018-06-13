@@ -447,7 +447,7 @@ def FlagsForFile( filename, **kwargs ):
 
   Log("final_flags:")
   Log(str(final_flags))
-  Log("-------------- Done --------------")
+  Log("-------------- Done [%s] --------------" % filename)
 
   return {
     'flags': final_flags,
