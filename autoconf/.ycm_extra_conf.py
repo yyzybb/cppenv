@@ -243,7 +243,6 @@ def GetCompilationInfoForFile( filename ):
 
 ## Add includes flags from the Makefile.
 #
-
 def ExtractIncludesFromMakefile(path):
     Log('ExtractIncludesFromMakefile')
     include_flags = set()
@@ -260,10 +259,15 @@ def ExtractIncludesFromMakefile(path):
 
 def MakefileIncludesFlags(filename):
     Log('MakefileIncludesFlags')
-    mk_flags = []
+    mk_flags = DependFileIncludesFlags(filename)
+    if len(mk_flags) > 0:
+        Log(str(mk_flags))
+        return mk_flags
+
     makefile_list = ['Makefile', 'makefile', 'build/Makefile', 'build/makefile']
     mk = findProjectFile(filename, makefile_list)
     if not mk:
+        Log(str(mk_flags))
         return mk_flags
 
     include_flags = ExtractIncludesFromMakefile(os.path.dirname(mk))
@@ -274,7 +278,44 @@ def MakefileIncludesFlags(filename):
     Log(str(mk_flags))
     return mk_flags
 
-# TODO: use cmake command: -DCMAKE_EXPORT_COMPILE_COMMANDS=ON to make json file.
+def DependFileIncludesFlags(filename):
+    Log(' -> DependFileIncludesFlags')
+    dp_flags = []
+    depfiles = [os.path.dirname(filename) + '/.' + os.path.splitext(os.path.basename(filename))[0] + '.64.d']
+
+    dirs = {}
+    for depfile in depfiles:
+        if not os.path.isfile(depfile):
+            continue
+
+        f = open(depfile, 'r')
+        info = f.read()
+        f.close()
+        info = info.replace('\\\r', ' ')
+        info = info.replace('\r', ' ')
+        info = info.replace('\\\n', ' ')
+        info = info.replace('\n', ' ')
+        info = info.replace('\\ ', ' ')
+        infos = info.split(':')
+        if len(infos) < 2:
+            continue
+
+        info = infos[1]
+        headers = info.split(' ')
+        for header in headers:
+            header = header.strip()
+            if header == '':
+                continue
+
+            dirs[os.path.dirname(header)] = 1
+
+    for d in dirs.keys():
+        dp_flags.append('-I')
+        dp_flags.append(d)
+
+    Log(str(dp_flags))
+    return dp_flags
+
 def ExtractIncludesFromCMake(cmk, filename):
     Log('ExtractIncludesFromCMake')
     cmk_dir = os.path.dirname(cmk)
@@ -364,7 +405,7 @@ def findProjectFile(cppfile, pfnames):
             d = di
             for projectfile in pfnames:
                 pf = os.path.join(d, projectfile)
-                Log("check:" + pf)
+                #Log("check:" + pf)
                 if os.path.isfile(pf):
                     return pf
     except:
@@ -372,7 +413,7 @@ def findProjectFile(cppfile, pfnames):
     return
 
 def FlagsForFile( filename, **kwargs ):
-  Log("Process file: %s" % filename)
+  Log("-------------- %s --------------" % filename)
   Log("WorkDirectory is: %s" % os.getcwd())
   if database:
     Log('database case:')
@@ -396,7 +437,7 @@ def FlagsForFile( filename, **kwargs ):
   else:
     Log('no database case:')
     #relative_to = DirectoryOfThisScript()
-    relative_to = '/etc/vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm'
+    relative_to = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm'
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
 
   final_flags.extend(['-I', os.path.dirname(filename)])
@@ -404,7 +445,9 @@ def FlagsForFile( filename, **kwargs ):
   final_flags.extend(CMakeIncludesFlags(filename))
   final_flags.extend(sysflags)
 
+  Log("final_flags:")
   Log(str(final_flags))
+  Log("-------------- Done --------------")
 
   return {
     'flags': final_flags,
