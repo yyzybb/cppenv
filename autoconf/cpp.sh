@@ -7,6 +7,8 @@
 #   rebuild YCM
 set -e
 
+workdir=`pwd`
+
 . ./lib/lib.sh $@
 cd tools
 ./cmake.sh
@@ -105,9 +107,10 @@ install_clang()
 }
 install_clang
 
-. ./lib/msg.sh "build YouCompleteMe"
+cd $workdir
 ycm_flags="--clang-completer --system-libclang"
 which gocode && ycm_flags="$ycm_flags --go-completer"
+. ./lib/msg.sh "build YouCompleteMe flags=$ycm_flags"
 ycm_path=$HOME/.vim/vimfiles/bundle/YouCompleteMe
 cd $ycm_path
 ./install.py $ycm_flags
