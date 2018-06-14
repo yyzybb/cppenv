@@ -16,7 +16,7 @@ install_clang()
 {
     clang_ver=''
     clang --version && clang_ver=`clang --version | grep version -i | sed 's/[^0-9.]//g'` || echo -n
-    test ! -z $clang_ver && version_large_or_equal $clang_ver "6.0.0" && return 0 || echo -n
+    test ! -z $clang_ver && version_ge $clang_ver "6.0.0" && return 0 || echo -n
 
     echo 'Not found clang in system, will install there from llvm-clang source code.'
     llvm_clang_dir=$TMP/llvm-clang_cppenv
