@@ -19,8 +19,7 @@ install_clang()
     test ! -z $clang_ver && version_large_or_equal $clang_ver "6.0.0" && return 0 || echo -n
 
     echo 'Not found clang in system, will install there from llvm-clang source code.'
-    mkdir -p $HOME/.vim.git
-    llvm_clang_dir=$HOME/.vim.git/llvm-clang_cppenv
+    llvm_clang_dir=$TMP/llvm-clang_cppenv
 
     built_from_source=0
 
@@ -36,7 +35,7 @@ install_clang()
         then
             if [ "$os_ver" == "16.04" ]
             then
-                cd $HOME/.vim.git
+                cd $TMP
                 download http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
                 xz -dk clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
                 tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar
@@ -44,7 +43,7 @@ install_clang()
             else
                 if [ "$os_ver" == "14.04" ]
                 then
-                    cd $HOME/.vim.git
+                    cd $TMP
                     download http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
                     xz -dk clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar.xz
                     tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-14.04.tar
@@ -56,7 +55,7 @@ install_clang()
         fi
     else
         echo "download clang6.0-Darwin"
-        cd $HOME/.vim.git
+        cd $TMP
         download http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
         xz -dk clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
         tar xf clang+llvm-6.0.0-x86_64-apple-darwin.tar
@@ -106,9 +105,11 @@ install_clang()
 }
 install_clang
 
-. ./lib/msg.sh "build YouCompleteMe --clang-completer"
+. ./lib/msg.sh "build YouCompleteMe"
+ycm_flags="--clang-completer --system-libclang"
+which gocode && ycm_flags="$ycm_flags --go-completer"
 ycm_path=$HOME/.vim/vimfiles/bundle/YouCompleteMe
 cd $ycm_path
-./install.py --clang-completer --system-libclang --go-completer
+./install.py $ycm_flags
 echo 'vim-cpp-env is ok, good luck!'
 

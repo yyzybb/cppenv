@@ -1,9 +1,16 @@
 #!/bin/bash
 
-#set -x
+set -e
 
 export PREFIX=$HOME
+export VIMPATH=$HOME/.vim
 export TMP=$HOME/.vim.git
+export PROFILE=$HOME/.profile
+export BIN=$HOME/bin
+
+mkdir -p $TMP
+mkdir -p $VIMPATH
+mkdir -p $BIN
 
 message() {
     echo -e "\033[32m$@\033[0m"
@@ -62,4 +69,27 @@ then
     export MAKEFLAGS=$__makeflags
     message "set MAKEFLAGS=$MAKEFLAGS"
 fi
+
+version_ge()
+{
+    lhs=$1
+    rhs=$2
+    lhs_major=`echo $lhs | cut -d. -f1`
+    lhs_minor=`echo $lhs | cut -d. -f2`
+    lhs_num=`echo $lhs | cut -d. -f3`
+    test -z $lhs_major && $lhs_major=0 || echo -n
+    test -z $lhs_minor && $lhs_minor=0 || echo -n
+    test -z $lhs_num && $lhs_num=0 || echo -n
+
+    rhs_major=`echo $rhs | cut -d. -f1`
+    rhs_minor=`echo $rhs | cut -d. -f2`
+    rhs_num=`echo $rhs | cut -d. -f3`
+    test -z $rhs_major && $rhs_major=0 || echo -n
+    test -z $rhs_minor && $rhs_minor=0 || echo -n
+    test -z $rhs_num && $rhs_num=0 || echo -n
+
+    lhs_cmp=`expr $lhs_major \* 10000 + $lhs_minor \* 100 + $lhs_num`
+    rhs_cmp=`expr $rhs_major \* 10000 + $rhs_minor \* 100 + $rhs_num`
+    test $lhs_cmp -ge $rhs_cmp
+}
 

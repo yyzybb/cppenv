@@ -50,10 +50,17 @@ fi
 VUNDLE_GIT=https://gitee.com/yyzybb537/Vundle.vim.git
 YCM_GIT=https://gitee.com/yyzybb537/YouCompleteMe.git
 
+# update profile
+has=`grep "export PATH=\\\$HOME/bin:\\\$PATH" -c $PROFILE || echo -n`
+if [ "$has" == "0" ]
+then
+    echo "export PATH=\$HOME/bin:\$PATH" >> $PROFILE
+fi
+
 # install tools
 cd tools
 ./gcc.sh
-source $HOME/.profile
+source $PROFILE
 ./git.sh
 ./ctags.sh
 #./mlocate.sh
@@ -65,6 +72,28 @@ if [ "$isMac" == "0" ]; then
     ./vim.sh
 fi
 cd -
+
+# init git config, copy git_cmd and shell_cmd to BIN
+cp git_cmd/* $BIN
+cp shell_cmd/* $BIN
+user_name=`whoami`
+if [ `git config --global --list | grep user | wc -l` -eq 0 ]
+then
+    git config --global user.email $user_name@gmail.com
+    git config --global user.name $user_name
+fi
+git config --global diff.tool vimdiff
+git config --global diff.prompt false
+git config --global merge.tool vimdiff
+git config --global merge.prompt false
+git config --global alias.br "branch -av"
+git config --global alias.ss status
+git config --global alias.co checkout
+git config --global alias.cmt commit
+git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+git config --global alias.lgf "log --name-status"
+git config --global receive.denyCurrentBranch true
+git config --global core.editor vim
 
 # copy _vimrc and .ycm_extra_conf to $HOME
 dos2unix _vimrc
@@ -82,19 +111,18 @@ rm $HOME/bin/v -f
 ln -s ${vim_exe_dir}/vim $HOME/bin/v || echo ''
 
 # git clone vim-vundle.git
-vim_path=$HOME/.vim
-vundle_path=${vim_path}/vimfiles/bundle/Vundle.vim
+vundle_path=${VIMPATH}/vimfiles/bundle/Vundle.vim
 git_clone ${VUNDLE_GIT} ${vundle_path}
 
 # compile YouCompleteMe
-ycm_path=${vim_path}/vimfiles/bundle/YouCompleteMe
+. ./lib/msg.sh "build YouCompleteMe --go-completer"
+ycm_path=${VIMPATH}/vimfiles/bundle/YouCompleteMe
 git_clone ${YCM_GIT} ${ycm_path}
 cd ${ycm_path}
-. ./lib/msg.sh "build YouCompleteMe --go-completer"
-./install.py --go-completer
+./install.py
 
 # install other's vim-plugins
 vim +BundleInstall -c quitall
 
-echo 'vim-go-env is ok, good luck!'
+echo 'vim-base-env is ok, good luck!'
 
