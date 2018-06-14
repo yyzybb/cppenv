@@ -7,9 +7,9 @@
 #   rebuild YCM
 set -e
 
-workdir=`pwd`
-
 . ./lib/lib.sh $@
+. ./lib/msg.sh
+
 cd tools
 ./cmake.sh
 cd -
@@ -17,7 +17,7 @@ cd -
 install_clang()
 {
     clang_ver=''
-    clang --version && clang_ver=`clang --version | grep version -i | sed 's/[^0-9.]//g'` || echo -n
+    clang --version && clang_ver=`clang --version | grep version -i | awk '{print $4}' | cut -d\- -f1 | sed 's/[^0-9.]//g'` || echo -n
     test ! -z $clang_ver && version_ge $clang_ver "6.0.0" && return 0 || echo -n
 
     echo 'Not found clang in system, will install there from llvm-clang source code.'
@@ -83,7 +83,7 @@ install_clang()
     tar xf clang.tar
     tar xf llvm.tar
 
-    . ./lib/msg.sh "build llvm"
+    printMsg "build llvm"
     cd llvm-6.0.0.src
     mkdir -p build
     cd build
@@ -92,7 +92,7 @@ install_clang()
     make install
     cd ../..
 
-    . ./lib/msg.sh "build clang"
+    printMsg "build clang"
     cd cfe-6.0.0.src
     mkdir -p build
     cd build
@@ -107,12 +107,12 @@ install_clang()
 }
 install_clang
 
-cd $workdir
 ycm_flags="--clang-completer --system-libclang"
 which gocode && ycm_flags="$ycm_flags --go-completer"
-. ./lib/msg.sh "build YouCompleteMe flags=$ycm_flags"
-ycm_path=$HOME/.vim/vimfiles/bundle/YouCompleteMe
+printMsg "build YouCompleteMe flags=$ycm_flags"
+ycm_path=$VIMPATH/vimfiles/bundle/YouCompleteMe
 cd $ycm_path
 ./install.py $ycm_flags
+
 echo 'vim-cpp-env is ok, good luck!'
 

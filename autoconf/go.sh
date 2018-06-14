@@ -19,5 +19,5 @@ go get -v github.com/golang/tools
 set -e
 go get -v github.com/nsf/gocode
 
-cd ${VIMPATH}/vimfiles/bundle/YouCompleteMe
-./install.py --go-completer
+#cd ${VIMPATH}/vimfiles/bundle/YouCompleteMe
+#./install.py --go-completer

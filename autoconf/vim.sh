@@ -32,6 +32,7 @@
 # install dos2unix, git, vim, g++, ctags, cmake, python-dev
 
 . ./lib/lib.sh $@
+. ./lib/msg.sh
 
 set -e
 
@@ -63,6 +64,7 @@ cd tools
 source $PROFILE
 ./git.sh
 ./ctags.sh
+./patchelf.sh
 #./mlocate.sh
 
 if [ "$isMac" == "0" ]; then
@@ -115,11 +117,11 @@ vundle_path=${VIMPATH}/vimfiles/bundle/Vundle.vim
 git_clone ${VUNDLE_GIT} ${vundle_path}
 
 # compile YouCompleteMe
-. ./lib/msg.sh "build YouCompleteMe --go-completer"
+printMsg "build YouCompleteMe --go-completer"
 ycm_path=${VIMPATH}/vimfiles/bundle/YouCompleteMe
 git_clone ${YCM_GIT} ${ycm_path}
-cd ${ycm_path}
-./install.py
+#cd ${ycm_path}
+#./install.py
 
 # install other's vim-plugins
 vim +BundleInstall -c quitall
