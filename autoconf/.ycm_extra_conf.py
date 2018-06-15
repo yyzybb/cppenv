@@ -50,7 +50,13 @@ def Log(msg):
 g_home = os.environ.get("HOME")
 g_tmp_dir = os.path.join(g_home, '.vim.git')
 g_time_format = '%Y-%m-%dT%H:%M:%S'
-db = dbm.open(os.path.join(g_tmp_dir, 'ycm.db'), "c")
+
+try:
+    db = dbm.open(os.path.join(g_tmp_dir, 'ycm.db'), "c")
+except:
+    Log("db open failed:%s" % traceback.format_exc())
+    db = {}
+
 Log("db keys:%s" % str(db.keys()))
 
 # These are the compilation flags that will be used in case there's no
