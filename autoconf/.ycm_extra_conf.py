@@ -360,12 +360,14 @@ def FlagsForFile( filename, **kwargs ):
   
     # parse makefile
     makefile_include_dirs = GetIncludesDirectories(filename, MakefileIncludesFlags, 'cpp-Makefile')
+    Log("Makfile include direcotires: %s" % makefile_include_dirs)
     for d in makefile_include_dirs:
         final_flags.append('-I')
         final_flags.append(d)
 
     # parse cmake
     cmake_include_dirs = GetIncludesDirectories(filename, CMakeIncludesFlags, 'cpp-CMake')
+    Log("CMake include direcotires: %s" % cmake_include_dirs)
     for d in cmake_include_dirs:
         final_flags.append('-I')
         final_flags.append(d)
