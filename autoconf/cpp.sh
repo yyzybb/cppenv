@@ -105,9 +105,9 @@ install_clang()
     test -d $pyclang_dst || pyclang_dst=$HOME/lib/python2.7/site-packages
     test -d $pyclang_dst && cp bindings/python/clang $pyclang_dst -r
 }
-install_clang
+#install_clang
 
-ycm_flags="--clang-completer --system-libclang"
+ycm_flags="--clang-completer" # --system-libclang"
 which gocode && ycm_flags="$ycm_flags --go-completer"
 printMsg "build YouCompleteMe flags=$ycm_flags"
 ycm_path=$VIMPATH/vimfiles/bundle/YouCompleteMe
