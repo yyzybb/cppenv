@@ -150,12 +150,23 @@ endsnippet
 ########################################################
 snippet cpptest
 #include <iostream>
+#include <chrono>
 using namespace std;
+using namespace std::chrono;
 
 #define OUT(x) cout << #x << " = " << x << endl
 #define O(x) cout << x << endl
 
+struct Timer {
+    Timer() : tp(system_clock::now()) {}
+    ~Timer() {
+        auto dur = system_clock::now() - tp;
+        O("Cost " << duration_cast<milliseconds>(dur).count() << " ms");
+    }
+    system_clock::time_point tp;
+};
+
 int main() {
-	$1
+
 }
 endsnippet
