@@ -37,7 +37,6 @@
 set -e
 
 workdir=`pwd`
-isMac=`uname -a | grep Darwin -c || echo -n`
 if [ "$isMac" == '1' ]
 then
     brew --version || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -110,7 +109,7 @@ vim_exe=`which vim`
 vim_exe_dir=`dirname $vim_exe`
 mkdir -p $HOME/bin
 rm $HOME/bin/v -f
-ln -s ${vim_exe_dir}/vim $HOME/bin/v || echo ''
+ln -s ${vim_exe_dir}/vim $HOME/bin/v || echo -n
 
 # git clone vim-vundle.git
 vundle_path=${VIMPATH}/vimfiles/bundle/Vundle.vim
@@ -118,8 +117,10 @@ git_clone ${VUNDLE_GIT} ${vundle_path}
 
 # compile YouCompleteMe
 printMsg "build YouCompleteMe --go-completer"
-ycm_path=${VIMPATH}/vimfiles/bundle/YouCompleteMe
-git_clone ${YCM_GIT} ${ycm_path}
+ycm_path=${VIMPATH}/vimfiles/bundle
+ycm_path_ori=${TMP}/YouCompleteMe
+git_clone ${YCM_GIT} ${ycm_path_ori}
+ln -s ${ycm_path_ori} ${ycm_path} || echo -n
 #cd ${ycm_path}
 #./install.py
 

@@ -108,9 +108,13 @@ install_clang()
 #install_clang
 
 ycm_flags="--clang-completer" # --system-libclang"
+if [ "$isMac" == '1' ]
+then
+    ycm_flags="$ycm_flags --system-libclang"
+fi
 which gocode && ycm_flags="$ycm_flags --go-completer"
 printMsg "build YouCompleteMe flags=$ycm_flags"
-ycm_path=$VIMPATH/vimfiles/bundle/YouCompleteMe
+ycm_path=${TMP}/YouCompleteMe
 cd $ycm_path
 ./install.py $ycm_flags
 

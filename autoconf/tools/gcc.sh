@@ -7,7 +7,8 @@ set -e
 
 target=$PREFIX/bin/g++
 pkg=gcc.tar.gz
-echo "main() {}" | g++ -std=c++11 -E - && exit 0 ||
+echo "int main() { return 0; }" > $TMP/main.cpp 
+g++ -std=c++11 -E $TMP/main.cpp && exit 0 ||
 test -f $target && $target --version && exit 0
 
 cd $TMP
