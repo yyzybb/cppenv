@@ -172,14 +172,7 @@ SOURCE_EXTENSIONS = [ '.cpp', '.cxx', '.cc', '.c', '.m', '.mm' ]
 def ExtractIncludesFromMakefile(path):
     Log('ExtractIncludesFromMakefile(path="%s")' % path)
 
-    cache_name = 'Makefile-%s' % path
-    cache_dct = GetCacheDict(cache_name)
-    if cache_dct:
-        Log(" -> Makefile use cache!")
-        make_commands =  cache_dct.get('commands')
-    else:
-        make_commands = os.popen('cd %s && make -Bn 2>/dev/null' % path, 'r').read()
-        SetCacheDict(cache_name, {'commands':make_commands}, [path])
+    make_commands = os.popen('cd %s && make -Bn 2>/dev/null' % path, 'r').read()
 
     #Log('Make commands:\n%s' % make_commands);
     matchs = re.findall(r'-I\s*[^\s$]+', make_commands)
@@ -317,31 +310,40 @@ def CheckDependFileMTime(f, mtime):
     return time_str == mtime
 
 def GetCacheDict(cache_name):
-    cache_str = db.get(cache_name)
-    if cache_str:
-        # dict: {xxxx:xxxx, 'depends':{'filename':'mtime'}}
-        cache_dct = eval(cache_str)
-        dep_dct = cache_dct.get('depends')
-        valid_cache = True
-        if dep_dct:
-            for f in dep_dct.keys():
-                mtime = dep_dct.get(f)
-                if not CheckDependFileMTime(f, mtime):
-                    valid_cache = False
-                    break
+    try:
+        cache_str = db.get(cache_name)
+        if cache_str:
+            # dict: {xxxx:xxxx, 'depends':{'filename':'mtime'}}
+            cache_dct = eval(cache_str)
+            dep_dct = cache_dct.get('depends')
+            valid_cache = True
+            if dep_dct:
+                for f in dep_dct.keys():
+                    mtime = dep_dct.get(f)
+                    if not CheckDependFileMTime(f, mtime):
+                        valid_cache = False
+                        break
 
-        if valid_cache:
-            return cache_dct
+            if valid_cache:
+                return cache_dct
+    except:
+        Log("GetCacheDict failed:%s" % traceback.format_exc())
+        return None
+
     return None
 
 def SetCacheDict(cache_name, dct, depfiles):
-    if len(depfiles) > 0:
-        if not dct.has_key('depends'):
-            dct['depends'] = {}
-        for f in depfiles:
-            dct['depends'][f] = GetFileMTime(f)
+    try:
+        if len(depfiles) > 0:
+            if not dct.has_key('depends'):
+                dct['depends'] = {}
+            for f in depfiles:
+                dct['depends'][f] = GetFileMTime(f)
 
-    db[cache_name] = str(dct)
+        db[cache_name] = str(dct)
+    except:
+        Log("depfiles:%s dct:%s" % (repr(depfiles), repr(dct)))
+        Log("SetCacheDict failed:%s" % traceback.format_exc())
 
 def GetIncludesDirectories(filename, func, cache_name_leader):
     dirs = []
@@ -363,21 +365,27 @@ def FlagsForFile( filename, **kwargs ):
     Log("WorkDirectory is: %s" % os.getcwd())
     final_flags = flags
     final_flags.extend(['-I', os.path.dirname(filename)])
-  
-    # parse makefile
-    makefile_include_dirs = GetIncludesDirectories(filename, MakefileIncludesFlags, 'cpp-Makefile')
-    Log("Makfile include direcotires: %s" % makefile_include_dirs)
-    for d in makefile_include_dirs:
-        final_flags.append('-I')
-        final_flags.append(d)
 
     # parse cmake
-    cmake_include_dirs = GetIncludesDirectories(filename, CMakeIncludesFlags, 'cpp-CMake')
-    Log("CMake include direcotires: %s" % cmake_include_dirs)
-    for d in cmake_include_dirs:
-        final_flags.append('-I')
-        final_flags.append(d)
+    try:
+        cmake_include_dirs = GetIncludesDirectories(filename, CMakeIncludesFlags, 'cpp-CMake')
+        Log("CMake include direcotires: %s" % cmake_include_dirs)
+        for d in cmake_include_dirs:
+            final_flags.append('-I')
+            final_flags.append(d)
+    except:
+        Log("parse cmake failed:%s" % traceback.format_exc())
   
+    # parse makefile
+    try:
+        makefile_include_dirs = GetIncludesDirectories(filename, MakefileIncludesFlags, 'cpp-Makefile')
+        Log("Makfile include direcotires: %s" % makefile_include_dirs)
+        for d in makefile_include_dirs:
+            final_flags.append('-I')
+            final_flags.append(d)
+    except:
+        Log("parse makefile failed:%s" % traceback.format_exc())
+
     final_flags.extend(sysflags)
   
     Log("final_flags:")
