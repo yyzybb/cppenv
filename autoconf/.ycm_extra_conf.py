@@ -204,11 +204,12 @@ def MakefileIncludesFlags(filename):
 def ExtractIncludesFromCMake(cmk, filename):
     Log('ExtractIncludesFromCMake')
     cmk_dir = os.path.dirname(cmk)
-    tmp_dir = '/tmp' + cmk_dir
+    tmp_dir = g_tmp_dir + '/tmp' + cmk_dir
     Log("cmake_dir:%s, tmp_dir:%s, filename:%s" % (cmk_dir, tmp_dir, filename))
-    ign = os.popen("mkdir -p %s && cd %s && cmake %s -DCMAKE_EXPORT_COMPILE_COMMANDS=ON" % (tmp_dir, tmp_dir, cmk_dir)).read()
+    ign = os.popen("mkdir -p %s && cd %s && cmake . %s -DCMAKE_EXPORT_COMPILE_COMMANDS=ON" % (tmp_dir, tmp_dir, cmk_dir)).read()
     json_file = os.path.join(tmp_dir, "compile_commands.json")
     if not os.path.isfile(json_file):
+        Log("Create compile_commands.json by cmake failed.")
         return []
 
     f = open(json_file, 'r')
