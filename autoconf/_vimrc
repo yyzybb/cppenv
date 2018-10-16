@@ -56,12 +56,12 @@ autocmd BufNewFile,BufRead *.c map <F7> :! gcc %:p -o out.exe -g -pthread<CR>
 autocmd BufNewFile,BufRead *.c map <F5> <F7>:! %:p:h/out.exe<CR>
 
 " C++
-autocmd BufNewFile,BufRead *.cpp map <F7> :! g++ -std=c++11 %:p -o out.exe -g -pthread<CR>
+autocmd BufNewFile,BufRead *.cpp map <F7> :! g++ -std=c++0x %:p -o out.exe -g -pthread<CR>
 autocmd BufNewFile,BufRead *.cpp map <F5> <F7>:! %:p:h/out.exe<CR>
-autocmd BufNewFile,BufRead *.cpp map <F6> :! g++ -std=c++11 %:p -o out.exe -g -Wl,--whole-archive -lpthread -Wl,--no-whole-archive -static<CR>:! %:p:h/out.exe<CR>
-autocmd BufNewFile,BufRead *.cpp map <F8> :! g++ -std=c++11 %:p -o out.exe -g -lboost_system -lboost_thread -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
-autocmd BufNewFile,BufRead *.cpp map mkco :! g++ -std=c++11 %:p -o out.exe -g -llibgo -lboost_thread -lboost_system -ldl -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
-autocmd BufNewFile,BufRead *.cpp map mkcob :! g++ -std=c++11 %:p -o out.exe -g -llibgo -lboost_coroutine -lboost_context -lboost_thread -lboost_system -ldl -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.cpp map <F6> :! g++ -std=c++0x %:p -o out.exe -g -Wl,--whole-archive -lpthread -Wl,--no-whole-archive -static<CR>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.cpp map <F8> :! g++ -std=c++0x %:p -o out.exe -g -lboost_system -lboost_thread -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.cpp map mkco :! g++ -std=c++0x %:p -o out.exe -g -llibgo -lboost_thread -lboost_system -ldl -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
+autocmd BufNewFile,BufRead *.cpp map mkcob :! g++ -std=c++0x %:p -o out.exe -g -llibgo -lboost_coroutine -lboost_context -lboost_thread -lboost_system -ldl -pthread -static-libstdc++<CR>:! %:p:h/out.exe<CR>
 
 " go
 autocmd BufNewFile,BufRead *.go map <F7> :! go build %<CR>
@@ -79,8 +79,8 @@ autocmd BufNewFile,BufRead *.java map <F5> <F7>:! java %:r<CR>
 set path+=/usr/include,/usr/include/linux,/usr/include/c++/4.8,/usr/include/x86_64-linux-gnu,/usr/include/x86_64-linux-gnu/c++/4.8,/usr/include/i386-linux-gnu,/usr/include/i386-linux-gnu/c++/4.8,/usr/local/include
 
 """"""""""""""""""""""""""Style"""""""""""""""""""""""
-"color evening
-color torte
+color evening
+"color torte
 filetype on
 filetype indent on
 filetype plugin on
@@ -130,6 +130,7 @@ set rtp+=$VIM/vimfiles/bundle/Vundle.vim,$VIM/vimfiles/bundle
 set rtp+=$HOME/.vim/vimfiles/bundle/Vundle.vim,$HOME/.vim/vimfiles/bundle
 call vundle#begin("$HOME/.vim/vimfiles/bundle")
 Plugin 'https://gitee.com/yyzybb537/Vundle.vim.git', {'name': 'Vundle.vim'}
+Plugin 'majutsushi/tagbar'
 Plugin 'yyzybb/cppenv'
 Plugin 'yyzybb/quickfixer'
 Plugin 'yyzybb/auto_govender'
@@ -163,10 +164,22 @@ call vundle#end()
 filetype plugin indent on
 
 " YouCompleteMe
+"let g:ycm_log_level = 'info'
+"注释和字符串中的文字也会被收入补全
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
+" 禁止缓存匹配项,每次都重新生成匹配项
+let g:ycm_cache_omnifunc=1
+" 开启语义补全
+let g:ycm_seed_identifiers_with_syntax=1	
+"在注释输入中也能补全
+let g:ycm_complete_in_comments = 1
+"在字符串输入中也能补全
+let g:ycm_complete_in_strings = 1
+
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>*'
 let g:ycm_show_diagnostics_ui = 0
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '/data1/home/yuyangzi/.ycm_extra_conf.py'
 nnoremap gy :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nnoremap gu :YcmCompleter GoToImprecise<CR>
 nmap <F4> :YcmDiags<CR>
@@ -188,16 +201,20 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 " nerdtree
 map <F3> :NERDTreeToggle<CR>
 
+" tagbar
+let g:tagbar_left = 1
+map TL :TagbarToggle<CR>
+
 " taglist
-let Tlist_Show_One_File=1
-let Tlist_Exit_OnlyWindow=1
-map TL :Tlist<CR>
-map TU :TlistUpdate<CR>
+"let Tlist_Show_One_File=1
+"let Tlist_Exit_OnlyWindow=1
+"map TL :Tlist<CR>
+"map TU :TlistUpdate<CR>
 
 " cppenv
 au BufNewFile,BufRead * execute cppenv#dummy()
-au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go,*.proto execute cppenv#infect()
-au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go,*.proto set fo-=ro
+au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go,*.proto,*.jce execute cppenv#infect()
+au BufNewFile,BufRead *.h,*.hpp,*.inl,*.ipp,*.cpp,*.c,*.cc,*.go,*.proto,*.jce set fo-=ro
 
 " auto_govender
 au BufNewFile,BufRead *.go execute ag#dummy()
