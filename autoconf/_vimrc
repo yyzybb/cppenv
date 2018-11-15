@@ -130,7 +130,6 @@ set rtp+=$VIM/vimfiles/bundle/Vundle.vim,$VIM/vimfiles/bundle
 set rtp+=$HOME/.vim/vimfiles/bundle/Vundle.vim,$HOME/.vim/vimfiles/bundle
 call vundle#begin("$HOME/.vim/vimfiles/bundle")
 Plugin 'https://gitee.com/yyzybb537/Vundle.vim.git', {'name': 'Vundle.vim'}
-Plugin 'majutsushi/tagbar'
 Plugin 'yyzybb/cppenv'
 Plugin 'yyzybb/quickfixer'
 Plugin 'yyzybb/auto_govender'
@@ -144,6 +143,7 @@ Plugin 'https://gitee.com/yyzybb537/vim-toml.git'
 Plugin 'https://gitee.com/yyzybb537/tabular.git'
 Plugin 'https://gitee.com/yyzybb537/vim-markdown.git'
 Plugin 'https://gitee.com/yyzybb537/YouCompleteMe.git'
+Plugin 'majutsushi/tagbar'
 
 "Plugin 'godlygeek/tabular'
 "Plugin 'plasticboy/vim-markdown'
@@ -179,7 +179,7 @@ let g:ycm_complete_in_strings = 1
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>*'
 let g:ycm_show_diagnostics_ui = 0
-let g:ycm_global_ycm_extra_conf = '/data1/home/yuyangzi/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '/data/home/yuyangzi/.ycm_extra_conf.py'
 nnoremap gy :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nnoremap gu :YcmCompleter GoToImprecise<CR>
 nmap <F4> :YcmDiags<CR>

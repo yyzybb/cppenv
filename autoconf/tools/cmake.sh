@@ -11,7 +11,7 @@ test -f $target && $target --version && exit 0
 
 # version >= 3.11
 ver=`cmake --version | head -1 | awk '{print $3}' | cut -d\. -f1-2`
-version_ge ${ver} "3.11" && exit 0
+version_ge ${ver} "3.0" && exit 0
 
 cd $TMP
 download "https://github.com/Kitware/CMake/archive/v3.11.3.tar.gz" $pkg
