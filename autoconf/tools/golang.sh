@@ -7,8 +7,12 @@ set -e
 
 # check
 go_ver=''
-which go && go_ver=`go version | awk '{print $3}' | sed 's/[^0-9.]//g'` || echo -n
-test ! -z $go_ver && version_ge $go_ver "1.10.1" && exit 0 || echo -n
+
+if test -z $forceInstall
+then
+    which go && go_ver=`go version | awk '{print $3}' | sed 's/[^0-9.]//g'` || echo -n
+    test ! -z $go_ver && version_ge $go_ver "1.10.1" && exit 0 || echo -n
+fi
 
 message "---------- Download golang 1.10.1 -----------"
 cd $TMP

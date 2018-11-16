@@ -7,9 +7,13 @@ set -e
 
 target=$PREFIX/bin/g++
 pkg=gcc.tar.gz
-echo "int main() { return 0; }" > $TMP/main.cpp 
-g++ -std=c++11 -E $TMP/main.cpp && exit 0 ||
-test -f $target && $target --version && exit 0
+
+if test -z $forceInstall
+then
+    echo "int main() { return 0; }" > $TMP/main.cpp 
+    g++ -std=c++11 -E $TMP/main.cpp && exit 0 ||
+        test -f $target && $target --version && exit 0
+fi
 
 cd $TMP
 download "https://github.com/gcc-mirror/gcc/archive/gcc-7_1_0-release.tar.gz" $pkg

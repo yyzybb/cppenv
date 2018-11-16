@@ -7,7 +7,11 @@ set -e
 
 target=$PREFIX/bin/cmake
 pkg=cmake.tar.gz
-test -f $target && $target --version && exit 0
+
+if test -z $forceInstall
+then
+    test -f $target && $target --version && exit 0
+fi
 
 # version >= 3.11
 ver=`cmake --version | head -1 | awk '{print $3}' | cut -d\. -f1-2`

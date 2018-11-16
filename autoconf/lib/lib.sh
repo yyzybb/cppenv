@@ -8,6 +8,7 @@ export TMP=$HOME/.vim.git
 export PROFILE=$HOME/.profile
 export BIN=$HOME/bin
 export isMac=`uname -a | grep Darwin -c || echo -n`
+export forceInstall=
 
 mkdir -p $TMP
 mkdir -p $VIMPATH
@@ -52,11 +53,14 @@ usage()
     message "Flags: (-j4|-j8|...)"
 }
 
-while getopts "j:h" optvar
+while getopts "j:h:f" optvar
 do
     case $optvar in
         j):
             __makeflags="-j$OPTARG"
+            ;;
+        f):
+            export forceInstall=1
             ;;
         h):
             usage

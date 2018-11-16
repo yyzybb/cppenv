@@ -55,15 +55,18 @@ has=`grep "export PATH=\\\$HOME/bin:\\\$PATH" -c $PROFILE || echo -n`
 if [ "$has" == "0" ]
 then
     echo "export PATH=\$HOME/bin:\$PATH" >> $PROFILE
+    echo "export LD_LIBRARY_PATH=\$HOME/lib:\$LD_LIBRARY_PATH" >> $PROFILE
 fi
+source $PROFILE
 
 # install tools
 cd tools
+./dos2unix.sh
 ./gcc.sh
 source $PROFILE
 ./git.sh
 ./ctags.sh
-./patchelf.sh
+test -f $PREFIX/bin/g++ && ./patchelf.sh
 #./mlocate.sh
 
 if [ "$isMac" == "0" ]; then

@@ -7,7 +7,11 @@ set -e
 
 target=$PREFIX/bin/vim
 pkg=vim.tar.gz
-test -f $target && $target --version && exit 0
+
+if test -z $forceInstall
+then
+    test -f $target && $target --version && exit 0
+fi
 
 cd $TMP
 download "https://github.com/vim/vim/archive/v7.4.2367.tar.gz" $pkg

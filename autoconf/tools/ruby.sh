@@ -7,7 +7,11 @@ set -e
 
 target=$PREFIX/bin/ruby
 pkg=ruby.tar.gz
-test -f $target && $target --version && exit 0
+
+if test -z $forceInstall
+then
+    test -f $target && $target --version && exit 0
+fi
 
 cd $TMP
 download "https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.1.tar.gz" $pkg

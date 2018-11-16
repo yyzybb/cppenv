@@ -7,7 +7,11 @@ set -e
 
 target=$PREFIX/bin/ctags
 pkg=ctags.tar.gz
-test -f $target && $target --version && exit 0
+
+if test -z $forceInstall
+then
+    test -f $target && $target --version && exit 0
+fi
 
 cd $TMP
 download "http://prdownloads.sourceforge.net/ctags/ctags-5.8.tar.gz" $pkg

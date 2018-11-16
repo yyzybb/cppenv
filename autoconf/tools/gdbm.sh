@@ -5,8 +5,8 @@ set -e
 . ../lib/lib.sh $@
 . ../lib/msg.sh $0
 
-target=$PREFIX/bin/patchelf
-pkg=patchelf.tar.gz
+target=$PREFIX/bin/gdbmtool
+pkg=gdbm-1.18.1.tar.gz
 
 if test -z $forceInstall
 then
@@ -14,9 +14,9 @@ then
 fi
 
 cd $TMP
-download "https://nixos.org/releases/patchelf/patchelf-0.9/patchelf-0.9.tar.gz" $pkg
+download "ftp://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1.tar.gz" $pkg
 tar zxf $pkg
-dir=`tar tf $pkg | head -1`
+dir=gdbm-1.18.1
 cd $dir
 ./configure --prefix=$PREFIX
 make $MAKEFLAGS

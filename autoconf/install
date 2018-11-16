@@ -4,12 +4,14 @@
 
 ./vim.sh $@
 source $PROFILE
+
 ./go.sh $@
 source $PROFILE
+
 ./cpp.sh $@
 source $PROFILE
 
 if [ "$isMac" == '0' ]
 then
-    ./patchelf.sh $@
+    test -f $PREFIX/bin/g++ && ./patchelf.sh $@
 fi
