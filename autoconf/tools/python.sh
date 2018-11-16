@@ -11,7 +11,6 @@ pkg=python.tar.xz
 if test -z $forceInstall
 then
     test -f $target && $target --version && exit 0
-    echo 'import dbm' | python - && exit 0
 fi
 
 ./gdbm.sh
