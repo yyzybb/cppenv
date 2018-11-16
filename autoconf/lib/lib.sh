@@ -9,6 +9,7 @@ export PROFILE=$HOME/.profile
 export BIN=$HOME/bin
 export isMac=`uname -a | grep Darwin -c || echo -n`
 export forceInstall=
+export withGo=
 
 mkdir -p $TMP
 mkdir -p $VIMPATH
@@ -66,7 +67,7 @@ usage()
     message "Flags: (-j4|-j8|...)"
 }
 
-while getopts "j:h:f" optvar
+while getopts "j:h:f:g" optvar
 do
     case $optvar in
         j):
@@ -74,6 +75,9 @@ do
             ;;
         f):
             export forceInstall=1
+            ;;
+        f):
+            export withGo=1
             ;;
         h):
             usage

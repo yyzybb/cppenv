@@ -5,8 +5,11 @@
 ./vim.sh $@
 source $PROFILE
 
-./go.sh $@
-source $PROFILE
+if test -n $withGo
+then
+    ./go.sh $@
+    source $PROFILE
+fi
 
 ./cpp.sh $@
 source $PROFILE
