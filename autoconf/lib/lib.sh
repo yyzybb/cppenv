@@ -37,6 +37,19 @@ download() {
     fi
 }
 
+downloadByGit() {
+    url=$1
+    dir=$2
+    if test -f $dir
+    then
+        message "----> git pull $url"
+        cd $dir && git pull
+    else
+        message "----> git clone $url"
+        git clone $url $dir
+    fi
+}
+
 git_clone()
 {
     remote=$1

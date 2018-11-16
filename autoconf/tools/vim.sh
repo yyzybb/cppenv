@@ -15,7 +15,8 @@ fi
 
 cd $TMP
 #download "https://github.com/vim/vim/archive/v7.4.2367.tar.gz" $pkg
-download "https://gitee.com/yyzybb537/vim-tgz/raw/master/vim.tar.gz" $pkg
+downloadByGit "https://gitee.com/yyzybb537/vim-tgz.git" vimgit
+cd vimgit
 tar zxf $pkg
 dir=`tar tf $pkg | head -1`
 cd $dir
