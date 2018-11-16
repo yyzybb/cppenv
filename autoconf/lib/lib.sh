@@ -9,7 +9,7 @@ export PROFILE=$HOME/.profile
 export BIN=$HOME/bin
 export isMac=`uname -a | grep Darwin -c || echo -n`
 export forceInstall=
-export withGo=
+export withGo=0
 
 mkdir -p $TMP
 mkdir -p $VIMPATH
@@ -41,10 +41,11 @@ download() {
 downloadByGit() {
     url=$1
     dir=$2
-    if test -f $dir
+    if test -d $dir
     then
         message "----> git pull $url"
         cd $dir && git pull
+        cd ..
     else
         message "----> git clone $url"
         git clone $url $dir
@@ -76,7 +77,7 @@ do
         f):
             export forceInstall=1
             ;;
-        f):
+        g):
             export withGo=1
             ;;
         h):

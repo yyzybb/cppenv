@@ -5,7 +5,7 @@
 ./vim.sh $@
 source $PROFILE
 
-if test -n $withGo
+if [ "$withGo" == '1' ]
 then
     ./go.sh $@
     source $PROFILE
