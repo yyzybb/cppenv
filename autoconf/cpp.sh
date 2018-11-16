@@ -116,6 +116,7 @@ which gocode && ycm_flags="$ycm_flags --go-completer"
 printMsg "build YouCompleteMe flags=$ycm_flags"
 ycm_path=${TMP}/YouCompleteMe
 cd $ycm_path
+cat ./third_party/ycmd/clang_archives/x* > ./third_party/ycmd/clang_archives/clang+llvm-5.0.0-linux-x86_64-ubuntu14.04.tar.xz
 ./install.py $ycm_flags
 
 echo 'vim-cpp-env is ok, good luck!'
