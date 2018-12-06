@@ -13,7 +13,7 @@ then
     test -f $target && $target --version && exit 0
 fi
 
-./gdbm.sh
+#./gdbm.sh
 
 cd $TMP
 download "https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tar.xz" $pkg

@@ -34,7 +34,6 @@ import ycm_core
 import re
 import traceback
 import json
-import dbm
 import time
 
 _debug = 1
@@ -52,6 +51,7 @@ g_tmp_dir = os.path.join(g_home, '.vim.git')
 g_time_format = '%Y-%m-%dT%H:%M:%S'
 
 try:
+    dbm = __import__('dbm')
     db = dbm.open(os.path.join(g_tmp_dir, 'ycm.db'), "c")
 except:
     Log("db open failed:%s" % traceback.format_exc())
