@@ -12,6 +12,7 @@ set -e
 
 cd tools
 ./cmake.sh
+./bear.sh
 cd -
 
 install_clang()
