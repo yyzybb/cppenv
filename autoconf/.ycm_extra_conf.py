@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding:utf8 -*-
 # This file is NOT licensed under the GPLv3, which is the license for the rest
 # of YouCompleteMe.
@@ -30,16 +31,24 @@
 # For more information, please refer to <http://unlicense.org/>
 
 import os
-import ycm_core
+import sys
 import re
 import traceback
 import json
 import time
 
-_debug = 1
+# 打印日志
+g_debug = 1
+
+# 处理Makefile时是否执行(rm .*.d -f)
+g_rm_dot_d_files = 1
+
+# 缓存有效期
+g_cmake_cache_valid_seconds = 10
+g_makefile_cache_valid_seconds = 10
 
 def Log(msg):
-    if not _debug:
+    if not g_debug:
         return 
 
     f = open("/tmp/ycm_conf.log", 'a+')
@@ -47,17 +56,16 @@ def Log(msg):
     f.close()
 
 g_home = os.environ.get("HOME")
-g_tmp_dir = os.path.join(g_home, '.vim.git')
+g_tmp_dir = os.path.join(g_home, '.vim.git/ycm_tmp')
 g_time_format = '%Y-%m-%dT%H:%M:%S'
 
-try:
-    dbm = __import__('dbm')
-    db = dbm.open(os.path.join(g_tmp_dir, 'ycm.db'), "c")
-except:
-    Log("db open failed:%s" % traceback.format_exc())
-    db = {}
+if __name__ == '__main__':
+    # clear all cache
+    os.popen('rm %s -rf' % g_tmp_dir).read()
+    os.makedirs(g_tmp_dir)
+    sys.exit(0)
 
-Log("db keys:%s" % str(db.keys()))
+import ycm_core
 
 # These are the compilation flags that will be used in case there's no
 # compilation database set (by default, one is not set).
@@ -113,75 +121,145 @@ flags = [
 
 sysflags = []
 
-gcc_search_dirs = db.get('gcc_search_dirs')
+def readFile(filename):
+    if not os.path.isfile(filename):
+        return ""
 
-if not gcc_search_dirs:
-    f = open('/tmp/ycm_tmp.cpp', 'w')
-    f.write('#include <iostream>\n')
-    f.write('main() {}')
+    f = open(filename, 'r')
+    s = f.read()
     f.close()
-    r, w, e = os.popen3('g++ -std=c++11 -v -H /tmp/ycm_tmp.cpp -o /dev/null')
-    gcc_search_dirs = e.read()
-    start = '#include <...> search starts here:'
-    end = 'End of search list.'
-    gcc_search_dirs = gcc_search_dirs[gcc_search_dirs.index(start) + len(start):gcc_search_dirs.index(end)]
-    gcc_search_dirs = gcc_search_dirs.strip()
-    db['gcc_search_dirs'] = gcc_search_dirs
+    return s
 
-Log('gcc_search_dirs:' + gcc_search_dirs)
-dirs = gcc_search_dirs.split('\n')
-for d in dirs:
-    d = d.strip()
-    if d == '':
-        continue
-    sysflags.append('-isystem')
-    sysflags.append(d)
+def readFileLines(filename):
+    if not os.path.isfile(filename):
+        return []
 
-gcc_version = os.popen('gcc --version | head -1 | cut -d\) -f2 | awk \'{print $1}\'').read().strip()
-Log('gcc_version:' + gcc_version)
+    f = open(filename, 'r')
+    lines = f.readlines()
+    for i in range(len(lines)):
+        lines[i] = lines[i].strip()
+    f.close()
+    return lines
 
-# use CPATH
-env_cpath = os.environ.get("CPATH")
-if env_cpath:
-    cpaths = env_cpath.split(':')
-    for cpath in cpaths:
-        if cpath == '':
+def writeFile(filename, s):
+    if not os.path.exists(os.path.dirname(filename)):
+        os.makedirs(os.path.dirname(filename))
+    f = open(filename, 'w')
+    f.write(s)
+    f.close()
+
+def writeFileLines(filename, lines):
+    if not os.path.exists(os.path.dirname(filename)):
+        os.makedirs(os.path.dirname(filename))
+    f = open(filename, 'w')
+    for line in lines:
+        f.write(line + '\n')
+    f.close()
+
+# 计算最后修改时间
+def isFileTimeout(temp_file, seconds):
+    if not os.path.isfile(temp_file):
+        return True
+
+    mt = os.path.getmtime(temp_file)
+    now = time.mktime(time.localtime())
+    return abs(now - mt) > 5;
+
+# 初始化system flags
+def initSysFlags():
+    global sysflags
+
+    gcc_search_dirs = ''
+
+    gcc_search = os.path.join(g_tmp_dir, 'gcc_search')
+    if os.path.isfile(gcc_search):
+        gcc_search_dirs = readFile(gcc_search)
+
+    if not gcc_search_dirs:
+        f = open('/tmp/ycm_tmp.cpp', 'w')
+        f.write('#include <iostream>\n')
+        f.write('main() {}')
+        f.close()
+        r, w, e = os.popen3('g++ -std=c++11 -v -H /tmp/ycm_tmp.cpp -o /dev/null')
+        gcc_search_dirs = e.read()
+        start = '#include <...> search starts here:'
+        end = 'End of search list.'
+        gcc_search_dirs = gcc_search_dirs[gcc_search_dirs.index(start) + len(start):gcc_search_dirs.index(end)]
+        gcc_search_dirs = gcc_search_dirs.strip()
+        writeFile(gcc_search, gcc_search_dirs)
+
+    Log('gcc_search_dirs:' + gcc_search_dirs)
+    dirs = gcc_search_dirs.split('\n')
+    for d in dirs:
+        d = d.strip()
+        if d == '':
             continue
+        sysflags.append('-isystem')
+        sysflags.append(d)
 
-        sysflags.append("-I")
-        sysflags.append(cpath)
+    gcc_version = os.popen('gcc --version | head -1 | cut -d\) -f2 | awk \'{print $1}\'').read().strip()
+    Log('gcc_version:' + gcc_version)
 
-# in Mac and Linux
-sysflags.extend([
-    '-isystem',
-    '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
-    '-isystem',
-    '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
-    '-isystem',
-    '/usr/include/linux',
-    '-isystem',
-    '/usr/include/x86_64-linux-gnu',
-    '-isystem',
-    '/usr/include/i386-linux-gnu',
-    ])
+    # use CPATH
+    env_cpath = os.environ.get("CPATH")
+    if env_cpath:
+        cpaths = env_cpath.split(':')
+        for cpath in cpaths:
+            if cpath == '':
+                continue
+
+            sysflags.append("-I")
+            sysflags.append(cpath)
+
+    # in Mac and Linux
+    sysflags.extend([
+        '-isystem',
+        '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
+        '-isystem',
+        '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
+        '-isystem',
+        '/usr/include/linux',
+        '-isystem',
+        '/usr/include/x86_64-linux-gnu',
+        '-isystem',
+        '/usr/include/i386-linux-gnu',
+        ])
+
+initSysFlags()
 
 SOURCE_EXTENSIONS = [ '.cpp', '.cxx', '.cc', '.c', '.m', '.mm' ]
 
 ## Add includes flags from the Makefile.
 #
-def ExtractIncludesFromMakefile(path):
-    Log('ExtractIncludesFromMakefile(path="%s")' % path)
+def ExtractIncludesFromMakefile(mk, filename):
+    Log('ExtractIncludesFromMakefile(mk="%s")' % mk)
 
-    make_commands = os.popen('cd %s && make -Bn 2>/dev/null' % path, 'r').read()
+    file_dir = os.path.dirname(filename)
+    mk_dir = os.path.dirname(mk)
+    tmp_dir = g_tmp_dir + mk_dir
+    Log("make_dir:%s, tmp_dir:%s, filename:%s" % (mk_dir, tmp_dir, filename))
+    temp_file = os.path.join(tmp_dir, 'makefile.commands')
 
-    #Log('Make commands:\n%s' % make_commands);
-    matchs = re.findall(r'-I\s*[^\s$]+', make_commands)
-    include_flags = set()
-    for m in matchs:
-        include_path = m[2:].strip()
-        if not os.path.isabs(include_path):
-            include_path = os.path.join(path, include_path)
-        include_flags.add(include_path)
+    include_flags = []
+    if not isFileTimeout(temp_file, g_makefile_cache_valid_seconds):
+        Log("===> match cache file: %s" % temp_file)
+        include_flags = readFileLines(temp_file)
+
+    if not include_flags:
+        if g_rm_dot_d_files:
+            ign = os.popen("rm %s/.*.d -f" % file_dir).read()
+        make_commands = os.popen('cd %s && make -Bn 2>/dev/null' % mk_dir, 'r').read()
+
+        #Log('Make commands:\n%s' % make_commands);
+        matchs = re.findall(r'-I\s*[^\s$]+', make_commands)
+        include_flags = set()
+        for m in matchs:
+            include_path = m[2:].strip()
+            if not os.path.isabs(include_path):
+                include_path = os.path.join(mk_dir, include_path)
+            include_flags.add(include_path)
+
+        writeFileLines(temp_file, include_flags)
 
     return include_flags
 
@@ -191,30 +269,31 @@ def MakefileIncludesFlags(filename):
     makefile_list = ['Makefile', 'makefile', 'build/Makefile', 'build/makefile']
     mk = findProjectFile(filename, makefile_list)
     if not mk:
-        return [], ''
+        return []
 
-    include_flags = ExtractIncludesFromMakefile(os.path.dirname(mk))
-    mk_flags = []
-    for flag in include_flags:
-        mk_flags.append('-I')
-        mk_flags.append(flag)
-
-    return mk_flags, mk
+    include_flags = ExtractIncludesFromMakefile(mk, filename)
+    return include_flags
 
 def ExtractIncludesFromCMake(cmk, filename):
     Log('ExtractIncludesFromCMake')
     cmk_dir = os.path.dirname(cmk)
-    tmp_dir = g_tmp_dir + '/tmp' + cmk_dir
+    tmp_dir = g_tmp_dir + cmk_dir
     Log("cmake_dir:%s, tmp_dir:%s, filename:%s" % (cmk_dir, tmp_dir, filename))
-    ign = os.popen("mkdir -p %s && cd %s && cmake . %s -DCMAKE_EXPORT_COMPILE_COMMANDS=ON" % (tmp_dir, tmp_dir, cmk_dir)).read()
     json_file = os.path.join(tmp_dir, "compile_commands.json")
+    if isFileTimeout(json_file, g_cmake_cache_valid_seconds):
+        if not os.path.exists(tmp_dir):
+            os.makedirs(tmp_dir)
+        ign = os.popen("cd %s && cmake . %s -DCMAKE_EXPORT_COMPILE_COMMANDS=ON" % (tmp_dir, cmk_dir)).read()
+    else:
+        Log("===> match cache file: %s" % json_file)
+    return ExtractIncludesFromJson(json_file, filename)
+
+def ExtractIncludesFromJson(json_file, filename):
     if not os.path.isfile(json_file):
-        Log("Create compile_commands.json by cmake failed.")
+        Log("Create compile_commands.json failed.")
         return []
 
-    f = open(json_file, 'r')
-    strjs = f.read()
-    f.close()
+    strjs = readFile(json_file)
 
     #Log("strjs:" + strjs)
     js = json.loads(strjs)
@@ -269,14 +348,14 @@ def CMakeIncludesFlags(filename):
         cmk = findProjectFile(filename, ['CMakeLists.txt'])
         if not cmk:
             Log("Not find CMakeLists.txt")
-            return [], ''
+            return []
 
         includes = ExtractIncludesFromCMake(cmk, filename)
-        return includes, cmk
+        return includes
     except:
         Log(traceback.format_exc())
 
-    return [], ''
+    return []
 
 def findProjectFile(cppfile, pfnames):
     Log('findProjectFile cppfile=%s, project_file_names=%s' % (cppfile, pfnames))
@@ -310,55 +389,11 @@ def CheckDependFileMTime(f, mtime):
     time_str = GetFileMTime(f)
     return time_str == mtime
 
-def GetCacheDict(cache_name):
-    try:
-        cache_str = db.get(cache_name)
-        if cache_str:
-            # dict: {xxxx:xxxx, 'depends':{'filename':'mtime'}}
-            cache_dct = eval(cache_str)
-            dep_dct = cache_dct.get('depends')
-            valid_cache = True
-            if dep_dct:
-                for f in dep_dct.keys():
-                    mtime = dep_dct.get(f)
-                    if not CheckDependFileMTime(f, mtime):
-                        valid_cache = False
-                        break
-
-            if valid_cache:
-                return cache_dct
-    except:
-        Log("GetCacheDict failed:%s" % traceback.format_exc())
-        return None
-
-    return None
-
-def SetCacheDict(cache_name, dct, depfiles):
-    try:
-        if len(depfiles) > 0:
-            if not dct.has_key('depends'):
-                dct['depends'] = {}
-            for f in depfiles:
-                dct['depends'][f] = GetFileMTime(f)
-
-        db[cache_name] = str(dct)
-    except:
-        Log("depfiles:%s dct:%s" % (repr(depfiles), repr(dct)))
-        Log("SetCacheDict failed:%s" % traceback.format_exc())
-
 def GetIncludesDirectories(filename, func, cache_name_leader):
-    dirs = []
-    cache_name = cache_name_leader + '-' + filename
-    cache_dct = GetCacheDict(cache_name)
-    if cache_dct:
-        Log(" -> file:%s Project:%s use cache!" % (filename, cache_name_leader))
-        return cache_dct.get('I')
-
     dirs, mk = func(filename)
     if len(dirs) == 0:
         return dirs
 
-    SetCacheDict(cache_name, {'I': dirs}, [mk])
     return dirs
 
 def FlagsForFile( filename, **kwargs ):
@@ -369,8 +404,8 @@ def FlagsForFile( filename, **kwargs ):
 
     # parse cmake
     try:
-        cmake_include_dirs = GetIncludesDirectories(filename, CMakeIncludesFlags, 'cpp-CMake')
-        Log("CMake include direcotires: %s" % cmake_include_dirs)
+        cmake_include_dirs = CMakeIncludesFlags(filename)
+        Log("CMake include direcotires: %s" % str(cmake_include_dirs))
         for d in cmake_include_dirs:
             final_flags.append('-I')
             final_flags.append(d)
@@ -379,8 +414,8 @@ def FlagsForFile( filename, **kwargs ):
   
     # parse makefile
     try:
-        makefile_include_dirs = GetIncludesDirectories(filename, MakefileIncludesFlags, 'cpp-Makefile')
-        Log("Makfile include direcotires: %s" % makefile_include_dirs)
+        makefile_include_dirs = MakefileIncludesFlags(filename)
+        Log("Makfile include direcotires: %s" % str(makefile_include_dirs))
         for d in makefile_include_dirs:
             final_flags.append('-I')
             final_flags.append(d)
@@ -389,20 +424,18 @@ def FlagsForFile( filename, **kwargs ):
 
     final_flags.extend(sysflags)
   
+    Log("file:")
+    Log("  %s" % filename)
     Log("final_flags:")
-    Log(str(final_flags))
-    Log("build command:")
-  
-    cmd = 'g++ -std=c++0x -c %s ' % filename
-    cmd += ' '.join(final_flags)
-    Log(cmd)
+    for i in range(len(final_flags)/2):
+        Log("  %s  %s" % (final_flags[i*2], final_flags[i*2 + 1]))
+    #Log("build command:")
+    #cmd = 'g++ -std=c++0x -c %s ' % filename
+    #cmd += ' '.join(final_flags)
+    #Log(cmd)
     Log("-------------- Done [%s] --------------" % filename)
   
     return {
       'flags': final_flags,
       'do_cache': True
     }
-
-if __name__ == '__main__':
-    # test mk_flags
-    print FlagsForFile(os.path.join(g_home, 'test/a.cpp'))
