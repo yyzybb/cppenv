@@ -23,16 +23,16 @@ cd $dir
 ./contrib/download_prerequisites
 mkdir gcc-build
 cd gcc-build
-../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib --prefix=$PREFIX
+../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib --prefix=$PREFIX/gcc7
 make $MAKEFLAGS
 make install
 
 #set default compiler
-has=`grep "export CXX=\\\$HOME/bin/g++" -c $PROFILE || echo -n`
-if [ "$has" == "0" ]
-then
-    echo "export CC=\$HOME/bin/gcc" >> $PROFILE
-    echo "export CXX=\$HOME/bin/g++" >> $PROFILE
-    echo "export LIBRARY_PATH=\$HOME/lib:\$HOME/lib64:\$HOME/lib/gcc/x86_64-pc-linux-gnu/:\$LIBRARY_PATH" >> $PROFILE
-    echo "export LD_LIBRARY_PATH=\$HOME/lib:\$HOME/lib64:\$HOME/lib/gcc/x86_64-pc-linux-gnu/:\$LD_LIBRARY_PATH" >> $PROFILE
-fi
+#has=`grep "export CXX=\\\$HOME/bin/g++" -c $PROFILE || echo -n`
+#if [ "$has" == "0" ]
+#then
+#    echo "export CC=\$HOME/bin/gcc" >> $PROFILE
+#    echo "export CXX=\$HOME/bin/g++" >> $PROFILE
+#    echo "export LIBRARY_PATH=\$HOME/lib:\$HOME/lib64:\$HOME/lib/gcc/x86_64-pc-linux-gnu/:\$LIBRARY_PATH" >> $PROFILE
+#    echo "export LD_LIBRARY_PATH=\$HOME/lib:\$HOME/lib64:\$HOME/lib/gcc/x86_64-pc-linux-gnu/:\$LD_LIBRARY_PATH" >> $PROFILE
+#fi
