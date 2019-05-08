@@ -103,8 +103,9 @@ git config --global core.editor vim
 # copy _vimrc and .ycm_extra_conf to $HOME
 dos2unix _vimrc
 rm $HOME/_vimrc -f
-ln _vimrc $HOME/_vimrc || cp _vimrc $HOME/_vimrc
+cp _vimrc $HOME/_vimrc
 chmod 0666 $HOME/_vimrc
+sed -i "s|.*g:ycm_global_ycm_extra_conf.*|let g:ycm_global_ycm_extra_conf = \"$HOME/.ycm_extra_conf.py\"|g" $HOME/_vimrc
 dos2unix .ycm_extra_conf.py
 rm $HOME/.ycm_extra_conf.py -f
 cp .ycm_extra_conf.py $HOME/
