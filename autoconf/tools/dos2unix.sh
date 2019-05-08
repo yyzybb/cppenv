@@ -19,6 +19,6 @@ download "https://sourceforge.net/code-snapshots/git/d/do/dos2unix/dos2unix.git/
 unzip $pkg
 dir=dos2unix-dos2unix-861184d55fd86da787c4e16855461b3b8f40b4b0
 cd $dir
-make $MAKEFLAGS || true
+make || true
 cp dos2unix $target
 test -f $target && $target --version
