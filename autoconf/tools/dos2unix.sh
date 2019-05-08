@@ -10,6 +10,7 @@ pkg=dos2unix-dos2unix-861184d55fd86da787c4e16855461b3b8f40b4b0.zip
 
 if test -z $forceInstall
 then
+    dos2unix --version && exit 0
     test -f $target && $target --version && exit 0
 fi
 
@@ -18,6 +19,6 @@ download "https://sourceforge.net/code-snapshots/git/d/do/dos2unix/dos2unix.git/
 unzip $pkg
 dir=dos2unix-dos2unix-861184d55fd86da787c4e16855461b3b8f40b4b0
 cd $dir
-make $MAKEFLAGS || echo -n
+make $MAKEFLAGS || true
 cp dos2unix $target
 test -f $target && $target --version

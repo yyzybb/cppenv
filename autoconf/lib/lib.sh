@@ -5,7 +5,7 @@ set -e
 export PREFIX=$HOME
 export VIMPATH=$HOME/.vim
 export TMP=$HOME/.vim.git
-export PROFILE=$HOME/.profile
+export PROFILE=$HOME/.bashrc
 export BIN=$HOME/bin
 export isMac=`uname -a | grep Darwin -c || echo -n`
 export forceInstall=

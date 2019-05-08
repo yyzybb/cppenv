@@ -51,11 +51,12 @@ VUNDLE_GIT=https://gitee.com/yyzybb537/Vundle.vim.git
 YCM_GIT=https://gitee.com/yyzybb537/YouCompleteMe.git
 
 # update profile
-has=`grep "export PATH=\\\$HOME/bin:\\\$PATH" -c $PROFILE || echo -n`
+has=`grep "export PATH=\\\$HOME/bin:\\\$PATH" -c $PROFILE || true`
 if [ "$has" == "0" ]
 then
     echo "export PATH=\$HOME/bin:\$PATH" >> $PROFILE
     echo "export LD_LIBRARY_PATH=\$HOME/lib:\$LD_LIBRARY_PATH" >> $PROFILE
+    echo "export LIBRARY_PATH=\$LIBRARY_PATH:\$HOME/lib" >> $PROFILE
 fi
 source $PROFILE
 
@@ -112,7 +113,7 @@ vim_exe=`which vim`
 vim_exe_dir=`dirname $vim_exe`
 mkdir -p $HOME/bin
 rm $HOME/bin/v -f
-ln -s ${vim_exe_dir}/vim $HOME/bin/v || echo -n
+ln -s ${vim_exe_dir}/vim $HOME/bin/v || true
 
 # git clone vim-vundle.git
 vundle_path=${VIMPATH}/vimfiles/bundle/Vundle.vim
@@ -123,7 +124,7 @@ printMsg "build YouCompleteMe --go-completer"
 ycm_path=${VIMPATH}/vimfiles/bundle
 ycm_path_ori=${TMP}/YouCompleteMe
 git_clone ${YCM_GIT} ${ycm_path_ori}
-ln -s ${ycm_path_ori} ${ycm_path} || echo -n
+ln -s ${ycm_path_ori} ${ycm_path} || true
 #cd ${ycm_path}
 #./install.py
 

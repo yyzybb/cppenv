@@ -24,8 +24,8 @@ cd $dir
     --enable-pythoninterp=yes --enable-rubyinterp=yes \
     --enable-luainterp=yes --enable-perlinterp=yes \
     --enable-gui=gtk2 \
-    --enable-cscope \
     --with-tlib=ncurses \
+    --enable-cscope \
     --with-python-config-dir=$PREFIX/lib/python2.7/config \
     --prefix=$PREFIX
 make $MAKEFLAGS
