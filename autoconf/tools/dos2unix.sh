@@ -21,6 +21,6 @@ tar zxf $pkg
 dir=dos2unix
 cd $dir
 make || true
-sleep 1
+make || true
 cp dos2unix $target
 test -f $target && $target --version
