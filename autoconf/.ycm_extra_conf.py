@@ -61,7 +61,7 @@ g_time_format = '%Y-%m-%dT%H:%M:%S'
 
 if __name__ == '__main__':
     # clear all cache
-    os.popen('rm %s -rf' % g_tmp_dir).read()
+    os.system('rm %s -rf' % g_tmp_dir)
     os.makedirs(g_tmp_dir)
     sys.exit(0)
 
@@ -247,7 +247,7 @@ def ExtractIncludesFromMakefile(mk, filename):
 
     if not include_flags:
         if g_rm_dot_d_files:
-            ign = os.popen("rm %s/.*.d -f" % file_dir).read()
+            os.system("rm %s/.*.d -f" % file_dir)
         make_commands = os.popen('cd %s && make -Bn 2>/dev/null' % mk_dir, 'r').read()
 
         #Log('Make commands:\n%s' % make_commands);
@@ -283,7 +283,7 @@ def ExtractIncludesFromCMake(cmk, filename):
     if isFileTimeout(json_file, g_cmake_cache_valid_seconds):
         if not os.path.exists(tmp_dir):
             os.makedirs(tmp_dir)
-        ign = os.popen("cd %s && cmake . %s -DCMAKE_EXPORT_COMPILE_COMMANDS=ON" % (tmp_dir, cmk_dir)).read()
+        os.system("cd %s && cmake . %s -DCMAKE_EXPORT_COMPILE_COMMANDS=ON" % (tmp_dir, cmk_dir))
     else:
         Log("===> match cache file: %s" % json_file)
     return ExtractIncludesFromJson(json_file, filename)

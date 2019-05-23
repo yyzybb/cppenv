@@ -297,9 +297,9 @@ func! cppenv#infect()
 
     map gp :call cppenv#switch_proto()<CR>
     map gs :call cppenv#switch_dd(0, 0, 0)<CR>
-    map gns :call cppenv#switch_dd(2, 0, 0)<CR>
+    map gns :call cppenv#switch_dd(2, 2, 0)<CR>
     map gvs :call cppenv#switch_dd(0, 0, 1)<CR><C-W>L<C-W>h
-    map gvns :call cppenv#switch_dd(2, 0, 1)<CR><C-W>L<C-W>h
+    map gvns :call cppenv#switch_dd(2, 2, 1)<CR><C-W>L<C-W>h
     map gnvs gvns
     map gS :call cppenv#switch_dd(-1, 0, 0)<CR>
 endfunc
