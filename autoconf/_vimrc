@@ -99,7 +99,7 @@ set fo-=ro
 
 "折叠
 set nofoldenable
-set foldmethod=syntax
+"set foldmethod=syntax
 set foldlevel=1
 
 "tab
